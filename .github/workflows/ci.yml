@@ -30,6 +30,7 @@ jobs:
       - name: Lint Check
         run: |
           cd client
+          pnpm install
           pnpm lint
 
       - name: Client Build
