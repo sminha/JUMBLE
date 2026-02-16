@@ -1,0 +1,11 @@
+node_modules/
+dist/
+
+.env*
+!.env.example
+pnpm-lock.yaml
+
+*.log
+.DS_Store
+
+*.d.ts
