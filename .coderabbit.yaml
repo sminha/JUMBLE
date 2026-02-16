@@ -1,21 +1,20 @@
-language: "ko-KR"
+language: 'ko-KR'
 
 reviews:
-  profile: "assertive"
-  request_changes_confirm: false
+  profile: 'assertive'
+  request_changes_workflow: false
   high_level_summary: true
-  poetic_summary: false
+  poem: false
   auto_review:
     enabled: true
     drafts: false
-
-path_filters:
-  - 'client/**'
-  - 'server/**'
-  - '.github/**'
-  - '.coderabbit.yaml'
-  - '!package.json'
-  - '!pnpm-lock.yaml'
+  path_filters:
+    - 'client/**'
+    - 'server/**'
+    - '.github/**'
+    - '.coderabbit.yaml'
+    - '!package.json'
+    - '!pnpm-lock.yaml'
 
 
 tone_instructions:: |
