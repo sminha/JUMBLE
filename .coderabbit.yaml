@@ -1,7 +1,7 @@
 language: "ko-KR"
 
 reviews:
-  profile: "chill"
+  profile: "assertive"
   request_changes_confirm: false
   high_level_summary: true
   poetic_summary: false
@@ -9,15 +9,15 @@ reviews:
     enabled: true
     drafts: false
 
-include_exclude:
-  exclude:
-    - "**/node_modules/**"
-    - "**/pnpm-lock.yaml"
-    - "**/dist/**"
-    - "**/build/**"
-    - "*.md"
-    - "LICENSE"
+path_filters:
+  - 'client/**'
+  - 'server/**'
+  - '.github/**'
+  - '.coderabbit.yaml'
+  - '!package.json'
+  - '!pnpm-lock.yaml'
 
-instructions: |
+
+tone_instructions:: |
   한국어로 간결하고 건설적인 코드 리뷰를 제공합니다.
   리뷰 우선순위는 유지보수성 > 성능 > 보안입니다.
