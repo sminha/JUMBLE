@@ -12,8 +12,8 @@ reviews:
     - 'client/**'
     - 'server/**'
     - '.github/**'
+    - 'package.json'
     - '.coderabbit.yaml'
-    - '!package.json'
     - '!pnpm-lock.yaml'
 
 
