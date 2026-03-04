@@ -1,9 +1,15 @@
+// @ts-check
+import path from 'path';
 import globals from 'globals';
+import { fileURLToPath } from 'url';
 import react from 'eslint-plugin-react';
 import reactHooks from 'eslint-plugin-react-hooks';
 import reactRefresh from 'eslint-plugin-react-refresh';
 import tseslint from 'typescript-eslint';
 import prettier from 'eslint-plugin-prettier/recommended';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 export default [
   { ignores: ['dist', 'node_modules'] },
@@ -16,7 +22,7 @@ export default [
       parser: tseslint.parser,
       parserOptions: {
         project: ['./tsconfig.json', './tsconfig.node.json'],
-        tsconfigRootDir: import.meta.dirname,
+        tsconfigRootDir: __dirname,
       },
     },
     settings: {
