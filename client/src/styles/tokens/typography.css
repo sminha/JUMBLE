@@ -48,6 +48,13 @@
     letter-spacing: 0;
   }
 
+  .title-16-m {
+    font-size: 1.6rem;
+    font-weight: 500;
+    line-height: 1.4;
+    letter-spacing: 0;
+  }
+
   .font-20-m {
     font-size: 2rem;
     font-weight: 500;
