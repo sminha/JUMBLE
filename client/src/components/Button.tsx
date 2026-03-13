@@ -6,8 +6,8 @@ const SIZE_STYLE = {
   medium: 'font-14-m px-[2rem] py-[1rem]',
 } as const;
 const VARIANT_STYLE = {
-  white: 'border-gray-3 border-1 text-gray-5 bg-white',
-  primary: 'text-white bg-primary-3',
+  white: 'border-gray-3 border text-gray-5 bg-white',
+  primary: 'text-white bg-primarsy-3',
 } as const;
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
