@@ -1,11 +1,11 @@
 @theme {
-  --color-primary-1: #cfe1ff;
-  --color-primary-3: #7dabf6;
-  --color-primary: #3981f7;
+  --color-primary-1: #636ea0;
+  --color-primary-3: #222b50;
+  --color-primary-5: #0a112f;
 
-  --color-secondary-1: #636ea0;
-  --color-secondary-3: #222b50;
-  --color-secondary-5: #0a112f;
+  --color-secondary-1: #cfe1ff;
+  --color-secondary-3: #7dabf6;
+  --color-secondary-5: #3981f7;
 
   --color-gray-1: #f4f4f6;
   --color-gray-2: #e5e6eb;
