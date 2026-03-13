@@ -5,7 +5,7 @@ import defaultProfile from '../assets/default-profile.png';
 
 export default function Header() {
   const navLinkStyle = ({ isActive }: { isActive: boolean }) =>
-    `title-16-m ${isActive ? 'text-secondary-3' : 'text-gray-4'}`;
+    `title-16-m ${isActive ? 'text-primary-3' : 'text-gray-4'}`;
 
   // [TODO] 라우팅 변경
   return (
