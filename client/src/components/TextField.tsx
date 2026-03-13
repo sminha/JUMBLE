@@ -2,7 +2,7 @@ import { InputHTMLAttributes } from 'react';
 import { cn } from '../utils/cn';
 
 const STATUS_STYLE = {
-  default: 'border-gray-2 focus:border-primary-3',
+  default: 'border-gray-2 focus:border-primary-3 transition-colors duration-200 ease-in-out',
   error: 'border-error',
 } as const;
 
