@@ -43,7 +43,6 @@ export const AuthController = {
   },
 };
 
-// 유저 객체에서 BigInt를 문자열로 변환해주는 유틸 함수
 const serializeUser = (user: any) => {
   return JSON.parse(
     JSON.stringify(user, (key, value) =>
