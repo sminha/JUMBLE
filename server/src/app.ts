@@ -2,7 +2,7 @@ import cors from "cors";
 import morgan from "morgan";
 import dotenv from "dotenv";
 import express from "express";
-import authRouter from "./routes/auth.js";
+import authRouter from "./routes/auth.routes.js";
 
 dotenv.config();
 
