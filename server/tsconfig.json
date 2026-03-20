@@ -9,8 +9,9 @@
     "strict": true,
     "skipLibCheck": true,
     "baseUrl": ".",
+    "typeRoots": ["./node_modules/@types", "./src/types"],
     "paths": {
-      "*": ["node_modules/*"]
+      "*": ["node_modules/*", "src/types/*"]
     },
     "noEmit": true,
     "allowImportingTsExtensions": true
