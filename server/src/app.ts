@@ -12,7 +12,7 @@ const PORT = process.env.PORT || 4000;
 app.use(cors());
 app.use(morgan("dev"));
 app.use(express.json());
-app.use("/auth", authRouter);
+app.use("/api/v1/auth", authRouter);
 
 app.get("/", (req, res) => {
   res.send("서버가 정상적으로 작동 중입니다! 🚀");
