@@ -1,9 +1,10 @@
 import qs from "qs";
 import axios from "axios";
+import jwt from "jsonwebtoken";
 import prisma from "../lib/prisma.ts";
 
 export const AuthService = {
-  getKakaoToken: async (code: string) => {
+  fetchKakaoToken: async (code: string) => {
     const response = await axios({
       method: "POST",
       url: "https://kauth.kakao.com/oauth/token",
@@ -20,29 +21,47 @@ export const AuthService = {
     return response.data.access_token;
   },
 
-  getKakaoUser: async (kakaoToken: string) => {
+  fetchKakaoUser: async (kakaoToken: string) => {
     const { data } = await axios.get("https://kapi.kakao.com/v2/user/me", {
       headers: { Authorization: `Bearer ${kakaoToken}` },
     });
+
     return data;
   },
 
-  upsertKakaoUser: async (kakaoUser: any, refreshToken: string) => {
-    return await prisma.user.upsert({
+  kakaoLogin: async (kakaoUser: any) => {
+    const user = await prisma.user.upsert({
       where: { kakao_id: kakaoUser.id },
       update: {
         name: kakaoUser.kakao_account?.profile?.nickname,
         profile_image_url:
           kakaoUser.kakao_account?.profile?.thumbnail_image_url,
-        refresh_token: refreshToken,
+        refresh_token: "",
       },
       create: {
         kakao_id: kakaoUser.id,
         name: kakaoUser.kakao_account?.profile?.nickname,
         profile_image_url:
           kakaoUser.kakao_account?.profile?.thumbnail_image_url,
-        refresh_token: refreshToken,
+        refresh_token: "",
       },
     });
+
+    const payload = { userId: user.id.toString() };
+    const accessToken = jwt.sign(payload, process.env.JWT_ACCESS_SECRET!, {
+      expiresIn: "1h",
+    });
+    const refreshToken = jwt.sign(payload, process.env.JWT_ACCESS_SECRET!, {
+      expiresIn: "14d",
+    });
+
+    prisma.user
+      .update({
+        where: { id: user.id },
+        data: { refresh_token: refreshToken },
+      })
+      .catch((error) => console.error("토큰 저장 실패:", error));
+
+    return { user, accessToken, refreshToken };
   },
 };
