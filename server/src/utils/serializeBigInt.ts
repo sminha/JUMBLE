@@ -9,6 +9,10 @@ export const serializeBigInt = (data: any): any => {
     return data.map(serializeBigInt);
   }
 
+  if (data instanceof Date) {
+    return data.toISOString();
+  }
+
   if (typeof data === "object") {
     return Object.fromEntries(
       Object.entries(data).map(([key, value]) => [key, serializeBigInt(value)]),
