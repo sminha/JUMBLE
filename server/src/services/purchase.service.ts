@@ -161,4 +161,29 @@ export const PurchaseService = {
 
     return serializeBigInt(formattedPurchase);
   },
+
+  getPurchaseItem: async (userId: bigint, itemId: bigint) => {
+    const item = await prisma.purchaseItem.findFirst({
+      where: {
+        id: itemId,
+        purchase: { user_id: userId },
+      },
+      select: {
+        id: true,
+        purchase_item_no: true,
+        item_name: true,
+        category: true,
+        color: true,
+        size: true,
+        extra_option: true,
+        unit_price: true,
+        quantity: true,
+        backorder_quantity: true,
+      },
+    });
+
+    if (!item) return null;
+
+    return serializeBigInt(formatPurchaseItem(item));
+  },
 };
