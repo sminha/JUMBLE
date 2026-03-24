@@ -1,4 +1,5 @@
 import prisma from "../lib/prisma.ts";
+import { formatPurchaseItem } from "../utils/format.ts";
 import { serializeBigInt } from "../utils/serializeBigInt.ts";
 import { CreatePurchaseDto, CreatePurchaseItemDto } from "../types/purchase.ts";
 
@@ -108,25 +109,10 @@ export const PurchaseService = {
         createdAt: created_at,
         vendor: vendor.name,
         receipt: receipt?.receipt_image_url ?? null,
-        items: items.map(
-          ({
-            purchase_item_no,
-            item_name,
-            extra_option,
-            unit_price,
-            backorder_quantity,
-            created_at: itemCreatedAt,
-            ...item
-          }) => ({
-            ...item,
-            purchaseItemNo: purchase_item_no,
-            itemName: item_name,
-            extraOption: extra_option,
-            unitPrice: unit_price,
-            backorderQuantity: backorder_quantity,
-            createdAt: itemCreatedAt,
-          }),
-        ),
+        items: items.map(({ created_at, ...item }) => ({
+          ...formatPurchaseItem(item),
+          createdAt: created_at,
+        })),
       }),
     );
 
@@ -170,23 +156,7 @@ export const PurchaseService = {
       purchasedAt: purchased_at,
       vendor: vendor.name,
       receipt: receipt?.receipt_image_url ?? null,
-      items: items.map(
-        ({
-          purchase_item_no,
-          item_name,
-          extra_option,
-          unit_price,
-          backorder_quantity,
-          ...item
-        }) => ({
-          ...item,
-          purchaseItemNo: purchase_item_no,
-          itemName: item_name,
-          extraOption: extra_option,
-          unitPrice: unit_price,
-          backorderQuantity: backorder_quantity,
-        }),
-      ),
+      items: items.map(formatPurchaseItem),
     };
 
     return serializeBigInt(formattedPurchase);
