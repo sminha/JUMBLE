@@ -55,34 +55,42 @@ export const PurchaseService = {
     });
   },
 
-  getPurchases: async (userId: bigint) => {
-    const purchases = await prisma.purchase.findMany({
-      where: { user_id: userId },
-      select: {
-        id: true,
-        purchase_no: true,
-        purchased_at: true,
-        created_at: true,
-        vendor: { select: { name: true } },
-        items: {
-          select: {
-            id: true,
-            purchase_item_no: true,
-            item_name: true,
-            category: true,
-            color: true,
-            size: true,
-            extra_option: true,
-            unit_price: true,
-            quantity: true,
-            backorder_quantity: true,
-            created_at: true,
+  getPurchases: async (userId: bigint, page: number, limit: number) => {
+    const skip = (page - 1) * limit;
+    const where = { user_id: userId };
+
+    const [purchases, total] = await prisma.$transaction([
+      prisma.purchase.findMany({
+        where,
+        skip,
+        take: limit,
+        orderBy: { purchased_at: "desc" },
+        select: {
+          id: true,
+          purchase_no: true,
+          purchased_at: true,
+          created_at: true,
+          vendor: { select: { name: true } },
+          items: {
+            select: {
+              id: true,
+              purchase_item_no: true,
+              item_name: true,
+              category: true,
+              color: true,
+              size: true,
+              extra_option: true,
+              unit_price: true,
+              quantity: true,
+              backorder_quantity: true,
+              created_at: true,
+            },
           },
+          receipt: { select: { receipt_image_url: true } },
         },
-        receipt: { select: { receipt_image_url: true } },
-      },
-      orderBy: { purchased_at: "desc" },
-    });
+      }),
+      prisma.purchase.count({ where }),
+    ]);
 
     const formattedPurchases = purchases.map(
       ({
@@ -122,6 +130,6 @@ export const PurchaseService = {
       }),
     );
 
-    return serializeBigInt(formattedPurchases);
+    return { purchases: serializeBigInt(formattedPurchases), total };
   },
 };

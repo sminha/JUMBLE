@@ -102,13 +102,34 @@ export const PurchaseController = {
   getPurchases: async (req: Request, res: Response) => {
     try {
       const userId = req.user.id;
-      const purchases = await PurchaseService.getPurchases(userId);
+      const page = parseInt(req.query.page as string) || 1;
+      const limit = parseInt(req.query.limit as string) || 10;
+
+      if (page < 1 || limit < 1) {
+        return res.status(400).json({
+          success: false,
+          status: 400,
+          message: "page와 limit은 1 이상이어야 합니다.",
+        });
+      }
+
+      const { purchases, total } = await PurchaseService.getPurchases(
+        userId,
+        page,
+        limit,
+      );
 
       return res.status(200).json({
         success: true,
         status: 200,
         message: "사입내역 조회에 성공했습니다.",
         purchases,
+        pagination: {
+          total,
+          page,
+          limit,
+          totalPages: Math.ceil(total / limit),
+        },
       });
     } catch (error) {
       console.error("🚨 서버 에러 발생:", error);
