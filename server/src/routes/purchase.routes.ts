@@ -5,5 +5,6 @@ import { PurchaseController } from "../controllers/purchase.controller.ts";
 const router: Router = express.Router();
 
 router.post("/", authMiddleware, PurchaseController.createPurchase);
+router.get("/", authMiddleware, PurchaseController.getPurchases);
 
 export default router;

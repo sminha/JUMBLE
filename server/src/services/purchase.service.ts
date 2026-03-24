@@ -51,7 +51,85 @@ export const PurchaseService = {
         },
       });
 
-      return serializeBigInt(newPurchase.id);
+      return serializeBigInt(newPurchase);
     });
+  },
+
+  getPurchases: async (userId: bigint, page: number, limit: number) => {
+    const skip = (page - 1) * limit;
+    const where = { user_id: userId };
+
+    const [purchases, total] = await prisma.$transaction([
+      prisma.purchase.findMany({
+        where,
+        skip,
+        take: limit,
+        orderBy: { purchased_at: "desc" },
+        select: {
+          id: true,
+          purchase_no: true,
+          purchased_at: true,
+          created_at: true,
+          vendor: { select: { name: true } },
+          items: {
+            select: {
+              id: true,
+              purchase_item_no: true,
+              item_name: true,
+              category: true,
+              color: true,
+              size: true,
+              extra_option: true,
+              unit_price: true,
+              quantity: true,
+              backorder_quantity: true,
+              created_at: true,
+            },
+          },
+          receipt: { select: { receipt_image_url: true } },
+        },
+      }),
+      prisma.purchase.count({ where }),
+    ]);
+
+    const formattedPurchases = purchases.map(
+      ({
+        vendor,
+        receipt,
+        purchase_no,
+        purchased_at,
+        created_at,
+        items,
+        ...purchase
+      }) => ({
+        ...purchase,
+        purchaseNo: purchase_no,
+        purchasedAt: purchased_at,
+        createdAt: created_at,
+        vendor: vendor.name,
+        receipt: receipt?.receipt_image_url ?? null,
+        items: items.map(
+          ({
+            purchase_item_no,
+            item_name,
+            extra_option,
+            unit_price,
+            backorder_quantity,
+            created_at: itemCreatedAt,
+            ...item
+          }) => ({
+            ...item,
+            purchaseItemNo: purchase_item_no,
+            itemName: item_name,
+            extraOption: extra_option,
+            unitPrice: unit_price,
+            backorderQuantity: backorder_quantity,
+            createdAt: itemCreatedAt,
+          }),
+        ),
+      }),
+    );
+
+    return { purchases: serializeBigInt(formattedPurchases), total };
   },
 };
