@@ -2,8 +2,9 @@ import cors from "cors";
 import morgan from "morgan";
 import dotenv from "dotenv";
 import express from "express";
-import authRouter from "./routes/auth.routes.js";
-import purchaseRouter from "./routes/purchase.routes.ts";
+import authRouter from "./auth/auth.routes.ts";
+import purchaseRouter from "./purchase/purchase.routes.ts";
+import purchaseItemRouter from "./purchase-item/purchase-item.routes.ts";
 
 dotenv.config();
 
@@ -15,8 +16,9 @@ app.use(morgan("dev"));
 app.use(express.json());
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/purchases", purchaseRouter);
+app.use("/api/v1/purchases/items", purchaseItemRouter);
 
-app.get("/", (req, res) => {
+app.get("/", (_, res) => {
   res.send("서버가 정상적으로 작동 중입니다! 🚀");
 });
 

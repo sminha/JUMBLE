@@ -1,6 +1,6 @@
 import axios from "axios";
 import { Request, Response } from "express";
-import { AuthService } from "../services/auth.service.ts";
+import { AuthService } from "./auth.service.ts";
 import { serializeBigInt } from "../utils/serializeBigInt.ts";
 
 export const AuthController = {

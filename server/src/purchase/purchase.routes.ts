@@ -1,16 +1,11 @@
 import express, { Router } from "express";
 import { authMiddleware } from "../middleware/auth.middleware.ts";
-import { PurchaseController } from "../controllers/purchase.controller.ts";
+import { PurchaseController } from "./purchase.controller.ts";
 
 const router: Router = express.Router();
 
 router.post("/", authMiddleware, PurchaseController.createPurchase);
-router.get("/items", authMiddleware, PurchaseController.getPurchaseItems);
-router.get(
-  "/items/:itemId",
-  authMiddleware,
-  PurchaseController.getPurchaseItem,
-);
+router.get("/", authMiddleware, PurchaseController.getPurchases);
 router.get(
   "/:id/receipt",
   authMiddleware,
