@@ -127,6 +127,25 @@ export const PurchaseService = {
     return serializeBigInt(formatPurchase(purchase));
   },
 
+  getPurchaseReceipt: async (userId: bigint, purchaseId: bigint) => {
+    const purchase = await prisma.purchase.findFirst({
+      where: { id: purchaseId, user_id: userId },
+      select: {
+        id: true,
+        purchase_no: true,
+        receipt: { select: { receipt_image_url: true } },
+      },
+    });
+
+    if (!purchase) return null;
+
+    return serializeBigInt({
+      id: purchase.id,
+      purchaseNo: purchase.purchase_no,
+      receipt: purchase.receipt?.receipt_image_url ?? null,
+    });
+  },
+
   getPurchaseItem: async (userId: bigint, itemId: bigint) => {
     const item = await prisma.purchaseItem.findFirst({
       where: {
