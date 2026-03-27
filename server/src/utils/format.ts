@@ -20,3 +20,26 @@ export const formatPurchaseItem = ({
   unitPrice: unit_price,
   backorderQuantity: backorder_quantity,
 });
+
+export const formatPurchase = ({
+  purchase_no,
+  purchased_at,
+  vendor,
+  receipt,
+  items,
+  ...rest
+}: {
+  purchase_no: string;
+  purchased_at: Date;
+  vendor: { name: string };
+  receipt: { receipt_image_url: string } | null | undefined;
+  items: Parameters<typeof formatPurchaseItem>[0][];
+  [key: string]: unknown;
+}) => ({
+  ...rest,
+  purchaseNo: purchase_no,
+  purchasedAt: purchased_at,
+  vendor: vendor.name,
+  receipt: receipt?.receipt_image_url ?? null,
+  items: items.map(formatPurchaseItem),
+});

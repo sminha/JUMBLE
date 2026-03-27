@@ -1,5 +1,5 @@
 import prisma from "../lib/prisma.ts";
-import { formatPurchaseItem } from "../utils/format.ts";
+import { formatPurchase, formatPurchaseItem } from "../utils/format.ts";
 import { serializeBigInt } from "../utils/serializeBigInt.ts";
 import { CreatePurchaseDto, CreatePurchaseItemDto } from "../types/purchase.ts";
 
@@ -70,7 +70,6 @@ export const PurchaseService = {
           id: true,
           purchase_no: true,
           purchased_at: true,
-          created_at: true,
           vendor: { select: { name: true } },
           items: {
             select: {
@@ -84,7 +83,6 @@ export const PurchaseService = {
               unit_price: true,
               quantity: true,
               backorder_quantity: true,
-              created_at: true,
             },
           },
           receipt: { select: { receipt_image_url: true } },
@@ -93,28 +91,7 @@ export const PurchaseService = {
       prisma.purchase.count({ where }),
     ]);
 
-    const formattedPurchases = purchases.map(
-      ({
-        vendor,
-        receipt,
-        purchase_no,
-        purchased_at,
-        created_at,
-        items,
-        ...purchase
-      }) => ({
-        ...purchase,
-        purchaseNo: purchase_no,
-        purchasedAt: purchased_at,
-        createdAt: created_at,
-        vendor: vendor.name,
-        receipt: receipt?.receipt_image_url ?? null,
-        items: items.map(({ created_at, ...item }) => ({
-          ...formatPurchaseItem(item),
-          createdAt: created_at,
-        })),
-      }),
-    );
+    const formattedPurchases = purchases.map(formatPurchase);
 
     return { purchases: serializeBigInt(formattedPurchases), total };
   },
@@ -147,19 +124,7 @@ export const PurchaseService = {
 
     if (!purchase) return null;
 
-    const { vendor, receipt, purchase_no, purchased_at, items, ...rest } =
-      purchase;
-
-    const formattedPurchase = {
-      ...rest,
-      purchaseNo: purchase_no,
-      purchasedAt: purchased_at,
-      vendor: vendor.name,
-      receipt: receipt?.receipt_image_url ?? null,
-      items: items.map(formatPurchaseItem),
-    };
-
-    return serializeBigInt(formattedPurchase);
+    return serializeBigInt(formatPurchase(purchase));
   },
 
   getPurchaseItem: async (userId: bigint, itemId: bigint) => {
