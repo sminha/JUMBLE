@@ -113,7 +113,7 @@ export const PurchaseItemController = {
   getPurchaseItem: async (req: Request, res: Response) => {
     try {
       const userId = req.user.id;
-      const rawItemId = req.params.is as string;
+      const rawItemId = req.params.id as string;
 
       if (!/^\d+$/.test(rawItemId)) {
         return res.status(400).json({

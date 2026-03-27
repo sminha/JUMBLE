@@ -15,8 +15,8 @@ app.use(cors());
 app.use(morgan("dev"));
 app.use(express.json());
 app.use("/api/v1/auth", authRouter);
-app.use("/api/v1/purchases", purchaseRouter);
 app.use("/api/v1/purchases/items", purchaseItemRouter);
+app.use("/api/v1/purchases", purchaseRouter);
 
 app.get("/", (_, res) => {
   res.send("서버가 정상적으로 작동 중입니다! 🚀");
