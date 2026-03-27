@@ -1,4 +1,5 @@
 import prisma from "../lib/prisma.ts";
+import { formatPurchase, formatPurchaseItem } from "../utils/format.ts";
 import { serializeBigInt } from "../utils/serializeBigInt.ts";
 import { CreatePurchaseDto, CreatePurchaseItemDto } from "../types/purchase.ts";
 
@@ -69,7 +70,6 @@ export const PurchaseService = {
           id: true,
           purchase_no: true,
           purchased_at: true,
-          created_at: true,
           vendor: { select: { name: true } },
           items: {
             select: {
@@ -83,7 +83,6 @@ export const PurchaseService = {
               unit_price: true,
               quantity: true,
               backorder_quantity: true,
-              created_at: true,
             },
           },
           receipt: { select: { receipt_image_url: true } },
@@ -92,43 +91,7 @@ export const PurchaseService = {
       prisma.purchase.count({ where }),
     ]);
 
-    const formattedPurchases = purchases.map(
-      ({
-        vendor,
-        receipt,
-        purchase_no,
-        purchased_at,
-        created_at,
-        items,
-        ...purchase
-      }) => ({
-        ...purchase,
-        purchaseNo: purchase_no,
-        purchasedAt: purchased_at,
-        createdAt: created_at,
-        vendor: vendor.name,
-        receipt: receipt?.receipt_image_url ?? null,
-        items: items.map(
-          ({
-            purchase_item_no,
-            item_name,
-            extra_option,
-            unit_price,
-            backorder_quantity,
-            created_at: itemCreatedAt,
-            ...item
-          }) => ({
-            ...item,
-            purchaseItemNo: purchase_item_no,
-            itemName: item_name,
-            extraOption: extra_option,
-            unitPrice: unit_price,
-            backorderQuantity: backorder_quantity,
-            createdAt: itemCreatedAt,
-          }),
-        ),
-      }),
-    );
+    const formattedPurchases = purchases.map(formatPurchase);
 
     return { purchases: serializeBigInt(formattedPurchases), total };
   },
@@ -161,34 +124,31 @@ export const PurchaseService = {
 
     if (!purchase) return null;
 
-    const { vendor, receipt, purchase_no, purchased_at, items, ...rest } =
-      purchase;
+    return serializeBigInt(formatPurchase(purchase));
+  },
 
-    const formattedPurchase = {
-      ...rest,
-      purchaseNo: purchase_no,
-      purchasedAt: purchased_at,
-      vendor: vendor.name,
-      receipt: receipt?.receipt_image_url ?? null,
-      items: items.map(
-        ({
-          purchase_item_no,
-          item_name,
-          extra_option,
-          unit_price,
-          backorder_quantity,
-          ...item
-        }) => ({
-          ...item,
-          purchaseItemNo: purchase_item_no,
-          itemName: item_name,
-          extraOption: extra_option,
-          unitPrice: unit_price,
-          backorderQuantity: backorder_quantity,
-        }),
-      ),
-    };
+  getPurchaseItem: async (userId: bigint, itemId: bigint) => {
+    const item = await prisma.purchaseItem.findFirst({
+      where: {
+        id: itemId,
+        purchase: { user_id: userId },
+      },
+      select: {
+        id: true,
+        purchase_item_no: true,
+        item_name: true,
+        category: true,
+        color: true,
+        size: true,
+        extra_option: true,
+        unit_price: true,
+        quantity: true,
+        backorder_quantity: true,
+      },
+    });
 
-    return serializeBigInt(formattedPurchase);
+    if (!item) return null;
+
+    return serializeBigInt(formatPurchaseItem(item));
   },
 };
