@@ -161,8 +161,17 @@ export const PurchaseController = {
   getPurchase: async (req: Request, res: Response) => {
     try {
       const userId = req.user.id;
-      const purchaseId = BigInt(req.params.id as string);
+      const rawPurchaseId = req.params.id as string;
 
+      if (!/^\d+$/.test(rawPurchaseId)) {
+        return res.status(400).json({
+          success: false,
+          status: 400,
+          message: "id는 정수여야 합니다.",
+        });
+      }
+
+      const purchaseId = BigInt(rawPurchaseId);
       const purchase = await PurchaseService.getPurchase(userId, purchaseId);
 
       if (!purchase) {
@@ -201,8 +210,17 @@ export const PurchaseController = {
   getPurchaseItem: async (req: Request, res: Response) => {
     try {
       const userId = req.user.id;
-      const itemId = BigInt(req.params.itemId as string);
+      const rawItemId = req.params.itemId as string;
 
+      if (!/^\d+$/.test(rawItemId)) {
+        return res.status(400).json({
+          success: false,
+          status: 400,
+          message: "itemId는 정수여야 합니다.",
+        });
+      }
+
+      const itemId = BigInt(rawItemId);
       const item = await PurchaseService.getPurchaseItem(userId, itemId);
 
       if (!item) {
