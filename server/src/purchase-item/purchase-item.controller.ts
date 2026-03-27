@@ -32,6 +32,14 @@ export const PurchaseItemController = {
         });
       }
 
+      if ((startDate && !endDate) || (!startDate && endDate)) {
+        return res.status(400).json({
+          success: false,
+          status: 400,
+          message: "startDate와 endDate는 함께 제공되어야 합니다.",
+        });
+      }
+
       if (!DATE_TYPES.includes(dateType)) {
         return res.status(400).json({
           success: false,
