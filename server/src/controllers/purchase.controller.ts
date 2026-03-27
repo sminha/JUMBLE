@@ -1,7 +1,15 @@
 import { Request, Response } from "express";
 import { Prisma, Category } from "@prisma/client";
-import { CreatePurchaseDto } from "../types/purchase.ts";
 import { PurchaseService } from "../services/purchase.service.ts";
+import {
+  DateType,
+  SortOrder,
+  PurchaseItemSortBy,
+  DATE_TYPES,
+  SORT_ORDERS,
+  SORT_BY,
+  CreatePurchaseDto,
+} from "../types/purchase.ts";
 
 const VALID_CATEGORIES = Object.values(Category);
 
@@ -99,11 +107,18 @@ export const PurchaseController = {
     }
   },
 
-  getPurchases: async (req: Request, res: Response) => {
+  getPurchaseItems: async (req: Request, res: Response) => {
     try {
       const userId = req.user.id;
       const page = parseInt(req.query.page as string) || 1;
-      const limit = parseInt(req.query.limit as string) || 10;
+      const limit = parseInt(req.query.limit as string) || 50;
+      const dateType = (req.query.dateType as DateType) ?? "purchased";
+      const startDate = req.query.startDate as string | undefined;
+      const endDate = req.query.endDate as string | undefined;
+      const vendorName = req.query.vendorName as string | undefined;
+      const backorderOnly = req.query.backorderOnly === "true";
+      const sortBy = (req.query.sortBy as PurchaseItemSortBy) ?? "purchasedAt";
+      const sortOrder = (req.query.sortOrder as SortOrder) ?? "desc";
 
       if (page < 1 || limit < 1) {
         return res.status(400).json({
@@ -113,17 +128,47 @@ export const PurchaseController = {
         });
       }
 
-      const { purchases, total } = await PurchaseService.getPurchases(
-        userId,
+      if (!DATE_TYPES.includes(dateType)) {
+        return res.status(400).json({
+          success: false,
+          status: 400,
+          message: "dateType은 purchased 또는 created여야 합니다.",
+        });
+      }
+
+      if (!SORT_BY.includes(sortBy)) {
+        return res.status(400).json({
+          success: false,
+          status: 400,
+          message: `sortBy는 다음 값 중 하나여야 합니다: ${SORT_BY.join(", ")}`,
+        });
+      }
+
+      if (!SORT_ORDERS.includes(sortOrder)) {
+        return res.status(400).json({
+          success: false,
+          status: 400,
+          message: "sortOrder는 asc 또는 desc여야 합니다.",
+        });
+      }
+
+      const { items, total } = await PurchaseService.getPurchaseItems(userId, {
         page,
         limit,
-      );
+        dateType,
+        startDate,
+        endDate,
+        vendorName,
+        backorderOnly,
+        sortBy,
+        sortOrder,
+      });
 
       return res.status(200).json({
         success: true,
         status: 200,
         message: "사입내역 조회에 성공했습니다.",
-        purchases,
+        items,
         pagination: {
           total,
           page,
@@ -221,7 +266,10 @@ export const PurchaseController = {
       }
 
       const purchaseId = BigInt(rawPurchaseId);
-      const receipt = await PurchaseService.getPurchaseReceipt(userId, purchaseId);
+      const receipt = await PurchaseService.getPurchaseReceipt(
+        userId,
+        purchaseId,
+      );
 
       if (!receipt) {
         return res.status(404).json({

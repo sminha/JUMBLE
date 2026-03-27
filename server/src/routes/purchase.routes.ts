@@ -5,9 +5,17 @@ import { PurchaseController } from "../controllers/purchase.controller.ts";
 const router: Router = express.Router();
 
 router.post("/", authMiddleware, PurchaseController.createPurchase);
-router.get("/", authMiddleware, PurchaseController.getPurchases);
-router.get("/items/:itemId", authMiddleware, PurchaseController.getPurchaseItem);
-router.get("/:id/receipt", authMiddleware, PurchaseController.getPurchaseReceipt);
+router.get("/items", authMiddleware, PurchaseController.getPurchaseItems);
+router.get(
+  "/items/:itemId",
+  authMiddleware,
+  PurchaseController.getPurchaseItem,
+);
+router.get(
+  "/:id/receipt",
+  authMiddleware,
+  PurchaseController.getPurchaseReceipt,
+);
 router.get("/:id", authMiddleware, PurchaseController.getPurchase);
 
 export default router;
