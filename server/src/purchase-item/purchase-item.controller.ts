@@ -14,8 +14,12 @@ export const PurchaseItemController = {
   getPurchaseItems: async (req: Request, res: Response) => {
     try {
       const userId = req.user.id;
-      const page = parseInt(req.query.page as string) || 1;
-      const limit = parseInt(req.query.limit as string) || 50;
+
+      const rawPage = req.query.page as string | undefined;
+      const rawLimit = req.query.limit as string | undefined;
+      const page = rawPage === undefined ? 1 : Number(rawPage);
+      const limit = rawLimit === undefined ? 50 : Number(rawLimit);
+
       const dateType = (req.query.dateType as DateType) ?? "purchased";
       const startDate = req.query.startDate as string | undefined;
       const endDate = req.query.endDate as string | undefined;
@@ -24,7 +28,12 @@ export const PurchaseItemController = {
       const sortBy = (req.query.sortBy as PurchaseItemSortBy) ?? "purchasedAt";
       const sortOrder = (req.query.sortOrder as SortOrder) ?? "desc";
 
-      if (page < 1 || limit < 1) {
+      if (
+        !Number.isInteger(page) ||
+        !Number.isInteger(limit) ||
+        page < 1 ||
+        limit < 1
+      ) {
         return res.status(400).json({
           success: false,
           status: 400,

@@ -104,12 +104,12 @@ export const PurchaseItemService = {
         ...rest
       }) => ({
         purchaseId: purchase.id,
-        productId: id,
+        itemId: id,
         purchaseNo: purchase.purchase_no,
         purchaseItemNo: purchase_item_no,
         purchasedAt: purchase.purchased_at,
         vendor: purchase.vendor.name,
-        item: item_name,
+        itemName: item_name,
         extraOption: extra_option,
         unitPrice: unit_price,
         totalAmount: unit_price * rest.quantity,
