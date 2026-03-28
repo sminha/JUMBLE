@@ -1,7 +1,7 @@
 import prisma from "../lib/prisma.ts";
-import { formatPurchase, formatPurchaseItem } from "../utils/format.ts";
 import { serializeBigInt } from "../utils/serializeBigInt.ts";
-import { CreatePurchaseDto, CreatePurchaseItemDto } from "../types/purchase.ts";
+import { formatPurchase } from "../utils/format.ts";
+import { CreatePurchaseDto, CreatePurchaseItemDto } from "./purchase.types.ts";
 
 export const PurchaseService = {
   createPurchase: async (userId: bigint, data: CreatePurchaseDto) => {
@@ -144,30 +144,5 @@ export const PurchaseService = {
       purchaseNo: purchase.purchase_no,
       receipt: purchase.receipt?.receipt_image_url ?? null,
     });
-  },
-
-  getPurchaseItem: async (userId: bigint, itemId: bigint) => {
-    const item = await prisma.purchaseItem.findFirst({
-      where: {
-        id: itemId,
-        purchase: { user_id: userId },
-      },
-      select: {
-        id: true,
-        purchase_item_no: true,
-        item_name: true,
-        category: true,
-        color: true,
-        size: true,
-        extra_option: true,
-        unit_price: true,
-        quantity: true,
-        backorder_quantity: true,
-      },
-    });
-
-    if (!item) return null;
-
-    return serializeBigInt(formatPurchaseItem(item));
   },
 };
