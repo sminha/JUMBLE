@@ -26,16 +26,16 @@ export const PurchaseItemService = {
         endDate &&
         dateType === "purchased" && {
           purchased_at: {
-            gte: new Date(`${startDate}T00:00:00.000`),
-            lte: new Date(`${endDate}T23:59:59.999`),
+            gte: new Date(`${startDate}T00:00:00.000+09:00`),
+            lte: new Date(`${endDate}T23:59:59.999+09:00`),
           },
         }),
       ...(startDate &&
         endDate &&
         dateType === "created" && {
           created_at: {
-            gte: new Date(`${startDate}T00:00:00.000`),
-            lte: new Date(`${endDate}T23:59:59.999`),
+            gte: new Date(`${startDate}T00:00:00.000+09:00`),
+            lte: new Date(`${endDate}T23:59:59.999+09:00`),
           },
         }),
     };

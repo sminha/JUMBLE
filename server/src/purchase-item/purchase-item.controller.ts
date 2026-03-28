@@ -10,6 +10,9 @@ import {
   SORT_BY,
 } from "./purchase-item.types.ts";
 
+const isValidDate = (date: string) =>
+  /^\d{4}-\d{2}-\d{2}$/.test(date) && !isNaN(Date.parse(date));
+
 export const PurchaseItemController = {
   getPurchaseItems: async (req: Request, res: Response) => {
     try {
@@ -46,6 +49,18 @@ export const PurchaseItemController = {
           success: false,
           status: 400,
           message: "startDate와 endDate는 함께 제공되어야 합니다.",
+        });
+      }
+
+      if (
+        startDate &&
+        endDate &&
+        (!isValidDate(startDate) || !isValidDate(endDate))
+      ) {
+        return res.status(400).json({
+          success: false,
+          status: 400,
+          message: "startDate와 endDate는 유효한 YYYY-MM-DD 형식이어야 합니다.",
         });
       }
 
