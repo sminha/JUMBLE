@@ -20,7 +20,7 @@ export const AuthController = {
           refreshToken,
           userId: user.id,
           name: user.name,
-          proflie: user.profile_image_url,
+          profile: user.profile_image_url,
         }),
       );
     } catch (error) {
