@@ -1,7 +1,8 @@
 import { Link, NavLink } from 'react-router';
-import logoIcon from '../assets/logo-icon.png';
-import logoText from '../assets/logo-text.png';
-import defaultProfile from '../assets/default-profile.png';
+import { PATHS } from '@/router';
+import logoIcon from '@/assets/logo-icon.png';
+import logoText from '@/assets/logo-text.png';
+import defaultProfile from '@/assets/default-profile.png';
 
 export default function Header() {
   const navLinkStyle = ({ isActive }: { isActive: boolean }) =>
@@ -23,7 +24,11 @@ export default function Header() {
               </NavLink>
             </li>
             <li>
-              <NavLink to="/" className={navLinkStyle} aria-label="추가 페이지로 이동">
+              <NavLink
+                to={PATHS.PURCHASENEW}
+                className={navLinkStyle}
+                aria-label="추가 페이지로 이동"
+              >
                 추가
               </NavLink>
             </li>
