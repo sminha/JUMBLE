@@ -1,4 +1,4 @@
-# SNAPPIN' <img src="https://github.com/sminha/JUMBLE/blob/develop/client/public/favicon.png" width="110" align="left" />
+# Jumble <img src="https://github.com/sminha/JUMBLE/blob/develop/client/public/favicon.png" width="110" align="left" />
 
 의류 사입내역 관리를 보다 편리하게
 
