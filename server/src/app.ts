@@ -5,6 +5,7 @@ import express from "express";
 import authRouter from "./auth/auth.routes.ts";
 import purchaseRouter from "./purchase/purchase.routes.ts";
 import purchaseItemRouter from "./purchase-item/purchase-item.routes.ts";
+import ocrRouter from "./ocr/ocr.routes.ts";
 
 dotenv.config();
 
@@ -17,6 +18,7 @@ app.use(express.json());
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/purchases/items", purchaseItemRouter);
 app.use("/api/v1/purchases", purchaseRouter);
+app.use("/api/v1/ocr", ocrRouter);
 
 app.get("/", (_, res) => {
   res.send("서버가 정상적으로 작동 중입니다! 🚀");
