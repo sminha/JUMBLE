@@ -9,6 +9,7 @@ import { Category } from '@/constants/category';
 import ItemRow from './components/ItemRow';
 import UploadButton from './components/UploadButton';
 import { PurchaseNewFormData, purchaseNewSchema } from './PurchaseNew.schema';
+import { useImageUpload } from './apis';
 
 const TABLE_HEADERS = [
   '상품명',
@@ -39,6 +40,7 @@ export default function PurchaseNew() {
     register,
     control,
     handleSubmit,
+    setValue,
     formState: { errors },
   } = useForm<PurchaseNewFormData>({
     resolver: zodResolver(purchaseNewSchema),
@@ -48,10 +50,14 @@ export default function PurchaseNew() {
       items: [DEFAULT_ITEMS],
     },
   });
-
-  const { fields, append, remove } = useFieldArray({ control, name: 'items' });
-
   const items = useWatch({ control, name: 'items' });
+  const { fields, append, remove, replace } = useFieldArray({ control, name: 'items' });
+
+  const { mutate: handleImageUpload, isPending: isImageUploading } = useImageUpload({
+    setValue,
+    replace,
+  });
+
   const totalPrice = formatPrice(
     items.reduce((sum, item) => sum + (item?.price || 0) * (item.quantity || 0), 0),
   );
@@ -71,7 +77,9 @@ export default function PurchaseNew() {
       <Header />
       <div className="flex items-center justify-between px-[7.2rem] py-[2.6rem]">
         <h1 className="title-18-m text-gray-9">사입 내역 추가</h1>
-        <UploadButton>영수증으로 입력하기</UploadButton>
+        <UploadButton onUpload={handleImageUpload} isLoading={isImageUploading}>
+          {isImageUploading ? '분석 중...' : '영수증으로 입력하기'}
+        </UploadButton>
       </div>
       <form onSubmit={handleSubmit(onSubmit)}>
         <section className="mx-[6.4rem] flex flex-col gap-[2.4rem] rounded-[1.6rem] bg-white px-[3.8rem] py-[3rem]">
