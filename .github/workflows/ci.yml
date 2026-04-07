@@ -27,13 +27,11 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - name: Lint Check
-        run: |
-          cd client
-          pnpm install
-          pnpm lint
+      - name: Client Lint Check
+        run: pnpm --filter client lint
 
       - name: Client Build
-        run: |
-          cd client
-          pnpm build
+        run: pnpm --filter client build
+
+      - name: Server Type Check
+        run: pnpm --filter server exec tsc --noEmit
