@@ -2,7 +2,7 @@ import { Prisma } from "@prisma/client";
 import prisma from "../lib/prisma.ts";
 import { serializeBigInt } from "../utils/serializeBigInt.ts";
 import { formatPurchaseItem } from "../utils/format.ts";
-import { GetPurchaseItemsQuery } from "./purchase-item.types.ts";
+import { GetPurchaseItemsQuery } from "@jumble/shared";
 
 export const PurchaseItemService = {
   getPurchaseItems: async (userId: bigint, params: GetPurchaseItemsQuery) => {
