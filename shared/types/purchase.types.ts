@@ -1,4 +1,16 @@
-import { Category } from "@prisma/client";
+export const CATEGORIES = [
+  'TOP',
+  'OUTER',
+  'BOTTOM',
+  'SET',
+  'BAG',
+  'SHOES',
+  'JEWELRY',
+  'ACCESSORY',
+  'ETC',
+] as const;
+
+export type Category = (typeof CATEGORIES)[number];
 
 export interface CreatePurchaseItemDto {
   productName: string;

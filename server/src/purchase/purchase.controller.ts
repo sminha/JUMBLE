@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
-import { Prisma, Category } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 import { PurchaseService } from "./purchase.service.ts";
-import { CreatePurchaseDto } from "./purchase.types.ts";
+import { CreatePurchaseDto, CATEGORIES } from "@jumble/shared";
 
-const VALID_CATEGORIES = Object.values(Category);
+const VALID_CATEGORIES = CATEGORIES;
 
 export const PurchaseController = {
   createPurchase: async (req: Request, res: Response) => {

@@ -16,7 +16,7 @@ jobs:
       - name: Install pnpm
         uses: pnpm/action-setup@v3
         with:
-          version: 9
+          version: 10
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -27,13 +27,14 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - name: Lint Check
-        run: |
-          cd client
-          pnpm install
-          pnpm lint
+      - name: Client Lint Check
+        run: pnpm --filter client lint
 
       - name: Client Build
-        run: |
-          cd client
-          pnpm build
+        run: pnpm --filter client build
+
+      - name: Generate Prisma Client
+        run: pnpm --filter server exec prisma generate
+
+      - name: Server Type Check
+        run: pnpm --filter server exec tsc --noEmit
