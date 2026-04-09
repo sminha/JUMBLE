@@ -6,7 +6,7 @@ import { serializeBigInt } from '../utils/serializeBigInt';
 export const AuthController = {
   kakaoLogin: async (req: Request, res: Response) => {
     const { code } = req.query;
-    if (!code) return res.status(400).send('코드가 존재하지 않습니다.');
+    if (!code || typeof code !== 'string') return res.status(400).send('코드가 존재하지 않습니다.');
 
     try {
       const kakaoToken = await AuthService.fetchKakaoToken(code);
