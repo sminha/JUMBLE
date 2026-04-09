@@ -1,4 +1,3 @@
-// @ts-check
 import globals from 'globals';
 import react from 'eslint-plugin-react';
 import reactHooks from 'eslint-plugin-react-hooks';
@@ -23,7 +22,7 @@ const commonRules = {
 };
 
 export default [
-  { ignores: ['**/dist', '**/node_modules'] },
+  { ignores: ['**/dist', '**/node_modules', 'eslint.config.js'] },
   ...tseslint.configs.recommended,
   {
     files: ['server/**/*.ts', 'shared/**/*.ts'],
@@ -31,6 +30,9 @@ export default [
       ecmaVersion: 2020,
       globals: globals.node,
       parser: tseslint.parser,
+      parserOptions: {
+        tsconfigRootDir: process.cwd(),
+      },
     },
     rules: commonRules,
   },
@@ -40,6 +42,9 @@ export default [
       ecmaVersion: 2020,
       globals: globals.browser,
       parser: tseslint.parser,
+      parserOptions: {
+        tsconfigRootDir: process.cwd(),
+      },
     },
     settings: {
       react: { version: 'detect' },
