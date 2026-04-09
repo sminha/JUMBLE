@@ -1,38 +1,32 @@
-import { FieldErrors, UseFormRegister } from "react-hook-form";
-import { Purchase, Category, CATEGORY } from "@jumble/shared";
-import Input from "@/components/Input";
-import DropDown from "@/components/Dropdown";
-import DeleteButton from "@/components/DeleteButton";
-import { formatPrice } from "@/utils/format";
-import { STATUS } from "@/constants/status";
+import { FieldErrors, UseFormRegister } from 'react-hook-form';
+import { Purchase, Category, CATEGORY } from '@jumble/shared';
+import Input from '@/components/Input';
+import DropDown from '@/components/Dropdown';
+import DeleteButton from '@/components/DeleteButton';
+import { formatPrice } from '@/utils/format';
+import { STATUS } from '@/constants/status';
 
 interface ItemRowProps {
   index: number;
-  item: Purchase["items"][number];
+  item: Purchase['items'][number];
   register: UseFormRegister<Purchase>;
   errors: FieldErrors<Purchase>;
   remove: (index: number) => void;
 }
 
 const OPTIONS: { value: Category; label: string }[] = [
-  { value: CATEGORY.TOP, label: "상의" },
-  { value: CATEGORY.OUTER, label: "아우터" },
-  { value: CATEGORY.BOTTOM, label: "하의" },
-  { value: CATEGORY.SET, label: "세트" },
-  { value: CATEGORY.BAG, label: "가방" },
-  { value: CATEGORY.SHOES, label: "신발" },
-  { value: CATEGORY.JEWELRY, label: "주얼리" },
-  { value: CATEGORY.ACCESSORY, label: "악세서리" },
-  { value: CATEGORY.ETC, label: "기타" },
+  { value: CATEGORY.TOP, label: '상의' },
+  { value: CATEGORY.OUTER, label: '아우터' },
+  { value: CATEGORY.BOTTOM, label: '하의' },
+  { value: CATEGORY.SET, label: '세트' },
+  { value: CATEGORY.BAG, label: '가방' },
+  { value: CATEGORY.SHOES, label: '신발' },
+  { value: CATEGORY.JEWELRY, label: '주얼리' },
+  { value: CATEGORY.ACCESSORY, label: '악세서리' },
+  { value: CATEGORY.ETC, label: '기타' },
 ];
 
-export default function ItemRow({
-  index,
-  item,
-  register,
-  errors,
-  remove,
-}: ItemRowProps) {
+export default function ItemRow({ index, item, register, errors, remove }: ItemRowProps) {
   return (
     <tr>
       {/* 상품명 */}
@@ -50,9 +44,7 @@ export default function ItemRow({
           options={OPTIONS}
           placeholder="선택"
           defaultValue=""
-          status={
-            errors.items?.[index]?.category ? STATUS.ERROR : STATUS.DEFAULT
-          }
+          status={errors.items?.[index]?.category ? STATUS.ERROR : STATUS.DEFAULT}
         />
       </td>
 
@@ -84,9 +76,7 @@ export default function ItemRow({
       <td className="px-[0.8rem] py-[0.6rem]">
         <Input
           {...register(`items.${index}.quantity`, { valueAsNumber: true })}
-          status={
-            errors.items?.[index]?.quantity ? STATUS.ERROR : STATUS.DEFAULT
-          }
+          status={errors.items?.[index]?.quantity ? STATUS.ERROR : STATUS.DEFAULT}
           className="text-center"
         />
       </td>
@@ -106,11 +96,7 @@ export default function ItemRow({
           {...register(`items.${index}.backorderQuantity`, {
             valueAsNumber: true,
           })}
-          status={
-            errors.items?.[index]?.backorderQuantity
-              ? STATUS.ERROR
-              : STATUS.DEFAULT
-          }
+          status={errors.items?.[index]?.backorderQuantity ? STATUS.ERROR : STATUS.DEFAULT}
           className="text-center"
         />
       </td>

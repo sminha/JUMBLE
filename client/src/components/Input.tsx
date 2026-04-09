@@ -1,6 +1,6 @@
-import { InputHTMLAttributes } from "react";
-import { cn } from "@/utils/cn";
-import { Status, STATUS, STATUS_STYLE } from "@/constants/status";
+import { InputHTMLAttributes } from 'react';
+import { cn } from '@/utils/cn';
+import { Status, STATUS, STATUS_STYLE } from '@/constants/status';
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   status?: Status;
@@ -8,9 +8,9 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
 }
 
 export default function Input({
-  type = "text",
+  type = 'text',
   status = STATUS.DEFAULT,
-  errorMessage = "",
+  errorMessage = '',
   className,
   ...props
 }: InputProps) {
@@ -19,7 +19,7 @@ export default function Input({
       <input
         type={type}
         className={cn(
-          "font-14-r text-gray-6 placeholder:text-gray-4 rounded-[0.8rem] border bg-white p-[1.2rem]",
+          'font-14-r text-gray-6 placeholder:text-gray-4 rounded-[0.8rem] border bg-white p-[1.2rem]',
           STATUS_STYLE[status],
           className,
         )}

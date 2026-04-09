@@ -1,12 +1,12 @@
-import { Link, NavLink } from "react-router";
-import { PATHS } from "@/router";
-import logoIcon from "@/assets/logo-icon.png";
-import logoText from "@/assets/logo-text.png";
-import defaultProfile from "@/assets/default-profile.png";
+import { Link, NavLink } from 'react-router';
+import { PATHS } from '@/router';
+import logoIcon from '@/assets/logo-icon.png';
+import logoText from '@/assets/logo-text.png';
+import defaultProfile from '@/assets/default-profile.png';
 
 export default function Header() {
   const navLinkStyle = ({ isActive }: { isActive: boolean }) =>
-    `title-16-m ${isActive ? "text-primary-3" : "text-gray-4"}`;
+    `title-16-m ${isActive ? 'text-primary-3' : 'text-gray-4'}`;
 
   // [TODO] 라우팅 변경
   return (
@@ -19,11 +19,7 @@ export default function Header() {
         <nav>
           <ul className="flex gap-[3rem]">
             <li>
-              <NavLink
-                to="/"
-                className={navLinkStyle}
-                aria-label="조회 페이지로 이동"
-              >
+              <NavLink to="/" className={navLinkStyle} aria-label="조회 페이지로 이동">
                 조회
               </NavLink>
             </li>
@@ -37,11 +33,7 @@ export default function Header() {
               </NavLink>
             </li>
             <li>
-              <NavLink
-                to="/"
-                className={navLinkStyle}
-                aria-label="대시보드로 이동"
-              >
+              <NavLink to="/" className={navLinkStyle} aria-label="대시보드로 이동">
                 대시보드
               </NavLink>
             </li>
