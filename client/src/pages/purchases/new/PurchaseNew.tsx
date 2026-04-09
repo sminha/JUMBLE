@@ -1,14 +1,13 @@
 import { useFieldArray, useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { Category, Purchase, purchaseSchema } from '@jumble/shared';
 import { formatPrice } from '@/utils/format';
 import Input from '@/components/Input';
 import Header from '@/components/Header';
 import Button from '@/components/Button';
 import { STATUS } from '@/constants/status';
-import { Category } from '@/constants/category';
 import ItemRow from './components/ItemRow';
 import UploadButton from './components/UploadButton';
-import { PurchaseNewFormData, purchaseNewSchema } from './PurchaseNew.schema';
 import { useImageUpload } from './apis';
 
 const TABLE_HEADERS = [
@@ -42,8 +41,8 @@ export default function PurchaseNew() {
     handleSubmit,
     setValue,
     formState: { errors },
-  } = useForm<PurchaseNewFormData>({
-    resolver: zodResolver(purchaseNewSchema),
+  } = useForm<Purchase>({
+    resolver: zodResolver(purchaseSchema),
     defaultValues: {
       purchasedAt: '',
       vendor: '',
@@ -51,7 +50,10 @@ export default function PurchaseNew() {
     },
   });
   const items = useWatch({ control, name: 'items' });
-  const { fields, append, remove, replace } = useFieldArray({ control, name: 'items' });
+  const { fields, append, remove, replace } = useFieldArray({
+    control,
+    name: 'items',
+  });
 
   const { mutate: handleImageUpload, isPending: isImageUploading } = useImageUpload({
     setValue,

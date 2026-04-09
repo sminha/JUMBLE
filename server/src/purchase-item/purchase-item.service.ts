@@ -1,8 +1,8 @@
-import { Prisma } from "@prisma/client";
-import prisma from "../lib/prisma.ts";
-import { serializeBigInt } from "../utils/serializeBigInt.ts";
-import { formatPurchaseItem } from "../utils/format.ts";
-import { GetPurchaseItemsQuery } from "@jumble/shared";
+import { Prisma } from '@prisma/client';
+import prisma from '../lib/prisma';
+import { serializeBigInt } from '../utils/serializeBigInt';
+import { formatPurchaseItem } from '../utils/format';
+import { GetPurchaseItemsQuery } from '@jumble/shared';
 
 export const PurchaseItemService = {
   getPurchaseItems: async (userId: bigint, params: GetPurchaseItemsQuery) => {
@@ -24,7 +24,7 @@ export const PurchaseItemService = {
       ...(vendorName && { vendor: { name: { contains: vendorName } } }),
       ...(startDate &&
         endDate &&
-        dateType === "purchased" && {
+        dateType === 'purchased' && {
           purchased_at: {
             gte: new Date(`${startDate}T00:00:00.000+09:00`),
             lte: new Date(`${endDate}T23:59:59.999+09:00`),
@@ -32,7 +32,7 @@ export const PurchaseItemService = {
         }),
       ...(startDate &&
         endDate &&
-        dateType === "created" && {
+        dateType === 'created' && {
           created_at: {
             gte: new Date(`${startDate}T00:00:00.000+09:00`),
             lte: new Date(`${endDate}T23:59:59.999+09:00`),
@@ -47,18 +47,18 @@ export const PurchaseItemService = {
 
     const orderBy = ((): Prisma.PurchaseItemOrderByWithRelationInput => {
       switch (sortBy) {
-        case "purchasedAt":
+        case 'purchasedAt':
           return { purchase: { purchased_at: sortOrder } };
-        case "unitPrice":
+        case 'unitPrice':
           return { unit_price: sortOrder };
-        case "quantity":
+        case 'quantity':
           return { quantity: sortOrder };
-        case "backorderQuantity":
+        case 'backorderQuantity':
           return { backorder_quantity: sortOrder };
         // TODO : DB에 computed column (generated column) 추가
         // case "totalAmount":      return { unit_price: sortOrder };
         default:
-          return { purchase: { purchased_at: "desc" } };
+          return { purchase: { purchased_at: 'desc' } };
       }
     })();
 

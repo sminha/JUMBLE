@@ -1,4 +1,4 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { GoogleGenerativeAI } from '@google/generative-ai';
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
 
@@ -40,25 +40,24 @@ category 매핑 기준:
 
 export const OcrService = {
   parseReceipt: async (imageBuffer: Buffer, mimeType: string) => {
-    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
 
     const imagePart = {
       inlineData: {
-        data: imageBuffer.toString("base64"),
+        data: imageBuffer.toString('base64'),
         mimeType,
       },
     };
 
     const result = await model.generateContent({
-      contents: [{ role: "user", parts: [{ text: PROMPT }, imagePart] }],
+      contents: [{ role: 'user', parts: [{ text: PROMPT }, imagePart] }],
       generationConfig: { thinkingConfig: { thinkingBudget: 0 } } as any,
     });
 
     const text = result.response.text();
 
     const jsonMatch = text.match(/\{[\s\S]*\}/);
-    if (!jsonMatch)
-      throw new Error("Gemini 응답에서 JSON을 추출할 수 없습니다.");
+    if (!jsonMatch) throw new Error('Gemini 응답에서 JSON을 추출할 수 없습니다.');
 
     return JSON.parse(jsonMatch[0]);
   },

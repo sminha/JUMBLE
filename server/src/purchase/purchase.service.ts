@@ -1,15 +1,15 @@
-import prisma from "../lib/prisma.ts";
-import { serializeBigInt } from "../utils/serializeBigInt.ts";
-import { formatPurchase } from "../utils/format.ts";
-import { CreatePurchaseDto, CreatePurchaseItemDto } from "@jumble/shared";
+import { Purchase, Product } from '@jumble/shared';
+import prisma from '../lib/prisma';
+import { serializeBigInt } from '../utils/serializeBigInt';
+import { formatPurchase } from '../utils/format';
 
 export const PurchaseService = {
-  createPurchase: async (userId: bigint, data: CreatePurchaseDto) => {
+  createPurchase: async (userId: bigint, data: Purchase) => {
     return await prisma.$transaction(async (tx) => {
       let vendor = await tx.vendor.findFirst({
         where: {
           user_id: userId,
-          name: data.vendorName,
+          name: data.vendor,
         },
       });
 
@@ -17,7 +17,7 @@ export const PurchaseService = {
         vendor = await tx.vendor.create({
           data: {
             user_id: userId,
-            name: data.vendorName,
+            name: data.vendor,
           },
         });
       }
@@ -27,23 +27,23 @@ export const PurchaseService = {
           user_id: userId,
           vendor_id: vendor.id,
           purchase_no: Date.now().toString(),
-          purchased_at: new Date(data.purchasedDate),
+          purchased_at: new Date(data.purchasedAt),
           items: {
-            create: data.items.map((item: CreatePurchaseItemDto, idx) => ({
+            create: data.items.map((item: Product, idx) => ({
               purchase_item_no: `${Date.now()}${idx + 1}`,
-              item_name: item.productName,
+              item_name: item.name,
               category: item.category,
               color: item.color,
               size: item.size,
-              extra_option: item.extraOption,
-              unit_price: item.unitPrice,
+              extra_option: item.option,
+              unit_price: item.price,
               quantity: item.quantity,
               backorder_quantity: item.backorderQuantity,
             })),
           },
           receipt: {
             create: {
-              receipt_image_url: data.receipt,
+              receipt_image_url: data.receipt ?? '',
             },
           },
         },
@@ -65,7 +65,7 @@ export const PurchaseService = {
         where,
         skip,
         take: limit,
-        orderBy: { purchased_at: "desc" },
+        orderBy: { purchased_at: 'desc' },
         select: {
           id: true,
           purchase_no: true,

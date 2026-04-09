@@ -1,9 +1,9 @@
-import { useMutation } from '@tanstack/react-query';
 import { UseFormSetValue, UseFieldArrayReplace } from 'react-hook-form';
-import { PurchaseNewFormData } from '../PurchaseNew.schema';
+import { useMutation } from '@tanstack/react-query';
+import { Purchase } from '@jumble/shared';
 
-export const compressImage = (file: File, maxWidth = 1024): Promise<Blob> =>
-  new Promise((resolve) => {
+const compressImage = (file: File, maxWidth = 1024): Promise<Blob> => {
+  return new Promise((resolve) => {
     const img = new Image();
     const url = URL.createObjectURL(file);
 
@@ -19,8 +19,9 @@ export const compressImage = (file: File, maxWidth = 1024): Promise<Blob> =>
 
     img.src = url;
   });
+};
 
-export const parseImage = async (file: File) => {
+const parseImage = async (file: File) => {
   const compressed = await compressImage(file);
   const formData = new FormData();
   formData.append('image', compressed, 'receipt.jpg');
@@ -41,10 +42,10 @@ export const useImageUpload = ({
   setValue,
   replace,
 }: {
-  setValue: UseFormSetValue<PurchaseNewFormData>;
-  replace: UseFieldArrayReplace<PurchaseNewFormData, 'items'>;
-}) =>
-  useMutation({
+  setValue: UseFormSetValue<Purchase>;
+  replace: UseFieldArrayReplace<Purchase, 'items'>;
+}) => {
+  return useMutation({
     mutationFn: parseImage,
     onSuccess: (data) => {
       if (data.purchasedAt) setValue('purchasedAt', data.purchasedAt);
@@ -56,3 +57,4 @@ export const useImageUpload = ({
       alert('영수증 분석에 실패했습니다. 다시 시도해주세요.');
     },
   });
+};

@@ -2,9 +2,23 @@
   "name": "jumble",
   "version": "1.0.0",
   "private": true,
+  "type": "module",
   "packageManager": "pnpm@10.24.0",
   "scripts": {
     "dev:client": "pnpm --filter client dev",
-    "dev:server": "pnpm --filter server dev"
+    "dev:server": "pnpm --filter server dev",
+    "lint": "eslint ."
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.4",
+    "eslint": "^9.39.4",
+    "eslint-plugin-prettier": "^5.5.5",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "eslint-plugin-react-refresh": "^0.4.26",
+    "globals": "^16.5.0",
+    "prettier": "^3.8.1",
+    "prettier-plugin-tailwindcss": "^0.7.2",
+    "typescript-eslint": "^8.58.0"
   }
 }
