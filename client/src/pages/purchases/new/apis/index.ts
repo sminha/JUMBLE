@@ -58,22 +58,3 @@ export const useImageUpload = ({
     },
   });
 };
-
-const createPurchase = async (req: Purchase) => {
-  const res = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/purchases`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      // 'Authorization': `Bearer ${}`
-    },
-    body: JSON.stringify(req),
-  });
-};
-
-export const useCreatePurchase = () => {
-  return useMutation({
-    mutationFn: createPurchase,
-    onSuccess: () => {},
-    onError: () => {},
-  });
-};
