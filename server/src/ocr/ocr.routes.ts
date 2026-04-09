@@ -1,7 +1,7 @@
 import multer from 'multer';
 import express, { Router } from 'express';
-import { OcrController } from './ocr.controller.ts';
-// import { authMiddleware } from '../middleware/auth.middleware.ts';
+import { OcrController } from './ocr.controller';
+// import { authMiddleware } from '../middleware/auth.middleware';
 
 const router: Router = express.Router();
 const upload = multer({ storage: multer.memoryStorage() });

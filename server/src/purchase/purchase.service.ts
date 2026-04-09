@@ -1,7 +1,7 @@
 import { Purchase, Product } from '@jumble/shared';
-import prisma from '../lib/prisma.ts';
-import { serializeBigInt } from '../utils/serializeBigInt.ts';
-import { formatPurchase } from '../utils/format.ts';
+import prisma from '../lib/prisma';
+import { serializeBigInt } from '../utils/serializeBigInt';
+import { formatPurchase } from '../utils/format';
 
 export const PurchaseService = {
   createPurchase: async (userId: bigint, data: Purchase) => {

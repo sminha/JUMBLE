@@ -2,11 +2,11 @@ import cors from 'cors';
 import morgan from 'morgan';
 import dotenv from 'dotenv';
 import express from 'express';
-import authRouter from './auth/auth.routes.ts';
-import uploadRouter from './upload/upload.routes.ts';
-import purchaseRouter from './purchase/purchase.routes.ts';
-import purchaseItemRouter from './purchase-item/purchase-item.routes.ts';
-import ocrRouter from './ocr/ocr.routes.ts';
+import authRouter from './auth/auth.routes';
+import uploadRouter from './upload/upload.routes';
+import purchaseRouter from './purchase/purchase.routes';
+import purchaseItemRouter from './purchase-item/purchase-item.routes';
+import ocrRouter from './ocr/ocr.routes';
 
 dotenv.config();
 

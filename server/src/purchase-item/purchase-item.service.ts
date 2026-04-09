@@ -1,7 +1,7 @@
 import { Prisma } from '@prisma/client';
-import prisma from '../lib/prisma.ts';
-import { serializeBigInt } from '../utils/serializeBigInt.ts';
-import { formatPurchaseItem } from '../utils/format.ts';
+import prisma from '../lib/prisma';
+import { serializeBigInt } from '../utils/serializeBigInt';
+import { formatPurchaseItem } from '../utils/format';
 import { GetPurchaseItemsQuery } from '@jumble/shared';
 
 export const PurchaseItemService = {

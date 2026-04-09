@@ -1,10 +1,10 @@
 import { z } from 'zod';
-import { CATEGORY } from '../constants/category';
+import { CATEGORY_VALUES } from '../constants/category';
 
 export const productSchema = z
   .object({
     name: z.string().min(1, '상품명을 입력하세요'),
-    category: z.enum(CATEGORY),
+    category: z.enum(CATEGORY_VALUES),
     color: z.string().optional(),
     size: z.string().optional(),
     option: z.string().optional(),

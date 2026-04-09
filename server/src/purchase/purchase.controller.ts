@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { Prisma } from '@prisma/client';
-import { PurchaseService } from './purchase.service.ts';
+import { PurchaseService } from './purchase.service';
 import { Purchase, CATEGORY_VALUES } from '@jumble/shared';
 
 export const PurchaseController = {

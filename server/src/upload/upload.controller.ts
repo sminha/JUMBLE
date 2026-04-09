@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { UploadService } from './upload.service.ts';
+import { UploadService } from './upload.service';
 
 export const UploadController = {
   getPresignedUrl: async (req: Request, res: Response) => {

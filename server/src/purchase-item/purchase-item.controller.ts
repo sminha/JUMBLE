@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { Prisma } from '@prisma/client';
-import { PurchaseItemService } from './purchase-item.service.ts';
+import { PurchaseItemService } from './purchase-item.service';
 import {
   DateType,
   SortOrder,

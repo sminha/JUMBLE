@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { OcrService } from './ocr.service.ts';
+import { OcrService } from './ocr.service';
 
 export const OcrController = {
   parseReceipt: async (req: Request, res: Response) => {

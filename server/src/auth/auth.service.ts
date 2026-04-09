@@ -1,7 +1,7 @@
 import qs from 'qs';
 import axios from 'axios';
 import jwt from 'jsonwebtoken';
-import prisma from '../lib/prisma.ts';
+import prisma from '../lib/prisma';
 
 export const AuthService = {
   fetchKakaoToken: async (code: string) => {

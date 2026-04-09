@@ -1,6 +1,6 @@
 import { PutObjectCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
-import s3 from '../lib/s3.ts';
+import s3 from '../lib/s3';
 
 export const UploadService = {
   getPresignedUrl: async (fileName: string, contentType: string) => {

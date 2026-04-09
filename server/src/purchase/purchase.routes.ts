@@ -1,6 +1,6 @@
 import express, { Router } from 'express';
-import { PurchaseController } from './purchase.controller.ts';
-import { authMiddleware } from '../middleware/auth.middleware.ts';
+import { PurchaseController } from './purchase.controller';
+import { authMiddleware } from '../middleware/auth.middleware';
 
 const router: Router = express.Router();
 

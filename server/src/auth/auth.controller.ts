@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { Request, Response } from 'express';
-import { AuthService } from './auth.service.ts';
-import { serializeBigInt } from '../utils/serializeBigInt.ts';
+import { AuthService } from './auth.service';
+import { serializeBigInt } from '../utils/serializeBigInt';
 
 export const AuthController = {
   kakaoLogin: async (req: Request, res: Response) => {
