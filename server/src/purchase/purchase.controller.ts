@@ -1,18 +1,16 @@
 import { Request, Response } from "express";
 import { Prisma } from "@prisma/client";
 import { PurchaseService } from "./purchase.service.ts";
-import { CreatePurchaseDto, CATEGORIES } from "@jumble/shared";
-
-const VALID_CATEGORIES = CATEGORIES;
+import { Purchase, CATEGORY_VALUES } from "@jumble/shared";
 
 export const PurchaseController = {
   createPurchase: async (req: Request, res: Response) => {
     try {
-      const data: CreatePurchaseDto = req.body;
+      const data: Purchase = req.body;
       const userId = req.user.id;
 
       // 필수 필드 검증
-      if (!data.vendorName || !data.purchasedDate || !data.receipt) {
+      if (!data.vendor || !data.purchasedAt || !data.receipt) {
         return res.status(400).json({
           success: false,
           status: 400,
@@ -31,11 +29,7 @@ export const PurchaseController = {
 
       // items 내 필수 필드 및 category enum 검증
       for (const item of data.items) {
-        if (
-          !item.productName ||
-          item.unitPrice == null ||
-          item.quantity == null
-        ) {
+        if (!item.name || item.price == null || item.quantity == null) {
           return res.status(400).json({
             success: false,
             status: 400,
@@ -44,11 +38,11 @@ export const PurchaseController = {
           });
         }
 
-        if (!VALID_CATEGORIES.includes(item.category)) {
+        if (!CATEGORY_VALUES.includes(item.category)) {
           return res.status(400).json({
             success: false,
             status: 400,
-            message: `category는 다음 값 중 하나여야 합니다: ${VALID_CATEGORIES.join(", ")}`,
+            message: `category는 다음 값 중 하나여야 합니다: ${CATEGORY_VALUES.join(", ")}`,
           });
         }
       }

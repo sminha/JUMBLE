@@ -1,17 +1,16 @@
 import { FieldErrors, UseFormRegister } from 'react-hook-form';
+import { Purchase, Category, CATEGORY } from '@jumble/shared';
 import Input from '@/components/Input';
 import DropDown from '@/components/Dropdown';
 import DeleteButton from '@/components/DeleteButton';
 import { formatPrice } from '@/utils/format';
 import { STATUS } from '@/constants/status';
-import { Category, CATEGORY } from '@/constants/category';
-import { PurchaseNewFormData } from '../PurchaseNew.schema';
 
 interface ItemRowProps {
   index: number;
-  item: PurchaseNewFormData['items'][number];
-  register: UseFormRegister<PurchaseNewFormData>;
-  errors: FieldErrors<PurchaseNewFormData>;
+  item: Purchase['items'][number];
+  register: UseFormRegister<Purchase>;
+  errors: FieldErrors<Purchase>;
   remove: (index: number) => void;
 }
 
