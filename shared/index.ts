@@ -1,3 +1,3 @@
-export * from './constants/category.ts';
-export * from './schemas/purchase.schema.ts';
-export * from './types/purchase-item.types.ts';
+export * from './constants/category';
+export * from './schemas/purchase.schema';
+export * from './types/purchase-item.types';
