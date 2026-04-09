@@ -1,7 +1,7 @@
-import { Purchase, Product } from "@jumble/shared";
-import prisma from "../lib/prisma.ts";
-import { serializeBigInt } from "../utils/serializeBigInt.ts";
-import { formatPurchase } from "../utils/format.ts";
+import { Purchase, Product } from '@jumble/shared';
+import prisma from '../lib/prisma.ts';
+import { serializeBigInt } from '../utils/serializeBigInt.ts';
+import { formatPurchase } from '../utils/format.ts';
 
 export const PurchaseService = {
   createPurchase: async (userId: bigint, data: Purchase) => {
@@ -43,7 +43,7 @@ export const PurchaseService = {
           },
           receipt: {
             create: {
-              receipt_image_url: data.receipt ?? "",
+              receipt_image_url: data.receipt ?? '',
             },
           },
         },
@@ -65,7 +65,7 @@ export const PurchaseService = {
         where,
         skip,
         take: limit,
-        orderBy: { purchased_at: "desc" },
+        orderBy: { purchased_at: 'desc' },
         select: {
           id: true,
           purchase_no: true,

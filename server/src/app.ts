@@ -1,12 +1,12 @@
-import cors from "cors";
-import morgan from "morgan";
-import dotenv from "dotenv";
-import express from "express";
-import authRouter from "./auth/auth.routes.ts";
-import uploadRouter from "./upload/upload.routes.ts";
-import purchaseRouter from "./purchase/purchase.routes.ts";
-import purchaseItemRouter from "./purchase-item/purchase-item.routes.ts";
-import ocrRouter from "./ocr/ocr.routes.ts";
+import cors from 'cors';
+import morgan from 'morgan';
+import dotenv from 'dotenv';
+import express from 'express';
+import authRouter from './auth/auth.routes.ts';
+import uploadRouter from './upload/upload.routes.ts';
+import purchaseRouter from './purchase/purchase.routes.ts';
+import purchaseItemRouter from './purchase-item/purchase-item.routes.ts';
+import ocrRouter from './ocr/ocr.routes.ts';
 
 dotenv.config();
 
@@ -14,16 +14,16 @@ const app = express();
 const PORT = process.env.PORT || 4000;
 
 app.use(cors());
-app.use(morgan("dev"));
+app.use(morgan('dev'));
 app.use(express.json());
-app.use("/api/v1/auth", authRouter);
-app.use("/api/v1/uploads", uploadRouter);
-app.use("/api/v1/purchases/items", purchaseItemRouter);
-app.use("/api/v1/purchases", purchaseRouter);
-app.use("/api/v1/ocr", ocrRouter);
+app.use('/api/v1/auth', authRouter);
+app.use('/api/v1/uploads', uploadRouter);
+app.use('/api/v1/purchases/items', purchaseItemRouter);
+app.use('/api/v1/purchases', purchaseRouter);
+app.use('/api/v1/ocr', ocrRouter);
 
-app.get("/", (_, res) => {
-  res.send("서버가 정상적으로 작동 중입니다! 🚀");
+app.get('/', (_, res) => {
+  res.send('서버가 정상적으로 작동 중입니다! 🚀');
 });
 
 app.listen(PORT, () => {

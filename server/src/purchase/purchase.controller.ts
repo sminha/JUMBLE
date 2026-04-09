@@ -1,7 +1,7 @@
-import { Request, Response } from "express";
-import { Prisma } from "@prisma/client";
-import { PurchaseService } from "./purchase.service.ts";
-import { Purchase, CATEGORY_VALUES } from "@jumble/shared";
+import { Request, Response } from 'express';
+import { Prisma } from '@prisma/client';
+import { PurchaseService } from './purchase.service.ts';
+import { Purchase, CATEGORY_VALUES } from '@jumble/shared';
 
 export const PurchaseController = {
   createPurchase: async (req: Request, res: Response) => {
@@ -14,7 +14,7 @@ export const PurchaseController = {
         return res.status(400).json({
           success: false,
           status: 400,
-          message: "vendorName, purchasedDate, receipt는 필수 값입니다.",
+          message: 'vendorName, purchasedDate, receipt는 필수 값입니다.',
         });
       }
 
@@ -23,7 +23,7 @@ export const PurchaseController = {
         return res.status(400).json({
           success: false,
           status: 400,
-          message: "items는 1개 이상이어야 합니다.",
+          message: 'items는 1개 이상이어야 합니다.',
         });
       }
 
@@ -33,8 +33,7 @@ export const PurchaseController = {
           return res.status(400).json({
             success: false,
             status: 400,
-            message:
-              "각 item에 productName, unitPrice, quantity는 필수 값입니다.",
+            message: '각 item에 productName, unitPrice, quantity는 필수 값입니다.',
           });
         }
 
@@ -42,7 +41,7 @@ export const PurchaseController = {
           return res.status(400).json({
             success: false,
             status: 400,
-            message: `category는 다음 값 중 하나여야 합니다: ${CATEGORY_VALUES.join(", ")}`,
+            message: `category는 다음 값 중 하나여야 합니다: ${CATEGORY_VALUES.join(', ')}`,
           });
         }
       }
@@ -52,27 +51,27 @@ export const PurchaseController = {
       return res.status(201).json({
         success: true,
         status: 201,
-        message: "사입내역 추가에 성공했습니다.",
+        message: '사입내역 추가에 성공했습니다.',
         id: newPurchase.id,
       });
     } catch (error) {
-      console.error("🚨 서버 에러 발생:", error);
+      console.error('🚨 서버 에러 발생:', error);
 
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         // 외래키 제약 위반
-        if (error.code === "P2003") {
+        if (error.code === 'P2003') {
           return res.status(400).json({
             success: false,
             status: 400,
-            message: "유효하지 않은 참조 값입니다.",
+            message: '유효하지 않은 참조 값입니다.',
           });
         }
         // 유니크 제약 위반
-        if (error.code === "P2002") {
+        if (error.code === 'P2002') {
           return res.status(409).json({
             success: false,
             status: 409,
-            message: "이미 존재하는 데이터입니다.",
+            message: '이미 존재하는 데이터입니다.',
           });
         }
       }
@@ -81,14 +80,14 @@ export const PurchaseController = {
         return res.status(400).json({
           success: false,
           status: 400,
-          message: "요청 데이터 형식이 올바르지 않습니다.",
+          message: '요청 데이터 형식이 올바르지 않습니다.',
         });
       }
 
       return res.status(500).json({
         success: false,
         status: 500,
-        message: "서버 오류가 발생했습니다.",
+        message: '서버 오류가 발생했습니다.',
       });
     }
   },
@@ -103,20 +102,16 @@ export const PurchaseController = {
         return res.status(400).json({
           success: false,
           status: 400,
-          message: "page와 limit은 1 이상이어야 합니다.",
+          message: 'page와 limit은 1 이상이어야 합니다.',
         });
       }
 
-      const { purchases, total } = await PurchaseService.getPurchases(
-        userId,
-        page,
-        limit,
-      );
+      const { purchases, total } = await PurchaseService.getPurchases(userId, page, limit);
 
       return res.status(200).json({
         success: true,
         status: 200,
-        message: "사입내역 조회에 성공했습니다.",
+        message: '사입내역 조회에 성공했습니다.',
         purchases,
         pagination: {
           total,
@@ -126,13 +121,13 @@ export const PurchaseController = {
         },
       });
     } catch (error) {
-      console.error("🚨 서버 에러 발생:", error);
+      console.error('🚨 서버 에러 발생:', error);
 
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         return res.status(400).json({
           success: false,
           status: 400,
-          message: "잘못된 요청입니다.",
+          message: '잘못된 요청입니다.',
         });
       }
 
@@ -140,14 +135,14 @@ export const PurchaseController = {
         return res.status(400).json({
           success: false,
           status: 400,
-          message: "요청 데이터 형식이 올바르지 않습니다.",
+          message: '요청 데이터 형식이 올바르지 않습니다.',
         });
       }
 
       return res.status(500).json({
         success: false,
         status: 500,
-        message: "서버 오류가 발생했습니다.",
+        message: '서버 오류가 발생했습니다.',
       });
     }
   },
@@ -161,7 +156,7 @@ export const PurchaseController = {
         return res.status(400).json({
           success: false,
           status: 400,
-          message: "id는 정수여야 합니다.",
+          message: 'id는 정수여야 합니다.',
         });
       }
 
@@ -172,31 +167,31 @@ export const PurchaseController = {
         return res.status(404).json({
           success: false,
           status: 404,
-          message: "사입내역을 찾을 수 없습니다.",
+          message: '사입내역을 찾을 수 없습니다.',
         });
       }
 
       return res.status(200).json({
         success: true,
         status: 200,
-        message: "사입내역 상세 조회에 성공했습니다.",
+        message: '사입내역 상세 조회에 성공했습니다.',
         purchase,
       });
     } catch (error) {
-      console.error("🚨 서버 에러 발생:", error);
+      console.error('🚨 서버 에러 발생:', error);
 
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         return res.status(400).json({
           success: false,
           status: 400,
-          message: "잘못된 요청입니다.",
+          message: '잘못된 요청입니다.',
         });
       }
 
       return res.status(500).json({
         success: false,
         status: 500,
-        message: "서버 오류가 발생했습니다.",
+        message: '서버 오류가 발생했습니다.',
       });
     }
   },
@@ -210,45 +205,42 @@ export const PurchaseController = {
         return res.status(400).json({
           success: false,
           status: 400,
-          message: "id는 정수여야 합니다.",
+          message: 'id는 정수여야 합니다.',
         });
       }
 
       const purchaseId = BigInt(rawPurchaseId);
-      const receipt = await PurchaseService.getPurchaseReceipt(
-        userId,
-        purchaseId,
-      );
+      const receipt = await PurchaseService.getPurchaseReceipt(userId, purchaseId);
 
       if (!receipt) {
         return res.status(404).json({
           success: false,
           status: 404,
-          message: "사입내역을 찾을 수 없습니다.",
+          message: '사입내역을 찾을 수 없습니다.',
         });
       }
 
       return res.status(200).json({
         success: true,
         status: 200,
-        message: "영수증 조회에 성공했습니다.",
+        message: '영수증 조회에 성공했습니다.',
         ...receipt,
       });
     } catch (error) {
-      console.error("🚨 서버 에러 발생:", error);
+      console.error('🚨 서버 에러 발생:', error);
 
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         return res.status(400).json({
           success: false,
           status: 400,
-          message: "잘못된 요청입니다.",
+          message: '잘못된 요청입니다.',
         });
       }
 
       return res.status(500).json({
         success: false,
         status: 500,
-        message: "서버 오류가 발생했습니다.",
+        message: '서버 오류가 발생했습니다.',
       });
     }
   },

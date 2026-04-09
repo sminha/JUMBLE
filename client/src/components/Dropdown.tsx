@@ -1,6 +1,6 @@
-import { SelectHTMLAttributes } from 'react';
-import { cn } from '@/utils/cn';
-import { Status, STATUS, STATUS_STYLE } from '@/constants/status';
+import { SelectHTMLAttributes } from "react";
+import { cn } from "@/utils/cn";
+import { Status, STATUS, STATUS_STYLE } from "@/constants/status";
 
 interface DropdownProps extends SelectHTMLAttributes<HTMLSelectElement> {
   options: { value: string; label: string }[];
@@ -13,7 +13,7 @@ export default function Dropdown({
   options,
   placeholder,
   status = STATUS.DEFAULT,
-  errorMessage = '',
+  errorMessage = "",
   className,
   ...props
 }: DropdownProps) {
@@ -22,7 +22,7 @@ export default function Dropdown({
       <div className="relative w-full">
         <select
           className={cn(
-            'font-14-r text-gray-6 w-full appearance-none rounded-[0.8rem] border bg-white p-[1.2rem] pr-[3.2rem] focus:outline-none',
+            "font-14-r text-gray-6 w-full appearance-none rounded-[0.8rem] border bg-white p-[1.2rem] pr-[3.2rem] focus:outline-none",
             STATUS_STYLE[status],
             className,
           )}

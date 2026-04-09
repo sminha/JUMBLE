@@ -1,34 +1,34 @@
-import { useFieldArray, useForm, useWatch } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { Category, Purchase, purchaseSchema } from '@jumble/shared';
-import { formatPrice } from '@/utils/format';
-import Input from '@/components/Input';
-import Header from '@/components/Header';
-import Button from '@/components/Button';
-import { STATUS } from '@/constants/status';
-import ItemRow from './components/ItemRow';
-import UploadButton from './components/UploadButton';
-import { useImageUpload } from './apis';
+import { useFieldArray, useForm, useWatch } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Category, Purchase, purchaseSchema } from "@jumble/shared";
+import { formatPrice } from "@/utils/format";
+import Input from "@/components/Input";
+import Header from "@/components/Header";
+import Button from "@/components/Button";
+import { STATUS } from "@/constants/status";
+import ItemRow from "./components/ItemRow";
+import UploadButton from "./components/UploadButton";
+import { useImageUpload } from "./apis";
 
 const TABLE_HEADERS = [
-  '상품명',
-  '구분',
-  '컬러',
-  '사이즈',
-  '기타옵션',
-  '단가',
-  '수량',
-  '금액합계',
-  '미송수량',
-  '',
+  "상품명",
+  "구분",
+  "컬러",
+  "사이즈",
+  "기타옵션",
+  "단가",
+  "수량",
+  "금액합계",
+  "미송수량",
+  "",
 ];
 
 const DEFAULT_ITEMS = {
-  name: '',
-  category: '' as unknown as Category,
-  color: '',
-  size: '',
-  option: '',
+  name: "",
+  category: "" as unknown as Category,
+  color: "",
+  size: "",
+  option: "",
   price: undefined as unknown as number,
   quantity: undefined as unknown as number,
   backorderQuantity: undefined as unknown as number,
@@ -44,23 +44,33 @@ export default function PurchaseNew() {
   } = useForm<Purchase>({
     resolver: zodResolver(purchaseSchema),
     defaultValues: {
-      purchasedAt: '',
-      vendor: '',
+      purchasedAt: "",
+      vendor: "",
       items: [DEFAULT_ITEMS],
     },
   });
-  const items = useWatch({ control, name: 'items' });
-  const { fields, append, remove, replace } = useFieldArray({ control, name: 'items' });
-
-  const { mutate: handleImageUpload, isPending: isImageUploading } = useImageUpload({
-    setValue,
-    replace,
+  const items = useWatch({ control, name: "items" });
+  const { fields, append, remove, replace } = useFieldArray({
+    control,
+    name: "items",
   });
 
+  const { mutate: handleImageUpload, isPending: isImageUploading } =
+    useImageUpload({
+      setValue,
+      replace,
+    });
+
   const totalPrice = formatPrice(
-    items.reduce((sum, item) => sum + (item?.price || 0) * (item.quantity || 0), 0),
+    items.reduce(
+      (sum, item) => sum + (item?.price || 0) * (item.quantity || 0),
+      0,
+    ),
   );
-  const totalQuantity = items.reduce((sum, item) => sum + (item.quantity || 0), 0);
+  const totalQuantity = items.reduce(
+    (sum, item) => sum + (item.quantity || 0),
+    0,
+  );
   const totalBackorderQuantity = items.reduce(
     (sum, item) => sum + (item.backorderQuantity || 0),
     0,
@@ -68,7 +78,7 @@ export default function PurchaseNew() {
 
   // TODO: 추후 API 연동
   const onSubmit = () => {
-    alert('추가 완료');
+    alert("추가 완료");
   };
 
   return (
@@ -77,7 +87,7 @@ export default function PurchaseNew() {
       <div className="flex items-center justify-between px-[7.2rem] py-[2.6rem]">
         <h1 className="title-18-m text-gray-9">사입 내역 추가</h1>
         <UploadButton onUpload={handleImageUpload} isLoading={isImageUploading}>
-          {isImageUploading ? '분석 중...' : '영수증으로 입력하기'}
+          {isImageUploading ? "분석 중..." : "영수증으로 입력하기"}
         </UploadButton>
       </div>
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -87,7 +97,7 @@ export default function PurchaseNew() {
             <h2 className="title-16-m w-[9.4rem] shrink-0">사입일시</h2>
             <Input
               type="date"
-              {...register('purchasedAt')}
+              {...register("purchasedAt")}
               status={errors.purchasedAt ? STATUS.ERROR : STATUS.DEFAULT}
             />
           </div>
@@ -95,7 +105,10 @@ export default function PurchaseNew() {
           {/* 거래처명 */}
           <div className="flex w-[48rem] items-center gap-[0.8rem]">
             <h2 className="title-16-m w-[9.4rem] shrink-0">거래처명</h2>
-            <Input {...register('vendor')} status={errors.vendor ? STATUS.ERROR : STATUS.DEFAULT} />
+            <Input
+              {...register("vendor")}
+              status={errors.vendor ? STATUS.ERROR : STATUS.DEFAULT}
+            />
           </div>
 
           {/* 상품목록 */}
@@ -117,7 +130,10 @@ export default function PurchaseNew() {
               <thead>
                 <tr className="bg-gray-1">
                   {TABLE_HEADERS.map((header) => (
-                    <th key={header} className="font-14-m text-gray-5 py-[1.6rem]">
+                    <th
+                      key={header}
+                      className="font-14-m text-gray-5 py-[1.6rem]"
+                    >
                       {header}
                     </th>
                   ))}
@@ -139,14 +155,20 @@ export default function PurchaseNew() {
                   <td colSpan={5} />
                   <td className="py-[1.6rem] text-center">{totalQuantity}개</td>
                   <td className="py-[1.6rem] text-center">{totalPrice}원</td>
-                  <td className="py-[1.6rem] text-center">{totalBackorderQuantity}개</td>
+                  <td className="py-[1.6rem] text-center">
+                    {totalBackorderQuantity}개
+                  </td>
                   <td className="py-[1.6rem] text-center"></td>
                 </tr>
               </tbody>
             </table>
           </div>
           <div className="flex justify-center">
-            <Button size="medium" variant="white" onClick={() => append(DEFAULT_ITEMS)}>
+            <Button
+              size="medium"
+              variant="white"
+              onClick={() => append(DEFAULT_ITEMS)}
+            >
               상품 추가하기
             </Button>
           </div>

@@ -1,9 +1,9 @@
-import { z } from "zod";
-import { CATEGORY } from "../constants/category";
+import { z } from 'zod';
+import { CATEGORY } from '../constants/category';
 
 export const productSchema = z
   .object({
-    name: z.string().min(1, "상품명을 입력하세요"),
+    name: z.string().min(1, '상품명을 입력하세요'),
     category: z.enum(CATEGORY),
     color: z.string().optional(),
     size: z.string().optional(),
@@ -13,14 +13,14 @@ export const productSchema = z
     backorderQuantity: z.number().int().positive(),
   })
   .refine((data) => data.backorderQuantity <= data.quantity, {
-    message: "미송 수량은 총 수량을 초과할 수 없습니다.",
-    path: ["backorderQuantity"],
+    message: '미송 수량은 총 수량을 초과할 수 없습니다.',
+    path: ['backorderQuantity'],
   });
 
 export const purchaseSchema = z.object({
-  purchasedAt: z.string().min(1, "사입일시를 입력하세요"),
-  vendor: z.string().min(1, "거래처명을 입력하세요"),
-  items: z.array(productSchema).min(1, "상품을 1개 이상 추가하세요"),
+  purchasedAt: z.string().min(1, '사입일시를 입력하세요'),
+  vendor: z.string().min(1, '거래처명을 입력하세요'),
+  items: z.array(productSchema).min(1, '상품을 1개 이상 추가하세요'),
   receipt: z.string().optional(),
 });
 
