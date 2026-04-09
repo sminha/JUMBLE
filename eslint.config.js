@@ -1,29 +1,45 @@
 // @ts-check
-import path from 'path';
 import globals from 'globals';
-import { fileURLToPath } from 'url';
 import react from 'eslint-plugin-react';
 import reactHooks from 'eslint-plugin-react-hooks';
 import reactRefresh from 'eslint-plugin-react-refresh';
 import tseslint from 'typescript-eslint';
 import prettier from 'eslint-plugin-prettier/recommended';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const commonRules = {
+  '@typescript-eslint/no-unused-vars': 'warn',
+  '@typescript-eslint/no-explicit-any': 'warn',
+  '@typescript-eslint/naming-convention': [
+    'warn',
+    {
+      selector: ['typeAlias', 'interface'],
+      format: ['PascalCase'],
+      custom: {
+        regex: '(Type|type)$',
+        match: false,
+      },
+    },
+  ],
+};
 
 export default [
-  { ignores: ['dist', 'node_modules'] },
+  { ignores: ['**/dist', '**/node_modules'] },
   ...tseslint.configs.recommended,
   {
-    files: ['**/*.{ts,tsx}'],
+    files: ['server/**/*.ts', 'shared/**/*.ts'],
+    languageOptions: {
+      ecmaVersion: 2020,
+      globals: globals.node,
+      parser: tseslint.parser,
+    },
+    rules: commonRules,
+  },
+  {
+    files: ['client/**/*.{ts,tsx}'],
     languageOptions: {
       ecmaVersion: 2020,
       globals: globals.browser,
       parser: tseslint.parser,
-      parserOptions: {
-        project: ['./tsconfig.json', './tsconfig.node.json'],
-        tsconfigRootDir: __dirname,
-      },
     },
     settings: {
       react: { version: 'detect' },
@@ -39,8 +55,7 @@ export default [
       ...reactHooks.configs.recommended.rules,
       'react/react-in-jsx-scope': 'off',
       'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
-      '@typescript-eslint/no-unused-vars': 'warn',
-      '@typescript-eslint/no-explicit-any': 'warn',
+      ...commonRules,
     },
   },
   prettier,
