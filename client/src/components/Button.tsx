@@ -17,8 +17,8 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 export default function Button({
-  size,
-  variant,
+  size = 'medium',
+  variant = 'white',
   children,
   className,
   type = 'button',
