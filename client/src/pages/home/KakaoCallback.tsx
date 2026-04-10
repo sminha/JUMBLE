@@ -1,12 +1,16 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router';
 import { PATHS } from '@/router';
 import Home from './Home';
 
 export default function KakaoCallback() {
   const navigate = useNavigate();
+  const called = useRef(false);
 
   useEffect(() => {
+    if (called.current) return;
+    called.current = true;
+
     const code = new URLSearchParams(window.location.search).get('code');
     if (!code) return;
 
