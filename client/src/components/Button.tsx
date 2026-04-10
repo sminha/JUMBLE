@@ -11,8 +11,8 @@ const VARIANT_STYLE = {
 } as const;
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  size: keyof typeof SIZE_STYLE;
-  variant: keyof typeof VARIANT_STYLE;
+  size?: keyof typeof SIZE_STYLE;
+  variant?: keyof typeof VARIANT_STYLE;
   children: ReactNode;
 }
 
