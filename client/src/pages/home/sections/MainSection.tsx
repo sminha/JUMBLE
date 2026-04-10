@@ -1,6 +1,5 @@
-import Button from '@/components/Button';
-import kakao from '@/assets/kakao.png';
 import arrow from '@/assets/arrow.svg';
+import KakaoLoginButton from '../components/KakaoLoginButton';
 
 export default function MainSection() {
   return (
@@ -16,10 +15,10 @@ export default function MainSection() {
           <br />
           이제 Jumble로 부담없이 더 스마트하게 관리하세요
         </h2>
-        <Button className="title-18-sb text-primary-5 relative w-[50rem] rounded-[1rem] bg-[#FDDC3F] py-[1.6rem]">
-          <img src={kakao} className="absolute top-[1.8rem] left-[19rem] w-[2.2rem]" />
-          <span className="pl-[6rem]">카카오 로그인</span>
-        </Button>
+        <KakaoLoginButton
+          buttonClassName="title-18-sb w-[50rem] py-[1.6rem] pl-[6rem]"
+          imageClassName="top-[1.8rem] left-[19rem] w-[2.2rem]"
+        />
       </div>
       <a href="#description">
         <img src={arrow} className="animate-float" />
