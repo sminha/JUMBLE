@@ -17,8 +17,8 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 export default function Button({
-  size = 'medium',
-  variant = 'white',
+  size,
+  variant,
   children,
   className,
   type = 'button',
@@ -27,7 +27,12 @@ export default function Button({
   return (
     <button
       type={type}
-      className={cn('w-fit rounded-[5rem]', SIZE_STYLE[size], VARIANT_STYLE[variant], className)}
+      className={cn(
+        'w-fit rounded-[5rem]',
+        size && SIZE_STYLE[size],
+        variant && VARIANT_STYLE[variant],
+        className,
+      )}
       {...props}
     >
       {children}
