@@ -49,7 +49,7 @@ export const AuthService = {
     const accessToken = jwt.sign(payload, process.env.JWT_ACCESS_SECRET!, {
       expiresIn: '1h',
     });
-    const refreshToken = jwt.sign(payload, process.env.JWT_ACCESS_SECRET!, {
+    const refreshToken = jwt.sign(payload, process.env.JWT_REFRESH_SECRET!, {
       expiresIn: '14d',
     });
 
@@ -61,5 +61,30 @@ export const AuthService = {
       .catch((error) => console.error('토큰 저장 실패:', error));
 
     return { user, accessToken, refreshToken };
+  },
+
+  reissue: async (refreshToken: string) => {
+    const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET!) as { userId: string };
+
+    const user = await prisma.user.findUnique({
+      where: { id: BigInt(decoded.userId) },
+    });
+
+    if (!user || user.refresh_token !== refreshToken) {
+      throw new Error('유효하지 않은 토큰입니다.');
+    }
+
+    const payload = { userId: user.id.toString() };
+    const newAccessToken = jwt.sign(payload, process.env.JWT_ACCESS_SECRET!, { expiresIn: '1h' });
+    const newRefreshToken = jwt.sign(payload, process.env.JWT_REFRESH_SECRET!, {
+      expiresIn: '14d',
+    });
+
+    await prisma.user.update({
+      where: { id: user.id },
+      data: { refresh_token: newRefreshToken },
+    });
+
+    return { accessToken: newAccessToken, refreshToken: newRefreshToken };
   },
 };

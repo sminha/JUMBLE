@@ -6,7 +6,10 @@ import { serializeBigInt } from '../utils/serializeBigInt';
 export const AuthController = {
   kakaoLogin: async (req: Request, res: Response) => {
     const { code } = req.query;
-    if (!code || typeof code !== 'string') return res.status(400).send('코드가 존재하지 않습니다.');
+
+    if (!code || typeof code !== 'string') {
+      return res.status(400).send('코드가 존재하지 않습니다.');
+    }
 
     try {
       const kakaoToken = await AuthService.fetchKakaoToken(code);
@@ -30,10 +33,25 @@ export const AuthController = {
           detail: error.response?.data,
         });
       } else {
-        const err = error as Error;
-        console.error('일반 에러 : ', err.message);
+        console.error((error as Error).message);
         res.status(500).send('서버 내부 오류');
       }
+    }
+  },
+
+  reissue: async (req: Request, res: Response) => {
+    const { refreshToken } = req.body;
+
+    if (!refreshToken) {
+      return res.status(400).json({ message: 'refreshToken이 없습니다.' });
+    }
+
+    try {
+      const token = await AuthService.reissue(refreshToken);
+      res.json(token);
+    } catch (error) {
+      console.error((error as Error).message);
+      res.status(401).json({ message: '유효하지 않은 토큰입니다.' });
     }
   },
 };
