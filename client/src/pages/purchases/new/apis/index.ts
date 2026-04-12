@@ -1,6 +1,7 @@
 import { UseFormSetValue, UseFieldArrayReplace } from 'react-hook-form';
 import { useMutation } from '@tanstack/react-query';
 import { Purchase } from '@jumble/shared';
+import { fetchWithAuth } from '@/lib/api';
 
 const compressImage = (file: File, maxWidth = 1024): Promise<Blob> => {
   return new Promise((resolve) => {
@@ -26,7 +27,7 @@ const parseImage = async (file: File) => {
   const formData = new FormData();
   formData.append('image', compressed, 'receipt.jpg');
 
-  const res = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/ocr/parse`, {
+  const res = await fetchWithAuth(`${import.meta.env.VITE_API_URL}/api/v1/ocr/parse`, {
     method: 'POST',
     body: formData,
   });
