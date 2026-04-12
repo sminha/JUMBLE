@@ -15,6 +15,9 @@ export const authMiddleware = (req: Request, res: Response, next: NextFunction) 
 
     next();
   } catch (error) {
+    if (error instanceof jwt.TokenExpiredError) {
+      return res.status(401).json({ message: '토큰이 만료되었습니다.' });
+    }
     return res.status(403).json({ message: '유효하지 않은 토큰입니다.' });
   }
 };
