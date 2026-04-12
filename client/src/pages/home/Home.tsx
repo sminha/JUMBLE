@@ -1,11 +1,12 @@
 import { Navigate } from 'react-router';
 import { PATHS } from '@/router';
-import Header from './components/Header';
+import Header from '@/components/Header';
 import MainSection from './sections/MainSection';
 import DescriptionSection from './sections/DescriptionSection';
+import { STORAGE_KEYS } from '@/constants/storage';
 
 export default function Home() {
-  const token = localStorage.getItem('accessToken');
+  const token = localStorage.getItem(STORAGE_KEYS.ACCESS_TOKEN);
   if (token) {
     return <Navigate to={PATHS.PURCHASELIST} />;
   }

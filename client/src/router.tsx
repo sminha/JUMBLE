@@ -1,8 +1,9 @@
 import { Outlet, Navigate, createBrowserRouter, useNavigate } from 'react-router';
 import Home from '@/pages/home/Home';
-import KakaoCallback from './pages/home/KakaoCallback';
+import KakaoCallback from '@/pages/home/KakaoCallback';
 import PurchaseNew from '@/pages/purchases/new/PurchaseNew';
 // import PurchaseList from './pages/purchases/list/PurchaseList';
+import { STORAGE_KEYS } from '@/constants/storage';
 
 export const PATHS = {
   HOME: '/',
@@ -13,7 +14,7 @@ export const PATHS = {
 
 function ProtectedRoute() {
   useNavigate();
-  const token = localStorage.getItem('accessToken');
+  const token = localStorage.getItem(STORAGE_KEYS.ACCESS_TOKEN);
   return token ? <Outlet /> : <Navigate to={PATHS.HOME} replace />;
 }
 
