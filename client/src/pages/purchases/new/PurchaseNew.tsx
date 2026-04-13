@@ -8,7 +8,7 @@ import Button from '@/components/Button';
 import { STATUS } from '@/constants/status';
 import ItemRow from './components/ItemRow';
 import UploadButton from './components/UploadButton';
-import { useImageUpload } from './apis';
+import { useCreatePurchase, useImageUpload } from './apis';
 
 const TABLE_HEADERS = [
   '상품명',
@@ -55,11 +55,6 @@ export default function PurchaseNew() {
     name: 'items',
   });
 
-  const { mutate: handleImageUpload, isPending: isImageUploading } = useImageUpload({
-    setValue,
-    replace,
-  });
-
   const totalPrice = formatPrice(
     items.reduce((sum, item) => sum + (item?.price || 0) * (item.quantity || 0), 0),
   );
@@ -69,10 +64,11 @@ export default function PurchaseNew() {
     0,
   );
 
-  // TODO: 추후 API 연동
-  const onSubmit = () => {
-    alert('추가 완료');
-  };
+  const { mutate: handleImageUpload, isPending: isImageUploading } = useImageUpload({
+    setValue,
+    replace,
+  });
+  const { mutate: handleCreatePurchase } = useCreatePurchase();
 
   return (
     <main>
@@ -83,7 +79,7 @@ export default function PurchaseNew() {
           {isImageUploading ? '분석 중...' : '영수증으로 입력하기'}
         </UploadButton>
       </div>
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={handleSubmit((data) => handleCreatePurchase(data))}>
         <section className="mx-[6.4rem] flex flex-col gap-[2.4rem] rounded-[1.6rem] bg-white px-[3.8rem] py-[3rem]">
           {/* 사입일시 */}
           <div className="flex w-[48rem] items-center gap-[0.8rem]">
