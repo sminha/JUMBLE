@@ -36,9 +36,9 @@ const parseImage = async (file: File) => {
 
   if (!res.ok) throw new Error('OCR 요청 실패');
 
-  const { data } = await res.json();
+  const result = await res.json();
 
-  return data;
+  return result.data;
 };
 
 // OCR API
@@ -72,9 +72,9 @@ const createPurchase = async (form: Purchase) => {
 
   if (!res.ok) throw new Error('사입내역 추가 요청 실패');
 
-  const { data } = await res.json();
+  const result = await res.json();
 
-  return data;
+  return result;
 };
 
 // 사입내역 추가 API

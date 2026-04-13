@@ -4,7 +4,7 @@ async function reissue() {
   const refreshToken = localStorage.getItem(STORAGE_KEYS.REFRESH_TOKEN);
 
   const res = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/auth/refresh`, {
-    method: 'GET',
+    method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ refreshToken }),
   });
@@ -12,6 +12,9 @@ async function reissue() {
   if (!res.ok) {
     localStorage.removeItem(STORAGE_KEYS.ACCESS_TOKEN);
     localStorage.removeItem(STORAGE_KEYS.REFRESH_TOKEN);
+    localStorage.removeItem('userId');
+    localStorage.removeItem('name');
+    localStorage.removeItem('profile');
     window.location.href = '/';
     throw new Error('토큰 재발급 실패');
   }

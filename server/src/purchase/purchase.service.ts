@@ -41,11 +41,13 @@ export const PurchaseService = {
               backorder_quantity: item.backorderQuantity,
             })),
           },
-          receipt: {
-            create: {
-              receipt_image_url: data.receipt ?? '',
+          ...(data.receipt && {
+            receipt: {
+              create: {
+                receipt_image_url: data.receipt,
+              },
             },
-          },
+          }),
         },
         select: {
           id: true,

@@ -14,7 +14,7 @@ export const PurchaseController = {
         return res.status(400).json({
           success: false,
           status: 400,
-          message: 'vendorName, purchasedDate는 필수 값입니다.',
+          message: 'vendor, purchasedAt은 필수 값입니다.',
         });
       }
 
