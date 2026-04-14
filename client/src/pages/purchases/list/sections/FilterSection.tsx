@@ -32,12 +32,14 @@ export default function FilterSection({ draft, setDraft }: FilterSectionProps) {
             <div className="flex gap-[0.8rem]">
               <Input
                 type="date"
+                aria-label="조회 시작일"
                 value={draft.startDate}
                 onChange={(e) => setDraft((prev) => ({ ...prev, startDate: e.target.value }))}
                 className="border-gray-1 text-gray-5 w-[15rem]"
               />
               <Input
                 type="date"
+                aria-label="조회 종료일"
                 value={draft.endDate}
                 onChange={(e) => setDraft((prev) => ({ ...prev, endDate: e.target.value }))}
                 className="border-gray-1 text-gray-5 w-[15rem]"

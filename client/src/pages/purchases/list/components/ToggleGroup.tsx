@@ -40,6 +40,7 @@ function Toggle({ isLast, isSelected, onChange, children }: ToggleProps) {
     <button
       type="button"
       onClick={onChange}
+      aria-pressed={isSelected}
       className={cn(
         'font-14-m w-[6.5rem] py-[0.8rem] text-center transition-colors duration-300 ease-in-out',
         isSelected ? 'bg-primary-3 text-white' : 'text-gray-5 bg-white',

@@ -94,8 +94,8 @@ export default function ResultSection({ data }: ResultSectionProps) {
       <div className="max-h-[54rem] overflow-auto">
         <table className="min-w-max border-separate">
           <colgroup>
-            {TABLE_HEADERS.map(({ label, width }) => (
-              <col key={label} className={width} />
+            {TABLE_HEADERS.map((header, idx) => (
+              <col key={idx} className={header.width} />
             ))}
           </colgroup>
           <thead>
@@ -105,7 +105,7 @@ export default function ResultSection({ data }: ResultSectionProps) {
 
                 return (
                   <th
-                    key={header.label}
+                    key={idx}
                     className={cn(
                       'sticky top-0 z-10 bg-white py-[1.4rem] align-middle shadow-[0_1px_0_0_var(--color-gray-1)]',
                       isFirst && 'border-r-gray-1 left-0 z-20 border-r-1 pr-[0.2rem] pl-[1rem]',
@@ -132,10 +132,10 @@ export default function ResultSection({ data }: ResultSectionProps) {
       {/* 페이지네이션 */}
       <div className="flex justify-center gap-[1.2rem]">
         <UnstyledButton aria-label="첫번째 페이지로 이동">
-          <img src={pageFirstIcon} />
+          <img src={pageFirstIcon} alt="" aria-hidden="true" />
         </UnstyledButton>
         <UnstyledButton aria-label="앞 페이지로 이동">
-          <img src={pagePrevIcon} />
+          <img src={pagePrevIcon} alt="" aria-hidden="true" />
         </UnstyledButton>
         {Array.from({ length: pagination.totalPages }).map((_, idx) => (
           <button
@@ -146,10 +146,10 @@ export default function ResultSection({ data }: ResultSectionProps) {
           </button>
         ))}
         <UnstyledButton aria-label="뒤 페이지로 이동">
-          <img src={pageNextIcon} />
+          <img src={pageNextIcon} alt="" aria-hidden="true" />
         </UnstyledButton>
         <UnstyledButton aria-label="마지막 페이지로 이동">
-          <img src={pageLastIcon} />
+          <img src={pageLastIcon} alt="" aria-hidden="true" />
         </UnstyledButton>
       </div>
     </section>

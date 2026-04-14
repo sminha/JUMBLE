@@ -34,18 +34,6 @@ export const FILTER_LABEL: ValueLabel<Filter>[] = [
   { value: FILTER.PRODUCT, label: '상품명' },
 ];
 
-export const INITIAL_DRAFT: Draft = {
-  dateType: DATE.PURCHASED_AT,
-  periodType: PERIOD.TODAY,
-  startDate: '',
-  endDate: '',
-  filterType: FILTER.VENDOR,
-  keyword: '',
-  isBackorderOnly: false,
-  sortBy: '',
-  sortOrder: '',
-};
-
 export type Date = keyof typeof DATE;
 export type Period = keyof typeof PERIOD;
 export type Filter = keyof typeof FILTER;
@@ -59,4 +47,16 @@ export type Draft = {
   isBackorderOnly: boolean;
   sortBy: string;
   sortOrder: string;
+};
+
+export const INITIAL_DRAFT: Draft = {
+  dateType: DATE.PURCHASED_AT,
+  periodType: PERIOD.TODAY,
+  startDate: '',
+  endDate: '',
+  filterType: FILTER.VENDOR,
+  keyword: '',
+  isBackorderOnly: false,
+  sortBy: '',
+  sortOrder: '',
 };

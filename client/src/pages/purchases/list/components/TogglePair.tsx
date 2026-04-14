@@ -25,6 +25,7 @@ export default function TogglePair<T>({
       <button
         type="button"
         onClick={() => onChange(togglePair[0].value)}
+        aria-pressed={selectedToggle === togglePair[0].value}
         className={cn(
           TOGGLE_STYLE,
           selectedToggle === togglePair[0].value ? 'text-white' : 'text-gray-5',
@@ -35,6 +36,7 @@ export default function TogglePair<T>({
       <button
         type="button"
         onClick={() => onChange(togglePair[1].value)}
+        aria-pressed={selectedToggle === togglePair[1].value}
         className={cn(
           TOGGLE_STYLE,
           selectedToggle === togglePair[1].value ? 'text-white' : 'text-gray-5',

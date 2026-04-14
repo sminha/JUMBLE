@@ -44,7 +44,7 @@ export default function PurchaseRow({ record }: PurchaseRowProps) {
       </td>
       <td className={CELL_STYLE}>
         <UnstyledButton aria-label="영수증 조회">
-          <img src={receiptIcon} className="h-[1.6rem] w-[1.6rem]" />
+          <img src={receiptIcon} alt="" aria-hidden="true" className="h-[1.6rem] w-[1.6rem]" />
         </UnstyledButton>
       </td>
     </tr>

@@ -20,8 +20,8 @@ export default function MainSection() {
           imageClassName="top-[1.8rem] left-[19rem] w-[2.2rem]"
         />
       </div>
-      <a href="#description">
-        <img src={chevronDownIcon} className="animate-float" />
+      <a href="#description" aria-label="설명 섹션으로 이동">
+        <img src={chevronDownIcon} alt="" aria-hidden="true" className="animate-float" />
       </a>
     </section>
   );
