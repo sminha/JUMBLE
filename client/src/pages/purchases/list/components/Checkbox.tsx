@@ -5,26 +5,26 @@ import checkIcon from '@/assets/check-icon.svg';
 interface CheckboxProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'onChange'> {
   isChecked: boolean;
   onChange: (isChecked: boolean) => void;
-  children: React.ReactNode;
+  children?: React.ReactNode;
 }
 
 const CHECKBOX_STYLE =
-  'bg-gray-2 absolute h-[2rem] w-[2rem] rounded-[0.4rem] transition-opacity duration-150 ease-in-out';
+  'bg-gray-2 absolute h-[1.8rem] w-[1.8rem] rounded-[0.4rem] transition-opacity duration-150 ease-in-out';
 
-export default function Checkbox({ isChecked, onChange, children }: CheckboxProps) {
+export default function Checkbox({ isChecked, onChange, children, className }: CheckboxProps) {
   return (
-    <label className="flex w-fit gap-[0.8rem]">
+    <label className={cn('flex w-fit', children ? 'gap-[0.8rem]' : 'gap-0')}>
       <input
         type="checkbox"
         checked={isChecked}
         onChange={() => onChange(!isChecked)}
         className="sr-only"
       />
-      <div className="relative h-[2rem] w-[2rem]">
-        <div className={cn(CHECKBOX_STYLE, !isChecked ? 'opacity-100' : 'opacity-0')} />
+      <div className={cn('relative h-[1.8rem] w-[1.8rem]', className)}>
+        <div className={cn(CHECKBOX_STYLE, !isChecked ? 'opacity-100' : 'opacity-0', className)} />
         <img
           src={checkIcon}
-          className={cn(CHECKBOX_STYLE, isChecked ? 'opacity-100' : 'opacity-0')}
+          className={cn(CHECKBOX_STYLE, isChecked ? 'opacity-100' : 'opacity-0', className)}
         />
       </div>
       <span className="font-14-m text-gray-5">{children}</span>

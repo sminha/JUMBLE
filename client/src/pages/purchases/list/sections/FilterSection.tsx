@@ -17,7 +17,7 @@ export default function FilterSection({ draft, setDraft }: FilterSectionProps) {
       <div className="flex gap-[3.6rem]">
         {/* 조회기간 */}
         <div className="flex gap-[2.4rem]">
-          <span className="title-16-m text-gray-9 my-[1rem]">조회기간</span>
+          <span className="title-16-m text-gray-9 my-[1rem] shrink-0">조회기간</span>
           <div className="flex flex-col gap-[1.6rem]">
             <TogglePair
               togglePair={DATE_LBAEL}
@@ -48,7 +48,7 @@ export default function FilterSection({ draft, setDraft }: FilterSectionProps) {
 
         {/* 상세조건 */}
         <div className="flex gap-[2.4rem]">
-          <span className="title-16-m text-gray-0 my-[1rem]">상세조건</span>
+          <span className="title-16-m text-gray-0 my-[1rem] shrink-0">상세조건</span>
           <div className="flex flex-col gap-[1.6rem]">
             <AddonInput
               filters={FILTER_LABEL}
