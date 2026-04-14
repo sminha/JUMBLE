@@ -8,6 +8,6 @@ router.get('/kakao', (req: Request, res: Response) => {
   res.redirect(kakaoAuthUrl);
 });
 router.get('/kakao/callback', AuthController.kakaoLogin);
-router.get('/refresh', AuthController.reissue);
+router.post('/refresh', AuthController.reissue);
 
 export default router;

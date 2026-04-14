@@ -3,13 +3,14 @@ import { Link } from 'react-router';
 import logoIcon from '@/assets/logo-icon.png';
 import logoText from '@/assets/logo-text.png';
 import { PATHS } from '@/router';
+import { STORAGE_KEYS } from '@/constants/storage';
 
 interface BaseHeaderProps {
   children: ReactNode;
 }
 
 export default function BaseHeader({ children }: BaseHeaderProps) {
-  const isLogin = localStorage.getItem('accessToken');
+  const isLogin = localStorage.getItem(STORAGE_KEYS.ACCESS_TOKEN);
 
   return (
     <header className="border-b-gray-1 flex w-full justify-between border-b-[0.1rem] bg-white px-[6.4rem] py-[1.2rem]">

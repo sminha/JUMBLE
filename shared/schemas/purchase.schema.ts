@@ -10,7 +10,7 @@ export const productSchema = z
     option: z.string().optional(),
     price: z.number().int().positive(),
     quantity: z.number().int().positive(),
-    backorderQuantity: z.number().int().positive(),
+    backorderQuantity: z.number().int().min(0),
   })
   .refine((data) => data.backorderQuantity <= data.quantity, {
     message: '미송 수량은 총 수량을 초과할 수 없습니다.',

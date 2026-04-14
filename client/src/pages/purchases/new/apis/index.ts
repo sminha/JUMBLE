@@ -2,6 +2,8 @@ import { UseFormSetValue, UseFieldArrayReplace } from 'react-hook-form';
 import { useMutation } from '@tanstack/react-query';
 import { Purchase } from '@jumble/shared';
 import { fetchWithAuth } from '@/lib/api';
+import { useNavigate } from 'react-router';
+import { PATHS } from '@/router';
 
 const compressImage = (file: File, maxWidth = 1024): Promise<Blob> => {
   return new Promise((resolve) => {
@@ -34,11 +36,16 @@ const parseImage = async (file: File) => {
 
   if (!res.ok) throw new Error('OCR 요청 실패');
 
-  const { data } = await res.json();
+  const result = await res.json();
 
-  return data;
+  if (!result || typeof result !== 'object' || !('data' in result) || !result.data) {
+    throw new Error('OCR 응답 형식이 올바르지 않습니다.');
+  }
+
+  return result.data;
 };
 
+// OCR API
 export const useImageUpload = ({
   setValue,
   replace,
@@ -56,6 +63,36 @@ export const useImageUpload = ({
     onError: () => {
       // TODO: 추후 토스트로 변경
       alert('영수증 분석에 실패했습니다. 다시 시도해주세요.');
+    },
+  });
+};
+
+const createPurchase = async (form: Purchase) => {
+  const res = await fetchWithAuth(`${import.meta.env.VITE_API_URL}/api/v1/purchases`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(form),
+  });
+
+  if (!res.ok) throw new Error('사입내역 추가 요청 실패');
+
+  const result = await res.json();
+
+  return result;
+};
+
+// 사입내역 추가 API
+export const useCreatePurchase = () => {
+  const navigate = useNavigate();
+
+  return useMutation({
+    mutationFn: createPurchase,
+    onSuccess: () => {
+      navigate(PATHS.PURCHASELIST);
+    },
+    onError: () => {
+      // TODO: 추후 토스트로 변경
+      alert('사입내역 추가에 실패했습니다. 다시 시도해주세요.');
     },
   });
 };

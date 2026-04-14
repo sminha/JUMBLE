@@ -10,11 +10,11 @@ export const PurchaseController = {
       const userId = req.user.id;
 
       // 필수 필드 검증
-      if (!data.vendor || !data.purchasedAt || !data.receipt) {
+      if (!data.vendor || !data.purchasedAt) {
         return res.status(400).json({
           success: false,
           status: 400,
-          message: 'vendorName, purchasedDate, receipt는 필수 값입니다.',
+          message: 'vendor, purchasedAt은 필수 값입니다.',
         });
       }
 
