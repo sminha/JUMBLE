@@ -2,7 +2,7 @@ import { Outlet, Navigate, createBrowserRouter, useNavigate } from 'react-router
 import Home from '@/pages/home/Home';
 import KakaoCallback from '@/pages/home/KakaoCallback';
 import PurchaseNew from '@/pages/purchases/new/PurchaseNew';
-// import PurchaseList from './pages/purchases/list/PurchaseList';
+import PurchaseList from '@/pages/purchases/list/PurchaseList';
 import { STORAGE_KEYS } from '@/constants/storage';
 
 export const PATHS = {
@@ -34,10 +34,10 @@ export const router = createBrowserRouter([
         path: PATHS.PURCHASENEW,
         element: <PurchaseNew />,
       },
-      // {
-      //   path: PATHS.PURCHASELIST,
-      //   element: <PurchaseList />,
-      // },
+      {
+        path: PATHS.PURCHASELIST,
+        element: <PurchaseList />,
+      },
     ],
   },
 ]);
