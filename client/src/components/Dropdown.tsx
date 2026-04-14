@@ -1,6 +1,7 @@
 import { SelectHTMLAttributes } from 'react';
 import { cn } from '@/utils/cn';
 import { Status, STATUS, STATUS_STYLE } from '@/constants/status';
+import caretDownIcon from '@/assets/caret-down-icon.svg';
 
 interface DropdownProps extends SelectHTMLAttributes<HTMLSelectElement> {
   options: { value: string; label: string }[];
@@ -40,9 +41,7 @@ export default function Dropdown({
             </option>
           ))}
         </select>
-        <span className="text-gray-4 pointer-events-none absolute top-1/2 right-[1.2rem] -translate-y-1/2 text-[1rem]">
-          ▼
-        </span>
+        <img src={caretDownIcon} className="absolute top-1/2 right-[1.2rem] -translate-y-1/2" />
       </div>
       {status === STATUS.ERROR && (
         <p className="font-12-r text-error absolute top-full left-[0.1rem] mt-[0.3rem]">

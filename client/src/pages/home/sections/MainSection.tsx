@@ -1,4 +1,4 @@
-import arrow from '@/assets/arrow.svg';
+import chevronDownIcon from '@/assets/chevron-down-icon.svg';
 import KakaoLoginButton from '../components/KakaoLoginButton';
 
 export default function MainSection() {
@@ -21,7 +21,7 @@ export default function MainSection() {
         />
       </div>
       <a href="#description">
-        <img src={arrow} className="animate-float" />
+        <img src={chevronDownIcon} className="animate-float" />
       </a>
     </section>
   );
