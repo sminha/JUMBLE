@@ -38,6 +38,10 @@ const parseImage = async (file: File) => {
 
   const result = await res.json();
 
+  if (!result || typeof result !== 'object' || !('data' in result) || !result.data) {
+    throw new Error('OCR 응답 형식이 올바르지 않습니다.');
+  }
+
   return result.data;
 };
 
