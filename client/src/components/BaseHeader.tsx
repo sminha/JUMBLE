@@ -1,4 +1,3 @@
-import { ReactNode } from 'react';
 import { Link } from 'react-router';
 import logoIcon from '@/assets/logo-icon.png';
 import logoText from '@/assets/logo-text.png';
@@ -6,7 +5,7 @@ import { PATHS } from '@/router';
 import { STORAGE_KEYS } from '@/constants/storage';
 
 interface BaseHeaderProps {
-  children: ReactNode;
+  children: React.ReactNode;
 }
 
 export default function BaseHeader({ children }: BaseHeaderProps) {

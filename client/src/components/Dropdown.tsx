@@ -1,11 +1,10 @@
-import { SelectHTMLAttributes } from 'react';
 import { cn } from '@/utils/cn';
 import { ValueLabel } from '@/types/value-label';
 import { Status, STATUS, STATUS_STYLE } from '@/constants/status';
 import caretDownIcon from '@/assets/caret-down-icon.svg';
 
 interface DropdownProps<T extends string | number> extends Omit<
-  SelectHTMLAttributes<HTMLSelectElement>,
+  React.SelectHTMLAttributes<HTMLSelectElement>,
   'value' | 'onChange'
 > {
   options: ValueLabel<T>[];

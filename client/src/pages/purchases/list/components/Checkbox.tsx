@@ -1,8 +1,7 @@
-import { InputHTMLAttributes } from 'react';
 import { cn } from '@/utils/cn';
 import checkIcon from '@/assets/check-icon.svg';
 
-interface CheckboxProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'onChange'> {
+interface CheckboxProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange'> {
   isChecked: boolean;
   onChange: (isChecked: boolean) => void;
   children?: React.ReactNode;
