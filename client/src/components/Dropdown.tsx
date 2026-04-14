@@ -1,33 +1,43 @@
 import { SelectHTMLAttributes } from 'react';
 import { cn } from '@/utils/cn';
+import { ValueLabel } from '@/types/value-label';
 import { Status, STATUS, STATUS_STYLE } from '@/constants/status';
 import caretDownIcon from '@/assets/caret-down-icon.svg';
 
-interface DropdownProps extends SelectHTMLAttributes<HTMLSelectElement> {
-  options: { value: string; label: string }[];
+interface DropdownProps<T extends string | number> extends Omit<
+  SelectHTMLAttributes<HTMLSelectElement>,
+  'value' | 'onChange'
+> {
+  options: ValueLabel<T>[];
+  value: T;
   placeholder?: string;
   status?: Status;
   errorMessage?: string;
+  onChange: (value: T) => void;
 }
 
-export default function Dropdown({
+export default function Dropdown<T extends string | number>({
   options,
+  value,
   placeholder,
   status = STATUS.DEFAULT,
   errorMessage = '',
+  onChange,
   className,
   ...props
-}: DropdownProps) {
+}: DropdownProps<T>) {
   return (
-    <div className="relative flex w-full flex-col gap-[0.4rem]">
+    <div className="relative flex w-fit shrink-0 flex-col gap-[0.4rem]">
       <div className="relative w-full">
         <select
+          value={value}
+          onChange={(e) => onChange(e.target.value as T)}
+          aria-invalid={status === STATUS.ERROR}
           className={cn(
             'font-14-r text-gray-6 w-full appearance-none rounded-[0.8rem] border bg-white p-[1.2rem] pr-[3.2rem] focus:outline-none',
             STATUS_STYLE[status],
             className,
           )}
-          aria-invalid={status === STATUS.ERROR}
           {...props}
         >
           {placeholder && (
