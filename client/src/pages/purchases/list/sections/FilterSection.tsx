@@ -4,7 +4,7 @@ import Checkbox from '../components/Checkbox';
 import AddonInput from '../components/AddonInput';
 import TogglePair from '../components/TogglePair';
 import ToggleGroup from '../components/ToggleGroup';
-import { Draft, FILTER_LABEL, DATE_LBAEL, PERIOD_LABEL } from '../constants/draft';
+import { Draft, FILTER_LABEL, DATE_LABEL, PERIOD_LABEL } from '../constants/draft';
 
 interface FilterSectionProps {
   draft: Draft;
@@ -20,7 +20,7 @@ export default function FilterSection({ draft, setDraft }: FilterSectionProps) {
           <span className="title-16-m text-gray-9 my-[1rem] shrink-0">조회기간</span>
           <div className="flex flex-col gap-[1.6rem]">
             <TogglePair
-              togglePair={DATE_LBAEL}
+              togglePair={DATE_LABEL}
               selectedToggle={draft.dateType}
               onChange={(v) => setDraft((prev) => ({ ...prev, dateType: v }))}
             />
