@@ -13,6 +13,15 @@ interface FilterSectionProps {
 }
 
 export default function FilterSection({ draft, setDraft, onSearch }: FilterSectionProps) {
+  const handleSearch = () => {
+    if (draft.periodType === null && (!draft.startDate || !draft.endDate)) {
+      // TODO: 토스트로 변경
+      alert('조회 시작일과 종료일을 입력해주세요.');
+      return;
+    }
+    onSearch();
+  };
+
   return (
     <section className="flex w-fit flex-col gap-[0.8rem] rounded-[1.6rem] bg-white px-[3.8rem] py-[3rem]">
       <div className="flex gap-[3.6rem]">
@@ -78,7 +87,7 @@ export default function FilterSection({ draft, setDraft, onSearch }: FilterSecti
 
       {/* 검색 */}
       <div className="flex justify-end">
-        <Button size="medium" variant="primary" onClick={onSearch}>
+        <Button size="medium" variant="primary" onClick={handleSearch}>
           검색
         </Button>
       </div>

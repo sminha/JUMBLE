@@ -12,6 +12,7 @@ import {
   SORT_BY,
   SortOrder,
   SORT_ORDER,
+  INITIAL_DRAFT,
 } from '@jumble/shared';
 
 const isValidDate = (date: string) => /^\d{4}-\d{2}-\d{2}$/.test(date) && !isNaN(Date.parse(date));
@@ -23,18 +24,18 @@ export const PurchaseItemController = {
 
       const rawPage = req.query.page as string | undefined;
       const rawLimit = req.query.limit as string | undefined;
-      const page = rawPage === undefined ? 1 : Number(rawPage);
-      const limit = rawLimit === undefined ? 10 : Number(rawLimit);
+      const page = rawPage === undefined ? INITIAL_DRAFT.page : Number(rawPage);
+      const limit = rawLimit === undefined ? INITIAL_DRAFT.limit : Number(rawLimit);
 
-      const dateType = (req.query.dateType as DateType) ?? DATE.PURCHASED_AT;
-      const periodType = (req.query.periodType as Period) ?? PERIOD.TODAY;
-      const startDate = (req.query.startDate as string) ?? '';
-      const endDate = (req.query.endDate as string) ?? '';
-      const filterType = (req.query.filterType as Filter) ?? FILTER.VENDOR;
-      const keyword = (req.query.keyword as string) ?? '';
+      const dateType = (req.query.dateType as DateType) ?? INITIAL_DRAFT.dateType;
+      const periodType = (req.query.periodType as Period) ?? INITIAL_DRAFT.periodType;
+      const startDate = (req.query.startDate as string) ?? INITIAL_DRAFT.startDate;
+      const endDate = (req.query.endDate as string) ?? INITIAL_DRAFT.endDate;
+      const filterType = (req.query.filterType as Filter) ?? INITIAL_DRAFT.filterType;
+      const keyword = (req.query.keyword as string) ?? INITIAL_DRAFT.keyword;
       const isBackorderOnly = req.query.isBackorderOnly === 'true';
-      const sortBy = (req.query.sortBy as SortBy) ?? SORT_BY.PURCHASED_AT;
-      const sortOrder = (req.query.sortOrder as SortOrder) ?? SORT_ORDER.DESC;
+      const sortBy = (req.query.sortBy as SortBy) ?? INITIAL_DRAFT.sortBy;
+      const sortOrder = (req.query.sortOrder as SortOrder) ?? INITIAL_DRAFT.sortOrder;
 
       if (!Number.isInteger(page) || !Number.isInteger(limit) || page < 1 || limit < 1) {
         return res.status(400).json({

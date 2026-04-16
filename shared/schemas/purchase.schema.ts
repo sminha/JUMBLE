@@ -18,7 +18,7 @@ export const productSchema = z
   });
 
 export const purchaseSchema = z.object({
-  purchasedAt: z.string().min(1, '사입일시를 입력하세요'),
+  purchasedAt: z.iso.date('올바른 날짜 형식이 아닙니다 (YYYY-MM-DD)'),
   vendor: z.string().min(1, '거래처명을 입력하세요'),
   items: z.array(productSchema).min(1, '상품을 1개 이상 추가하세요'),
   receipt: z.string().optional(),

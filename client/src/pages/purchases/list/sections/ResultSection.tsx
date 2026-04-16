@@ -84,6 +84,19 @@ export default function ResultSection({ params, setParams, data, isPending }: Re
     // TODO: 엑셀 다운로드 기능 구현
     alert('엑셀 다운로드');
   };
+  const handleSort = (sortBy: SortBy) => {
+    setParams((prev) => ({
+      ...prev,
+      page: 1,
+      sortBy: sortBy!,
+      sortOrder:
+        prev.sortBy === sortBy
+          ? prev.sortOrder === SORT_ORDER.DESC
+            ? SORT_ORDER.ASC
+            : SORT_ORDER.DESC
+          : SORT_ORDER.DESC,
+    }));
+  };
   const handleClickPrev = () => {
     setParams((prev) => ({ ...prev, page: prev.page !== 1 ? prev.page - 1 : 1 }));
   };
@@ -156,20 +169,10 @@ export default function ResultSection({ params, setParams, data, isPending }: Re
                     {header.label}
                     {header.sortBy && (
                       <UnstyledButton
-                        onClick={() =>
-                          setParams((prev) => ({
-                            ...prev,
-                            sortBy: header.sortBy!,
-                            sortOrder:
-                              prev.sortBy === header.sortBy
-                                ? prev.sortOrder === SORT_ORDER.DESC
-                                  ? SORT_ORDER.ASC
-                                  : SORT_ORDER.DESC
-                                : SORT_ORDER.DESC,
-                          }))
-                        }
+                        aria-label={`${header.label} 정렬`}
+                        onClick={() => handleSort(header.sortBy!)}
                       >
-                        <img src={filterIcon} className="ml-[1rem]" />
+                        <img src={filterIcon} alt="" aria-hidden="true" className="ml-[1rem]" />
                       </UnstyledButton>
                     )}
                   </th>
