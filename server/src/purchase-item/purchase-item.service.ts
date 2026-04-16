@@ -81,8 +81,8 @@ export const PurchaseItemService = {
           return { quantity: sortOrder };
         case SORT_BY.BACKORDER_QUANTITY:
           return { backorder_quantity: sortOrder };
-        // TODO : DB에 computed column (generated column) 추가
-        // case "totalAmount":      return { unit_price: sortOrder };
+        case SORT_BY.TOTAL_PRICE:
+          return { total_price: sortOrder };
         default:
           return { purchase: { purchased_at: 'desc' } };
       }

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Draft, GetPurchaseRecordsResponse } from '@jumble/shared';
+import { Draft, GetPurchaseRecordsResponse, SortBy, SORT_BY, SORT_ORDER } from '@jumble/shared';
 import { cn } from '@/utils/cn';
 import Button from '@/components/Button';
 import Dropdown from '@/components/Dropdown';
@@ -8,6 +8,7 @@ import pageLastIcon from '@/assets/page-last-icon.svg';
 import pagePrevIcon from '@/assets/page-prev-icon.svg';
 import pageNextIcon from '@/assets/page-next-icon.svg';
 import pageFirstIcon from '@/assets/page-first-icon.svg';
+import filterIcon from '@/assets/filter-icon.svg';
 import Checkbox from '../components/Checkbox';
 import PurchaseRow from '../components/PurchaseRow';
 import UnstyledButton from '../components/UnstyledButton';
@@ -28,21 +29,21 @@ const PAGE_SIZE_LABEL: ValueLabel<PageSize>[] = [
   { value: PAGE_SIZE[3], label: '300개씩' },
 ];
 
-const TABLE_HEADERS: { label: string; width: string }[] = [
+const TABLE_HEADERS: { label: string; width: string; sortBy?: SortBy }[] = [
   { label: '', width: 'w-[4rem]' },
   { label: '사입번호', width: 'w-[16rem]' },
   { label: '상품사입번호', width: 'w-[16rem]' },
-  { label: '사입일시', width: 'w-[18rem]' },
+  { label: '사입일시', width: 'w-[18rem]', sortBy: SORT_BY.PURCHASED_AT },
   { label: '거래처명', width: 'w-[16rem]' },
   { label: '상품명', width: 'w-[16rem]' },
   { label: '구분', width: 'w-[10rem]' },
   { label: '컬러', width: 'w-[10rem]' },
   { label: '사이즈', width: 'w-[8rem]' },
   { label: '기타옵션', width: 'w-[14rem]' },
-  { label: '단가', width: 'w-[12rem]' },
-  { label: '수량', width: 'w-[8rem]' },
-  { label: '금액합계', width: 'w-[12rem]' },
-  { label: '미송수량', width: 'w-[8rem]' },
+  { label: '단가', width: 'w-[12rem]', sortBy: SORT_BY.PRICE },
+  { label: '수량', width: 'w-[8rem]', sortBy: SORT_BY.QUANTITY },
+  { label: '금액합계', width: 'w-[12rem]', sortBy: SORT_BY.TOTAL_PRICE },
+  { label: '미송수량', width: 'w-[8rem]', sortBy: SORT_BY.BACKORDER_QUANTITY },
   { label: '영수증', width: 'w-[10rem]' },
 ];
 
@@ -151,10 +152,25 @@ export default function ResultSection({ params, setParams, data, isPending }: Re
                       isFirst && 'border-r-gray-1 left-0 z-20 border-r-1 pr-[0.2rem] pl-[1rem]',
                     )}
                   >
-                    {isFirst ? (
-                      <Checkbox isChecked={isChecked} onChange={setIsChecked} />
-                    ) : (
-                      header.label
+                    {isFirst && <Checkbox isChecked={isChecked} onChange={setIsChecked} />}
+                    {header.label}
+                    {header.sortBy && (
+                      <UnstyledButton
+                        onClick={() =>
+                          setParams((prev) => ({
+                            ...prev,
+                            sortBy: header.sortBy!,
+                            sortOrder:
+                              prev.sortBy === header.sortBy
+                                ? prev.sortOrder === SORT_ORDER.DESC
+                                  ? SORT_ORDER.ASC
+                                  : SORT_ORDER.DESC
+                                : SORT_ORDER.DESC,
+                          }))
+                        }
+                      >
+                        <img src={filterIcon} className="ml-[1rem]" />
+                      </UnstyledButton>
                     )}
                   </th>
                 );
