@@ -33,9 +33,9 @@ export default function PurchaseRow({ record }: PurchaseRowProps) {
       <td className={CELL_STYLE}>{record.vendor}</td>
       <td className={CELL_STYLE}>{record.product}</td>
       <td className={CELL_STYLE}>{record.category}</td>
-      <td className={CELL_STYLE}>{record.color ?? '-'}</td>
-      <td className={CELL_STYLE}>{record.size ?? '-'}</td>
-      <td className={CELL_STYLE}>{record.option ?? '-'}</td>
+      <td className={CELL_STYLE}>{record.color || '-'}</td>
+      <td className={CELL_STYLE}>{record.size || '-'}</td>
+      <td className={CELL_STYLE}>{record.option || '-'}</td>
       <td className={CELL_STYLE}>{formatPrice(record.price)}</td>
       <td className={CELL_STYLE}>{record.quantity}</td>
       <td className={CELL_STYLE}>{formatPrice(record.totalPrice)}</td>

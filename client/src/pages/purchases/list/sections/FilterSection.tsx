@@ -40,7 +40,7 @@ export default function FilterSection({ draft, setDraft, onSearch }: FilterSecti
                 onChange={(e) =>
                   setDraft((prev) => ({ ...prev, startDate: e.target.value, periodType: null }))
                 }
-                className="border-gray-1 text-gray-5 w-[15rem]"
+                className="border-gray-1 text-gray-5 w-[16rem]"
               />
               <Input
                 type="date"
@@ -49,7 +49,7 @@ export default function FilterSection({ draft, setDraft, onSearch }: FilterSecti
                 onChange={(e) =>
                   setDraft((prev) => ({ ...prev, endDate: e.target.value, periodType: null }))
                 }
-                className="border-gray-1 text-gray-5 w-[15rem]"
+                className="border-gray-1 text-gray-5 w-[16rem]"
               />
             </div>
           </div>
