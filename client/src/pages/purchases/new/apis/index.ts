@@ -1,7 +1,7 @@
 import { UseFormSetValue, UseFieldArrayReplace } from 'react-hook-form';
 import { useMutation } from '@tanstack/react-query';
 import { Purchase } from '@jumble/shared';
-import { fetchWithAuth } from '@/lib/api';
+import { fetchWithAuth } from '@/libs/api';
 import { useNavigate } from 'react-router';
 import { PATHS } from '@/router';
 

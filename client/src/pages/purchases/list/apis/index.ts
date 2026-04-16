@@ -1,5 +1,5 @@
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
-import { fetchWithAuth } from '@/lib/api';
+import { fetchWithAuth } from '@/libs/api';
 import { Draft } from '@jumble/shared';
 import { QUERY_KEYS } from '@/constants/query-key';
 
