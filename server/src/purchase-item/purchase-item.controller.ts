@@ -1,103 +1,19 @@
 import { Request, Response } from 'express';
 import { Prisma } from '@prisma/client';
 import { PurchaseItemService } from './purchase-item.service';
-import {
-  DateType,
-  DATE,
-  Period,
-  PERIOD,
-  Filter,
-  FILTER,
-  SortBy,
-  SORT_BY,
-  SortOrder,
-  SORT_ORDER,
-  INITIAL_DRAFT,
-} from '@jumble/shared';
-
-const isValidDate = (date: string) => /^\d{4}-\d{2}-\d{2}$/.test(date) && !isNaN(Date.parse(date));
+import { querySchema } from './query.schema';
 
 export const PurchaseItemController = {
   getPurchaseItems: async (req: Request, res: Response) => {
     try {
       const userId = req.user.id;
+      const result = querySchema.safeParse(req.query);
 
-      const rawPage = req.query.page as string | undefined;
-      const rawLimit = req.query.limit as string | undefined;
-      const page = rawPage === undefined ? INITIAL_DRAFT.page : Number(rawPage);
-      const limit = rawLimit === undefined ? INITIAL_DRAFT.limit : Number(rawLimit);
-
-      const dateType = (req.query.dateType as DateType) ?? INITIAL_DRAFT.dateType;
-      const periodType = (req.query.periodType as Period) ?? INITIAL_DRAFT.periodType;
-      const startDate = (req.query.startDate as string) ?? INITIAL_DRAFT.startDate;
-      const endDate = (req.query.endDate as string) ?? INITIAL_DRAFT.endDate;
-      const filterType = (req.query.filterType as Filter) ?? INITIAL_DRAFT.filterType;
-      const keyword = (req.query.keyword as string) ?? INITIAL_DRAFT.keyword;
-      const isBackorderOnly = req.query.isBackorderOnly === 'true';
-      const sortBy = (req.query.sortBy as SortBy) ?? INITIAL_DRAFT.sortBy;
-      const sortOrder = (req.query.sortOrder as SortOrder) ?? INITIAL_DRAFT.sortOrder;
-
-      if (!Number.isInteger(page) || !Number.isInteger(limit) || page < 1 || limit < 1) {
-        return res.status(400).json({
-          success: false,
-          status: 400,
-          message: 'page와 limit은 1 이상이어야 합니다.',
-        });
+      if (!result.success) {
+        return res.status(400).json({ success: false, status: 400, message: result.error.message });
       }
 
-      if ((startDate && !endDate) || (!startDate && endDate)) {
-        return res.status(400).json({
-          success: false,
-          status: 400,
-          message: 'startDate와 endDate는 함께 제공되어야 합니다.',
-        });
-      }
-
-      if (startDate && endDate && (!isValidDate(startDate) || !isValidDate(endDate))) {
-        return res.status(400).json({
-          success: false,
-          status: 400,
-          message: 'startDate와 endDate는 유효한 YYYY-MM-DD 형식이어야 합니다.',
-        });
-      }
-
-      if (!Object.values(DATE).includes(dateType)) {
-        return res.status(400).json({
-          success: false,
-          status: 400,
-          message: 'dateType은 purchased 또는 created여야 합니다.',
-        });
-      }
-
-      if (!Object.values(SORT_BY).includes(sortBy)) {
-        return res.status(400).json({
-          success: false,
-          status: 400,
-          message: `sortBy는 다음 값 중 하나여야 합니다: ${Object.values(SORT_BY).join(', ')}`,
-        });
-      }
-
-      if (!Object.values(SORT_ORDER).includes(sortOrder)) {
-        return res.status(400).json({
-          success: false,
-          status: 400,
-          message: 'sortOrder는 asc 또는 desc여야 합니다.',
-        });
-      }
-
-      const { records, total } = await PurchaseItemService.getPurchaseItems(userId, {
-        page,
-        limit,
-        dateType,
-        periodType,
-        startDate,
-        endDate,
-        filterType,
-        keyword,
-        isBackorderOnly,
-        sortBy,
-        sortOrder,
-      });
+      const { records, total } = await PurchaseItemService.getPurchaseItems(userId, result.data);
 
       return res.status(200).json({
         success: true,
@@ -106,9 +22,9 @@ export const PurchaseItemController = {
         records,
         pagination: {
           total,
-          page,
-          limit,
-          totalPages: Math.ceil(total / limit),
+          page: result.data.page,
+          limit: result.data.limit,
+          totalPages: Math.ceil(total / result.data.limit),
         },
       });
     } catch (error) {
