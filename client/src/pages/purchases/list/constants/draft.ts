@@ -11,6 +11,7 @@ export const DATE_LABEL: [ValueLabel<Date>, ValueLabel<Date>] = [
 ];
 
 export const PERIOD = {
+  ALL: 'ALL',
   TODAY: 'TODAY',
   ONE_WEEK: 'ONE_WEEK',
   ONE_MONTH: 'ONE_MONTH',
@@ -18,6 +19,7 @@ export const PERIOD = {
 } as const;
 
 export const PERIOD_LABEL: ValueLabel<Period>[] = [
+  { value: PERIOD.ALL, label: '전체' },
   { value: PERIOD.TODAY, label: '오늘' },
   { value: PERIOD.ONE_WEEK, label: '일주일' },
   { value: PERIOD.ONE_MONTH, label: '1개월' },
@@ -39,7 +41,7 @@ export type Period = keyof typeof PERIOD;
 export type Filter = keyof typeof FILTER;
 export type Draft = {
   dateType: Date;
-  periodType: Period;
+  periodType: Period | null;
   startDate: string;
   endDate: string;
   filterType: Filter;
@@ -51,7 +53,7 @@ export type Draft = {
 
 export const INITIAL_DRAFT: Draft = {
   dateType: DATE.PURCHASED_AT,
-  periodType: PERIOD.TODAY,
+  periodType: PERIOD.ALL,
   startDate: '',
   endDate: '',
   filterType: FILTER.VENDOR,

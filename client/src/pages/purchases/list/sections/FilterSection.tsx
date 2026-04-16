@@ -27,21 +27,27 @@ export default function FilterSection({ draft, setDraft }: FilterSectionProps) {
             <ToggleGroup
               toggleGroup={PERIOD_LABEL}
               selectedToggle={draft.periodType}
-              onChange={(v) => setDraft((prev) => ({ ...prev, periodType: v }))}
+              onChange={(v) =>
+                setDraft((prev) => ({ ...prev, periodType: v, startDate: '', endDate: '' }))
+              }
             />
             <div className="flex gap-[0.8rem]">
               <Input
                 type="date"
                 aria-label="조회 시작일"
                 value={draft.startDate}
-                onChange={(e) => setDraft((prev) => ({ ...prev, startDate: e.target.value }))}
+                onChange={(e) =>
+                  setDraft((prev) => ({ ...prev, startDate: e.target.value, periodType: null }))
+                }
                 className="border-gray-1 text-gray-5 w-[15rem]"
               />
               <Input
                 type="date"
                 aria-label="조회 종료일"
                 value={draft.endDate}
-                onChange={(e) => setDraft((prev) => ({ ...prev, endDate: e.target.value }))}
+                onChange={(e) =>
+                  setDraft((prev) => ({ ...prev, endDate: e.target.value, periodType: null }))
+                }
                 className="border-gray-1 text-gray-5 w-[15rem]"
               />
             </div>
