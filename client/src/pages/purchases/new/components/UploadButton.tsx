@@ -1,9 +1,10 @@
+import type { ReactNode } from 'react';
 import { cn } from '@/utils/cn';
 
 interface UploadButtonProps extends React.InputHTMLAttributes<HTMLInputElement> {
   onUpload: (file: File) => void;
   isLoading: boolean;
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
 export default function UploadButton({

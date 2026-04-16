@@ -1,10 +1,11 @@
+import type { ReactNode } from 'react';
 import { cn } from '@/utils/cn';
 import checkIcon from '@/assets/check-icon.svg';
 
 interface CheckboxProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange'> {
   isChecked: boolean;
   onChange: (isChecked: boolean) => void;
-  children?: React.ReactNode;
+  children?: ReactNode;
 }
 
 const CHECKBOX_STYLE =
