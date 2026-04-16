@@ -1,32 +1,45 @@
-import { SelectHTMLAttributes } from 'react';
 import { cn } from '@/utils/cn';
+import { ValueLabel } from '@/types/value-label';
 import { Status, STATUS, STATUS_STYLE } from '@/constants/status';
+import caretDownIcon from '@/assets/caret-down-icon.svg';
 
-interface DropdownProps extends SelectHTMLAttributes<HTMLSelectElement> {
-  options: { value: string; label: string }[];
+interface DropdownProps<T extends string | number> extends Omit<
+  React.SelectHTMLAttributes<HTMLSelectElement>,
+  'value' | 'onChange'
+> {
+  options: ValueLabel<T>[];
+  value: T;
   placeholder?: string;
   status?: Status;
   errorMessage?: string;
+  onChange: (value: T) => void;
 }
 
-export default function Dropdown({
+export default function Dropdown<T extends string | number>({
   options,
+  value,
   placeholder,
   status = STATUS.DEFAULT,
   errorMessage = '',
+  onChange,
   className,
   ...props
-}: DropdownProps) {
+}: DropdownProps<T>) {
   return (
-    <div className="relative flex w-full flex-col gap-[0.4rem]">
+    <div className="relative flex w-fit shrink-0 flex-col gap-[0.4rem]">
       <div className="relative w-full">
         <select
+          value={value}
+          onChange={(e) => {
+            const selected = options.find((opt) => String(opt.value) === e.target.value);
+            if (selected) onChange(selected.value);
+          }}
+          aria-invalid={status === STATUS.ERROR}
           className={cn(
             'font-14-r text-gray-6 w-full appearance-none rounded-[0.8rem] border bg-white p-[1.2rem] pr-[3.2rem] focus:outline-none',
             STATUS_STYLE[status],
             className,
           )}
-          aria-invalid={status === STATUS.ERROR}
           {...props}
         >
           {placeholder && (
@@ -40,9 +53,12 @@ export default function Dropdown({
             </option>
           ))}
         </select>
-        <span className="text-gray-4 pointer-events-none absolute top-1/2 right-[1.2rem] -translate-y-1/2 text-[1rem]">
-          ▼
-        </span>
+        <img
+          src={caretDownIcon}
+          alt=""
+          aria-hidden="true"
+          className="absolute top-1/2 right-[1.2rem] -translate-y-1/2"
+        />
       </div>
       {status === STATUS.ERROR && (
         <p className="font-12-r text-error absolute top-full left-[0.1rem] mt-[0.3rem]">

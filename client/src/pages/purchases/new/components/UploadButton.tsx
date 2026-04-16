@@ -1,7 +1,7 @@
-import { InputHTMLAttributes, ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import { cn } from '@/utils/cn';
 
-interface UploadButtonProps extends InputHTMLAttributes<HTMLInputElement> {
+interface UploadButtonProps extends React.InputHTMLAttributes<HTMLInputElement> {
   onUpload: (file: File) => void;
   isLoading: boolean;
   children: ReactNode;

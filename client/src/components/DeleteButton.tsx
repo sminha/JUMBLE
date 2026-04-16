@@ -1,8 +1,7 @@
-import { ButtonHTMLAttributes } from 'react';
 import deleteIcon from '@/assets/delete.png';
 import { cn } from '@/utils/cn';
 
-interface DeleteButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+interface DeleteButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   onClick: () => void;
 }
 

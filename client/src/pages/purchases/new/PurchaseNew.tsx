@@ -1,29 +1,29 @@
 import { useFieldArray, useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Category, Purchase, purchaseSchema } from '@jumble/shared';
+import { Category, Product, Purchase, purchaseSchema } from '@jumble/shared';
 import { formatPrice } from '@/utils/format';
 import Input from '@/components/Input';
 import Header from '@/components/Header';
 import Button from '@/components/Button';
 import { STATUS } from '@/constants/status';
-import ItemRow from './components/ItemRow';
+import ProductRow from './components/ProductRow';
 import UploadButton from './components/UploadButton';
 import { useCreatePurchase, useImageUpload } from './apis';
 
-const TABLE_HEADERS = [
-  '상품명',
-  '구분',
-  '컬러',
-  '사이즈',
-  '기타옵션',
-  '단가',
-  '수량',
-  '금액합계',
-  '미송수량',
-  '',
+const TABLE_HEADERS: { label: string; width: string }[] = [
+  { label: '상품명', width: '' },
+  { label: '구분', width: 'w-[10.9rem]' },
+  { label: '컬러', width: 'w-[9.6rem]' },
+  { label: '사이즈', width: 'w-[9.6rem]' },
+  { label: '기타옵션', width: '' },
+  { label: '단가', width: 'w-[9.6rem]' },
+  { label: '수량', width: 'w-[6rem]' },
+  { label: '금액합계', width: 'w-[9.6rem]' },
+  { label: '미송수량', width: 'w-[6rem]' },
+  { label: '', width: 'w-[4rem]' },
 ];
 
-const DEFAULT_ITEMS = {
+const DEFAULT_ITEMS: Product = {
   name: '',
   category: '' as unknown as Category,
   color: '',
@@ -102,33 +102,27 @@ export default function PurchaseNew() {
             <h2 className="title-16-m w-[9.4rem] shrink-0">상품목록</h2>
             <table className="w-full table-fixed">
               <colgroup>
-                <col className="" />
-                <col className="w-[10.9rem]" />
-                <col className="w-[9.6rem]" />
-                <col className="w-[9.6rem]" />
-                <col className="" />
-                <col className="w-[9.6rem]" />
-                <col className="w-[6rem]" />
-                <col className="w-[9.6rem]" />
-                <col className="w-[6rem]" />
-                <col className="w-[4rem]" />
+                {TABLE_HEADERS.map(({ label, width }) => (
+                  <col key={label} className={width} />
+                ))}
               </colgroup>
               <thead>
                 <tr className="bg-gray-1">
                   {TABLE_HEADERS.map((header) => (
-                    <th key={header} className="font-14-m text-gray-5 py-[1.6rem]">
-                      {header}
+                    <th key={header.label} className="font-14-m text-gray-5 py-[1.6rem]">
+                      {header.label}
                     </th>
                   ))}
                 </tr>
               </thead>
               <tbody>
                 {fields.map((field, index) => (
-                  <ItemRow
+                  <ProductRow
                     key={field.id}
                     index={index}
                     item={items[index]}
                     register={register}
+                    control={control}
                     errors={errors}
                     remove={remove}
                   />

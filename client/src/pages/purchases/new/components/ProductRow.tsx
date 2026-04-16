@@ -1,20 +1,22 @@
-import { FieldErrors, UseFormRegister } from 'react-hook-form';
+import { FieldErrors, UseFormRegister, Control, Controller } from 'react-hook-form';
 import { Purchase, Category, CATEGORY } from '@jumble/shared';
 import Input from '@/components/Input';
 import DropDown from '@/components/Dropdown';
 import DeleteButton from '@/components/DeleteButton';
 import { formatPrice } from '@/utils/format';
 import { STATUS } from '@/constants/status';
+import { ValueLabel } from '@/types/value-label';
 
-interface ItemRowProps {
+interface ProductRowProps {
   index: number;
   item: Purchase['items'][number];
   register: UseFormRegister<Purchase>;
+  control: Control<Purchase>;
   errors: FieldErrors<Purchase>;
   remove: (index: number) => void;
 }
 
-const OPTIONS: { value: Category; label: string }[] = [
+const OPTIONS_LABEL: ValueLabel<Category>[] = [
   { value: CATEGORY.TOP, label: '상의' },
   { value: CATEGORY.OUTER, label: '아우터' },
   { value: CATEGORY.BOTTOM, label: '하의' },
@@ -26,7 +28,14 @@ const OPTIONS: { value: Category; label: string }[] = [
   { value: CATEGORY.ETC, label: '기타' },
 ];
 
-export default function ItemRow({ index, item, register, errors, remove }: ItemRowProps) {
+export default function ProductRow({
+  index,
+  item,
+  register,
+  control,
+  errors,
+  remove,
+}: ProductRowProps) {
   return (
     <tr>
       {/* 상품명 */}
@@ -39,12 +48,18 @@ export default function ItemRow({ index, item, register, errors, remove }: ItemR
 
       {/* 구분 */}
       <td className="px-[0.8rem] py-[0.6rem]">
-        <DropDown
-          {...register(`items.${index}.category`)}
-          options={OPTIONS}
-          placeholder="선택"
-          defaultValue=""
-          status={errors.items?.[index]?.category ? STATUS.ERROR : STATUS.DEFAULT}
+        <Controller
+          control={control}
+          name={`items.${index}.category`}
+          render={({ field }) => (
+            <DropDown
+              options={OPTIONS_LABEL}
+              value={field.value}
+              onChange={field.onChange}
+              placeholder="선택"
+              status={errors.items?.[index]?.category ? STATUS.ERROR : STATUS.DEFAULT}
+            />
+          )}
         />
       </td>
 

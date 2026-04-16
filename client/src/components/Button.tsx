@@ -1,16 +1,17 @@
-import { ReactNode, ButtonHTMLAttributes } from 'react';
+import type { ReactNode } from 'react';
 import { cn } from '@/utils/cn';
 
 const SIZE_STYLE = {
   large: 'font-14-r px-[2.2rem] py-[1.2rem]',
   medium: 'font-14-m px-[2rem] py-[1rem]',
+  small: 'font-12-r px-[1.4rem]',
 } as const;
 const VARIANT_STYLE = {
   white: 'border-gray-3 border text-gray-5 bg-white',
   primary: 'text-white bg-primary-3',
 } as const;
 
-interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   size?: keyof typeof SIZE_STYLE;
   variant?: keyof typeof VARIANT_STYLE;
   children: ReactNode;
