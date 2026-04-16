@@ -18,6 +18,7 @@ interface ResultSectionProps {
   setParams: React.Dispatch<React.SetStateAction<Draft>>;
   data: GetPurchaseRecordsResponse;
   isPending: boolean;
+  isError: boolean;
 }
 
 const PAGE_SIZE = [50, 100, 200, 300] as const;
@@ -47,7 +48,13 @@ const TABLE_HEADERS: { label: string; width: string; sortBy?: SortBy }[] = [
   { label: '영수증', width: 'w-[10rem]' },
 ];
 
-export default function ResultSection({ params, setParams, data, isPending }: ResultSectionProps) {
+export default function ResultSection({
+  params,
+  setParams,
+  data,
+  isPending,
+  isError,
+}: ResultSectionProps) {
   const [isChecked, setIsChecked] = useState<boolean>(false);
 
   if (isPending) {
@@ -61,7 +68,8 @@ export default function ResultSection({ params, setParams, data, isPending }: Re
   const { records, pagination } = data;
   const totalPages = pagination.totalPages;
 
-  if (records.length === 0) {
+  if (isError || !data || records.length === 0) {
+    // TODO: isError || !data  -> 토스트 띄우기
     return (
       <section className="flex h-[28rem] items-center justify-center rounded-[1.6rem] bg-white">
         <span className="font-14-r text-gray-4">조회 결과가 없어요.</span>

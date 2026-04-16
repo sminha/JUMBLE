@@ -45,6 +45,7 @@ export default function FilterSection({ draft, setDraft, onSearch }: FilterSecti
               <Input
                 type="date"
                 aria-label="조회 시작일"
+                max={draft.endDate}
                 value={draft.startDate}
                 onChange={(e) =>
                   setDraft((prev) => ({ ...prev, startDate: e.target.value, periodType: null }))
@@ -54,6 +55,8 @@ export default function FilterSection({ draft, setDraft, onSearch }: FilterSecti
               <Input
                 type="date"
                 aria-label="조회 종료일"
+                min={draft.startDate}
+                max={new Date().toISOString().split('T')[0]}
                 value={draft.endDate}
                 onChange={(e) =>
                   setDraft((prev) => ({ ...prev, endDate: e.target.value, periodType: null }))
