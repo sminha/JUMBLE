@@ -14,6 +14,7 @@ import UnstyledButton from '../components/UnstyledButton';
 
 interface ResultSectionProps {
   data: GetPurchaseRecordsResponse;
+  isPending: boolean;
 }
 
 const PAGE_SIZE = [50, 100, 200, 300] as const;
@@ -43,11 +44,28 @@ const TABLE_HEADERS: { label: string; width: string }[] = [
   { label: '영수증', width: 'w-[10rem]' },
 ];
 
-export default function ResultSection({ data }: ResultSectionProps) {
-  const { records, pagination } = data;
-
+export default function ResultSection({ data, isPending }: ResultSectionProps) {
   const [pageSize, setPageSize] = useState<PageSize>(PAGE_SIZE[1]);
   const [isChecked, setIsChecked] = useState<boolean>(false);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+
+  if (isPending) {
+    return (
+      <section className="flex h-[28rem] items-center justify-center rounded-[1.6rem] bg-white">
+        <span className="font-14-r text-gray-4">조회 결과를 불러오고 있어요.</span>
+      </section>
+    );
+  }
+
+  const { records, pagination } = data;
+
+  if (records.length === 0) {
+    return (
+      <section className="flex h-[28rem] items-center justify-center rounded-[1.6rem] bg-white">
+        <span className="font-14-r text-gray-4">조회 결과가 없어요.</span>
+      </section>
+    );
+  }
 
   const handleDelete = () => {
     // TODO: 선택삭제 기능 구현
@@ -131,24 +149,39 @@ export default function ResultSection({ data }: ResultSectionProps) {
 
       {/* 페이지네이션 */}
       <div className="flex justify-center gap-[1.2rem]">
-        <UnstyledButton aria-label="첫번째 페이지로 이동">
+        <UnstyledButton aria-label="첫번째 페이지로 이동" onClick={() => setCurrentPage(1)}>
           <img src={pageFirstIcon} alt="" aria-hidden="true" />
         </UnstyledButton>
-        <UnstyledButton aria-label="앞 페이지로 이동">
+        <UnstyledButton
+          aria-label="앞 페이지로 이동"
+          onClick={() => setCurrentPage((prev) => (prev !== 1 ? prev - 1 : prev))}
+        >
           <img src={pagePrevIcon} alt="" aria-hidden="true" />
         </UnstyledButton>
         {Array.from({ length: pagination.totalPages }).map((_, idx) => (
           <button
             key={idx}
-            className="bg-gray-1 text-gray-4 h-[2.5rem] w-[2.5rem] rounded-[0.4rem]"
+            onClick={() => setCurrentPage(idx + 1)}
+            className={cn(
+              'bg-gray-1 text-gray-4 h-[2.5rem] w-[2.5rem] rounded-[0.4rem]',
+              currentPage === idx + 1 && 'bg-primary-3 text-white',
+            )}
           >
             {idx + 1}
           </button>
         ))}
-        <UnstyledButton aria-label="뒤 페이지로 이동">
+        <UnstyledButton
+          aria-label="뒤 페이지로 이동"
+          onClick={() =>
+            setCurrentPage((prev) => (prev !== pagination.totalPages ? prev + 1 : prev))
+          }
+        >
           <img src={pageNextIcon} alt="" aria-hidden="true" />
         </UnstyledButton>
-        <UnstyledButton aria-label="마지막 페이지로 이동">
+        <UnstyledButton
+          aria-label="마지막 페이지로 이동"
+          onClick={() => setCurrentPage(pagination.totalPages)}
+        >
           <img src={pageLastIcon} alt="" aria-hidden="true" />
         </UnstyledButton>
       </div>

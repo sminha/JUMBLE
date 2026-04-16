@@ -9,9 +9,10 @@ import { Draft, FILTER_LABEL, DATE_LABEL, PERIOD_LABEL } from '../constants/draf
 interface FilterSectionProps {
   draft: Draft;
   setDraft: React.Dispatch<React.SetStateAction<Draft>>;
+  onSearch: () => void;
 }
 
-export default function FilterSection({ draft, setDraft }: FilterSectionProps) {
+export default function FilterSection({ draft, setDraft, onSearch }: FilterSectionProps) {
   return (
     <section className="flex w-fit flex-col gap-[0.8rem] rounded-[1.6rem] bg-white px-[3.8rem] py-[3rem]">
       <div className="flex gap-[3.6rem]">
@@ -77,7 +78,7 @@ export default function FilterSection({ draft, setDraft }: FilterSectionProps) {
 
       {/* 검색 */}
       <div className="flex justify-end">
-        <Button size="medium" variant="primary">
+        <Button size="medium" variant="primary" onClick={onSearch}>
           검색
         </Button>
       </div>
