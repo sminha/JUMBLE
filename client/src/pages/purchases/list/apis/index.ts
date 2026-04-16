@@ -32,7 +32,7 @@ export const getPurchases = async (draft: Draft) => {
 export const useGetPurchases = (draft: Draft) => {
   return useQuery({
     queryFn: () => getPurchases(draft),
-    queryKey: QUERY_KEYS.PURCHASES.LIST(draft),
+    queryKey: QUERY_KEYS.PURCHASES.FILTERED_LIST(draft),
     enabled: !!draft,
     placeholderData: keepPreviousData,
   });
