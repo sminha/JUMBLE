@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { GetPurchaseRecordsResponse } from '@jumble/shared';
+import { Draft, GetPurchaseRecordsResponse } from '@jumble/shared';
 import { cn } from '@/utils/cn';
 import Button from '@/components/Button';
 import Dropdown from '@/components/Dropdown';
@@ -13,6 +13,8 @@ import PurchaseRow from '../components/PurchaseRow';
 import UnstyledButton from '../components/UnstyledButton';
 
 interface ResultSectionProps {
+  params: Draft;
+  setParams: React.Dispatch<React.SetStateAction<Draft>>;
   data: GetPurchaseRecordsResponse;
   isPending: boolean;
 }
@@ -44,10 +46,8 @@ const TABLE_HEADERS: { label: string; width: string }[] = [
   { label: '영수증', width: 'w-[10rem]' },
 ];
 
-export default function ResultSection({ data, isPending }: ResultSectionProps) {
-  const [pageSize, setPageSize] = useState<PageSize>(PAGE_SIZE[1]);
+export default function ResultSection({ params, setParams, data, isPending }: ResultSectionProps) {
   const [isChecked, setIsChecked] = useState<boolean>(false);
-  const [currentPage, setCurrentPage] = useState<number>(1);
 
   if (isPending) {
     return (
@@ -58,6 +58,7 @@ export default function ResultSection({ data, isPending }: ResultSectionProps) {
   }
 
   const { records, pagination } = data;
+  const totalPages = pagination.totalPages;
 
   if (records.length === 0) {
     return (
@@ -67,6 +68,9 @@ export default function ResultSection({ data, isPending }: ResultSectionProps) {
     );
   }
 
+  const handleChangeLimit = (newLimit: number) => {
+    setParams((prev) => ({ ...prev, limit: newLimit, page: 1 }));
+  };
   const handleDelete = () => {
     // TODO: 선택삭제 기능 구현
     alert('선택삭제');
@@ -79,6 +83,24 @@ export default function ResultSection({ data, isPending }: ResultSectionProps) {
     // TODO: 엑셀 다운로드 기능 구현
     alert('엑셀 다운로드');
   };
+  const handleClickPrev = () => {
+    setParams((prev) => ({ ...prev, page: prev.page !== 1 ? prev.page - 1 : 1 }));
+  };
+  const handleClickNext = () => {
+    setParams((prev) => ({
+      ...prev,
+      page: prev.page !== totalPages ? prev.page + 1 : totalPages,
+    }));
+  };
+  const handleClickFirst = () => {
+    setParams((prev) => ({ ...prev, page: 1 }));
+  };
+  const handleClickLast = () => {
+    setParams((prev) => ({ ...prev, page: totalPages }));
+  };
+  const handleClickPagination = (page: number) => {
+    setParams((prev) => ({ ...prev, page: page }));
+  };
 
   return (
     <section className="flex flex-col gap-[2rem] rounded-[1.6rem] bg-white py-[3rem] pr-[2.4rem] pl-[3.8rem]">
@@ -90,8 +112,8 @@ export default function ResultSection({ data, isPending }: ResultSectionProps) {
         <div className="flex gap-[0.2rem]">
           <Dropdown
             options={PAGE_SIZE_LABEL}
-            value={pageSize}
-            onChange={(v) => setPageSize(v)}
+            value={params.limit}
+            onChange={(v) => handleChangeLimit(v)}
             className="border-none"
           />
           <div className="flex gap-[1rem]">
@@ -149,39 +171,28 @@ export default function ResultSection({ data, isPending }: ResultSectionProps) {
 
       {/* 페이지네이션 */}
       <div className="flex justify-center gap-[1.2rem]">
-        <UnstyledButton aria-label="첫번째 페이지로 이동" onClick={() => setCurrentPage(1)}>
+        <UnstyledButton aria-label="첫번째 페이지로 이동" onClick={handleClickFirst}>
           <img src={pageFirstIcon} alt="" aria-hidden="true" />
         </UnstyledButton>
-        <UnstyledButton
-          aria-label="앞 페이지로 이동"
-          onClick={() => setCurrentPage((prev) => (prev !== 1 ? prev - 1 : prev))}
-        >
+        <UnstyledButton aria-label="앞 페이지로 이동" onClick={handleClickPrev}>
           <img src={pagePrevIcon} alt="" aria-hidden="true" />
         </UnstyledButton>
-        {Array.from({ length: pagination.totalPages }).map((_, idx) => (
+        {Array.from({ length: totalPages }).map((_, idx) => (
           <button
             key={idx}
-            onClick={() => setCurrentPage(idx + 1)}
+            onClick={() => handleClickPagination(idx + 1)}
             className={cn(
               'bg-gray-1 text-gray-4 h-[2.5rem] w-[2.5rem] rounded-[0.4rem]',
-              currentPage === idx + 1 && 'bg-primary-3 text-white',
+              pagination.page === idx + 1 && 'bg-primary-3 text-white',
             )}
           >
             {idx + 1}
           </button>
         ))}
-        <UnstyledButton
-          aria-label="뒤 페이지로 이동"
-          onClick={() =>
-            setCurrentPage((prev) => (prev !== pagination.totalPages ? prev + 1 : prev))
-          }
-        >
+        <UnstyledButton aria-label="뒤 페이지로 이동" onClick={handleClickNext}>
           <img src={pageNextIcon} alt="" aria-hidden="true" />
         </UnstyledButton>
-        <UnstyledButton
-          aria-label="마지막 페이지로 이동"
-          onClick={() => setCurrentPage(pagination.totalPages)}
-        >
+        <UnstyledButton aria-label="마지막 페이지로 이동" onClick={handleClickLast}>
           <img src={pageLastIcon} alt="" aria-hidden="true" />
         </UnstyledButton>
       </div>
