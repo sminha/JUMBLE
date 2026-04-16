@@ -1,6 +1,6 @@
 import { PurchaseRecord } from '@jumble/shared';
 import { cn } from '@/utils/cn';
-import { formatPrice } from '@/utils/format';
+import { formatPrice, formatDate } from '@/utils/format';
 import receiptIcon from '@/assets/receipt-icon.svg';
 import Checkbox from './Checkbox';
 import UnstyledButton from './UnstyledButton';
@@ -29,7 +29,7 @@ export default function PurchaseRow({ record }: PurchaseRowProps) {
       <td className={CELL_STYLE}>
         <UnstyledButton className={TEXT_BUTTON_STYLE}>{record.productNo}</UnstyledButton>
       </td>
-      <td className={CELL_STYLE}>{record.purchasedAt}</td>
+      <td className={CELL_STYLE}>{formatDate(record.purchasedAt)}</td>
       <td className={CELL_STYLE}>{record.vendor}</td>
       <td className={CELL_STYLE}>{record.product}</td>
       <td className={CELL_STYLE}>{record.category}</td>
