@@ -5,7 +5,7 @@ export const DATE = {
   CREATED_AT: 'CREATED_AT',
 } as const;
 
-export const DATE_LABEL: ValueLabel<Date>[] = [
+export const DATE_LABEL: [ValueLabel<Date>, ValueLabel<Date>] = [
   { value: DATE.PURCHASED_AT, label: '사입일' },
   { value: DATE.CREATED_AT, label: '등록일' },
 ];
