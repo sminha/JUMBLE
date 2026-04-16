@@ -1,7 +1,8 @@
+import type { ReactNode } from 'react';
 import { cn } from '@/utils/cn';
 
 interface UnstyledButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
 export default function UnstyledButton({ children, className, ...props }: UnstyledButtonProps) {

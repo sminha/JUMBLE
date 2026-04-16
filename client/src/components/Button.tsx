@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import { cn } from '@/utils/cn';
 
 const SIZE_STYLE = {
@@ -13,7 +14,7 @@ const VARIANT_STYLE = {
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   size?: keyof typeof SIZE_STYLE;
   variant?: keyof typeof VARIANT_STYLE;
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
 export default function Button({

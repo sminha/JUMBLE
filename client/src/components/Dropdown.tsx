@@ -30,7 +30,10 @@ export default function Dropdown<T extends string | number>({
       <div className="relative w-full">
         <select
           value={value}
-          onChange={(e) => onChange(e.target.value as T)}
+          onChange={(e) => {
+            const selected = options.find((opt) => String(opt.value) === e.target.value);
+            if (selected) onChange(selected.value);
+          }}
           aria-invalid={status === STATUS.ERROR}
           className={cn(
             'font-14-r text-gray-6 w-full appearance-none rounded-[0.8rem] border bg-white p-[1.2rem] pr-[3.2rem] focus:outline-none',

@@ -2,7 +2,7 @@ import { cn } from '@/utils/cn';
 import { ValueLabel } from '@/types/value-label';
 
 interface TogglePairProps<T> {
-  togglePair: ValueLabel<T>[];
+  togglePair: [ValueLabel<T>, ValueLabel<T>];
   selectedToggle: T;
   onChange: (selectedToggle: T) => void;
 }

@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import { cn } from '@/utils/cn';
 import { ValueLabel } from '@/types/value-label';
 
@@ -11,7 +12,7 @@ interface ToggleProps {
   isLast: boolean;
   isSelected: boolean;
   onChange: () => void;
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
 export default function ToggleGroup<T>({
