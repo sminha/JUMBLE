@@ -2,7 +2,7 @@ import { useState } from 'react';
 import Header from '@/components/Header';
 import FilterSection from './sections/FilterSection';
 import ResultSection from './sections/ResultSection';
-import { Draft, INITIAL_DRAFT } from './constants/draft';
+import { Draft, INITIAL_DRAFT } from '@jumble/shared';
 import { useGetPurchases } from '@/pages/purchases/list/apis';
 
 export default function PurchaseList() {

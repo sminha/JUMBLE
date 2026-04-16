@@ -4,7 +4,7 @@ import Checkbox from '../components/Checkbox';
 import AddonInput from '../components/AddonInput';
 import TogglePair from '../components/TogglePair';
 import ToggleGroup from '../components/ToggleGroup';
-import { Draft, FILTER_LABEL, DATE_LABEL, PERIOD_LABEL } from '../constants/draft';
+import { Draft, FILTER_LABEL, DATE_LABEL, PERIOD_LABEL } from '@jumble/shared';
 
 interface FilterSectionProps {
   draft: Draft;

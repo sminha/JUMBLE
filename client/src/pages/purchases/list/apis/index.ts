@@ -1,6 +1,6 @@
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import { fetchWithAuth } from '@/lib/api';
-import { Draft } from '../constants/draft';
+import { Draft } from '@jumble/shared';
 import { QUERY_KEYS } from '@/constants/query-key';
 
 export const getPurchases = async (draft: Draft) => {

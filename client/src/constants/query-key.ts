@@ -1,4 +1,4 @@
-import { Draft } from '@/pages/purchases/list/constants/draft';
+import { Draft } from '@jumble/shared';
 
 export const QUERY_KEYS = {
   PURCHASES: {

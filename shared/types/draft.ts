@@ -5,7 +5,7 @@ export const DATE = {
   CREATED_AT: 'CREATED_AT',
 } as const;
 
-export const DATE_LABEL: ValueLabel<DateType>[] = [
+export const DATE_LABEL: [ValueLabel<DateType>, ValueLabel<DateType>] = [
   { value: DATE.PURCHASED_AT, label: '사입일' },
   { value: DATE.CREATED_AT, label: '등록일' },
 ];
@@ -58,7 +58,7 @@ export type Draft = {
   page: number;
   limit: number;
   dateType: DateType;
-  periodType: Period;
+  periodType: Period | null;
   startDate: string;
   endDate: string;
   filterType: Filter;
