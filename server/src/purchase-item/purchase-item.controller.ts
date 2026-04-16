@@ -3,11 +3,15 @@ import { Prisma } from '@prisma/client';
 import { PurchaseItemService } from './purchase-item.service';
 import {
   DateType,
-  SortOrder,
-  PurchaseItemSortBy,
-  DATE_TYPES,
-  SORT_ORDERS,
+  DATE,
+  Period,
+  PERIOD,
+  Filter,
+  FILTER,
+  SortBy,
   SORT_BY,
+  SortOrder,
+  SORT_ORDER,
 } from '@jumble/shared';
 
 const isValidDate = (date: string) => /^\d{4}-\d{2}-\d{2}$/.test(date) && !isNaN(Date.parse(date));
@@ -20,15 +24,17 @@ export const PurchaseItemController = {
       const rawPage = req.query.page as string | undefined;
       const rawLimit = req.query.limit as string | undefined;
       const page = rawPage === undefined ? 1 : Number(rawPage);
-      const limit = rawLimit === undefined ? 50 : Number(rawLimit);
+      const limit = rawLimit === undefined ? 10 : Number(rawLimit);
 
-      const dateType = (req.query.dateType as DateType) ?? 'purchased';
-      const startDate = req.query.startDate as string | undefined;
-      const endDate = req.query.endDate as string | undefined;
-      const vendorName = req.query.vendorName as string | undefined;
-      const backorderOnly = req.query.backorderOnly === 'true';
-      const sortBy = (req.query.sortBy as PurchaseItemSortBy) ?? 'purchasedAt';
-      const sortOrder = (req.query.sortOrder as SortOrder) ?? 'desc';
+      const dateType = (req.query.dateType as DateType) ?? DATE.PURCHASED_AT;
+      const periodType = (req.query.periodType as Period) ?? PERIOD.TODAY;
+      const startDate = (req.query.startDate as string) ?? '';
+      const endDate = (req.query.endDate as string) ?? '';
+      const filterType = (req.query.filterType as Filter) ?? FILTER.VENDOR;
+      const keyword = (req.query.keyword as string) ?? '';
+      const isBackorderOnly = req.query.isBackorderOnly === 'true';
+      const sortBy = (req.query.sortBy as SortBy) ?? SORT_BY.PURCHASED_AT;
+      const sortOrder = (req.query.sortOrder as SortOrder) ?? SORT_ORDER.DESC;
 
       if (!Number.isInteger(page) || !Number.isInteger(limit) || page < 1 || limit < 1) {
         return res.status(400).json({
@@ -54,7 +60,7 @@ export const PurchaseItemController = {
         });
       }
 
-      if (!DATE_TYPES.includes(dateType)) {
+      if (!Object.values(DATE).includes(dateType)) {
         return res.status(400).json({
           success: false,
           status: 400,
@@ -62,15 +68,15 @@ export const PurchaseItemController = {
         });
       }
 
-      if (!SORT_BY.includes(sortBy)) {
+      if (!Object.values(SORT_BY).includes(sortBy)) {
         return res.status(400).json({
           success: false,
           status: 400,
-          message: `sortBy는 다음 값 중 하나여야 합니다: ${SORT_BY.join(', ')}`,
+          message: `sortBy는 다음 값 중 하나여야 합니다: ${Object.values(SORT_BY).join(', ')}`,
         });
       }
 
-      if (!SORT_ORDERS.includes(sortOrder)) {
+      if (!Object.values(SORT_ORDER).includes(sortOrder)) {
         return res.status(400).json({
           success: false,
           status: 400,
@@ -78,14 +84,16 @@ export const PurchaseItemController = {
         });
       }
 
-      const { items, total } = await PurchaseItemService.getPurchaseItems(userId, {
+      const { records, total } = await PurchaseItemService.getPurchaseItems(userId, {
         page,
         limit,
         dateType,
+        periodType,
         startDate,
         endDate,
-        vendorName,
-        backorderOnly,
+        filterType,
+        keyword,
+        isBackorderOnly,
         sortBy,
         sortOrder,
       });
@@ -94,7 +102,7 @@ export const PurchaseItemController = {
         success: true,
         status: 200,
         message: '사입내역 조회에 성공했습니다.',
-        items,
+        records,
         pagination: {
           total,
           page,
