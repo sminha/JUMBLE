@@ -2,7 +2,7 @@ import { UseFormSetValue, UseFieldArrayReplace } from 'react-hook-form';
 import { useQueryClient, useMutation } from '@tanstack/react-query';
 import { QUERY_KEYS } from '@/constants/query-key';
 import { Purchase } from '@jumble/shared';
-import { fetchWithAuth } from '@/libs/api';
+import { fetchWithAuth } from '@/lib/api';
 import { useNavigate } from 'react-router';
 import { PATHS } from '@/router';
 
