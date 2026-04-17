@@ -1,6 +1,7 @@
 @import 'tailwindcss';
+@import './shadcn.css';
 @import './tokens/color.css';
 @import './tokens/typography.css';
+@import './animation.css';
 @import './reset.css';
 @import './base.css';
-@import './animation.css';
