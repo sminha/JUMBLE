@@ -22,6 +22,7 @@ export const querySchema = z
       .number()
       .int()
       .min(1, 'limit은 1 이상이어야 합니다.')
+      .max(300, 'limit은 300 이하여야 합니다.')
       .default(INITIAL_DRAFT.limit),
     dateType: z
       .enum(Object.values(DATE) as [DateType, ...DateType[]], {
@@ -40,7 +41,7 @@ export const querySchema = z
       })
       .default(INITIAL_DRAFT.filterType),
     keyword: z.string().default(INITIAL_DRAFT.keyword),
-    isBackorderOnly: z.coerce.boolean().default(INITIAL_DRAFT.isBackorderOnly),
+    isBackorderOnly: z.stringbool().default(INITIAL_DRAFT.isBackorderOnly),
     sortBy: z
       .enum(Object.values(SORT_BY) as [SortBy, ...SortBy[]], {
         message: `sortBy는 ${Object.values(SORT_BY).join(', ')} 중 하나여야 합니다.`,

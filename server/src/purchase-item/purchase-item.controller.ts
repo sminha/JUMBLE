@@ -10,7 +10,9 @@ export const PurchaseItemController = {
       const result = querySchema.safeParse(req.query);
 
       if (!result.success) {
-        return res.status(400).json({ success: false, status: 400, message: result.error.message });
+        return res
+          .status(400)
+          .json({ success: false, status: 400, message: result.error.issues[0].message });
       }
 
       const { records, total } = await PurchaseItemService.getPurchaseItems(userId, result.data);
