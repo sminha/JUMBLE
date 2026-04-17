@@ -175,7 +175,7 @@ export const PurchaseController = {
         success: true,
         status: 200,
         message: '사입내역 상세 조회에 성공했습니다.',
-        purchase,
+        data: purchase,
       });
     } catch (error) {
       console.error('🚨 서버 에러 발생:', error);

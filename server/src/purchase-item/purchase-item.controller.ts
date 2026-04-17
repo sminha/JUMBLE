@@ -59,7 +59,7 @@ export const PurchaseItemController = {
   getPurchaseItem: async (req: Request, res: Response) => {
     try {
       const userId = req.user.id;
-      const rawItemId = req.params.id as string;
+      const rawItemId = req.params.productId as string;
 
       if (!/^\d+$/.test(rawItemId)) {
         return res.status(400).json({
@@ -84,7 +84,7 @@ export const PurchaseItemController = {
         success: true,
         status: 200,
         message: '상품 사입내역 상세 조회에 성공했습니다.',
-        item,
+        data: item,
       });
     } catch (error) {
       console.error('🚨 서버 에러 발생:', error);
