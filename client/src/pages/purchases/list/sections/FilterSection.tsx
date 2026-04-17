@@ -4,14 +4,24 @@ import Checkbox from '../components/Checkbox';
 import AddonInput from '../components/AddonInput';
 import TogglePair from '../components/TogglePair';
 import ToggleGroup from '../components/ToggleGroup';
-import { Draft, FILTER_LABEL, DATE_LABEL, PERIOD_LABEL } from '../constants/draft';
+import { Draft, FILTER_LABEL, DATE_LABEL, PERIOD_LABEL } from '@jumble/shared';
 
 interface FilterSectionProps {
   draft: Draft;
   setDraft: React.Dispatch<React.SetStateAction<Draft>>;
+  onSearch: () => void;
 }
 
-export default function FilterSection({ draft, setDraft }: FilterSectionProps) {
+export default function FilterSection({ draft, setDraft, onSearch }: FilterSectionProps) {
+  const handleSearch = () => {
+    if (draft.periodType === null && (!draft.startDate || !draft.endDate)) {
+      // TODO: 토스트로 변경
+      alert('조회 시작일과 종료일을 입력해주세요.');
+      return;
+    }
+    onSearch();
+  };
+
   return (
     <section className="flex w-fit flex-col gap-[0.8rem] rounded-[1.6rem] bg-white px-[3.8rem] py-[3rem]">
       <div className="flex gap-[3.6rem]">
@@ -27,22 +37,31 @@ export default function FilterSection({ draft, setDraft }: FilterSectionProps) {
             <ToggleGroup
               toggleGroup={PERIOD_LABEL}
               selectedToggle={draft.periodType}
-              onChange={(v) => setDraft((prev) => ({ ...prev, periodType: v }))}
+              onChange={(v) =>
+                setDraft((prev) => ({ ...prev, periodType: v, startDate: '', endDate: '' }))
+              }
             />
             <div className="flex gap-[0.8rem]">
               <Input
                 type="date"
                 aria-label="조회 시작일"
+                max={draft.endDate}
                 value={draft.startDate}
-                onChange={(e) => setDraft((prev) => ({ ...prev, startDate: e.target.value }))}
-                className="border-gray-1 text-gray-5 w-[15rem]"
+                onChange={(e) =>
+                  setDraft((prev) => ({ ...prev, startDate: e.target.value, periodType: null }))
+                }
+                className="border-gray-1 text-gray-5 w-[16rem]"
               />
               <Input
                 type="date"
                 aria-label="조회 종료일"
+                min={draft.startDate}
+                max={new Date().toISOString().split('T')[0]}
                 value={draft.endDate}
-                onChange={(e) => setDraft((prev) => ({ ...prev, endDate: e.target.value }))}
-                className="border-gray-1 text-gray-5 w-[15rem]"
+                onChange={(e) =>
+                  setDraft((prev) => ({ ...prev, endDate: e.target.value, periodType: null }))
+                }
+                className="border-gray-1 text-gray-5 w-[16rem]"
               />
             </div>
           </div>
@@ -71,7 +90,7 @@ export default function FilterSection({ draft, setDraft }: FilterSectionProps) {
 
       {/* 검색 */}
       <div className="flex justify-end">
-        <Button size="medium" variant="primary">
+        <Button size="medium" variant="primary" onClick={handleSearch}>
           검색
         </Button>
       </div>

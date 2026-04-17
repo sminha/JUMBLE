@@ -4,7 +4,7 @@ import { ValueLabel } from '@/types/value-label';
 
 interface ToggleGroupProps<T> {
   toggleGroup: ValueLabel<T>[];
-  selectedToggle: T;
+  selectedToggle: T | null;
   onChange: (selectedToggle: T) => void;
 }
 

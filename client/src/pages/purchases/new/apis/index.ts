@@ -1,7 +1,8 @@
 import { UseFormSetValue, UseFieldArrayReplace } from 'react-hook-form';
-import { useMutation } from '@tanstack/react-query';
+import { useQueryClient, useMutation } from '@tanstack/react-query';
+import { QUERY_KEYS } from '@/constants/query-key';
 import { Purchase } from '@jumble/shared';
-import { fetchWithAuth } from '@/lib/api';
+import { fetchWithAuth } from '@/libs/api';
 import { useNavigate } from 'react-router';
 import { PATHS } from '@/router';
 
@@ -84,10 +85,12 @@ const createPurchase = async (form: Purchase) => {
 // 사입내역 추가 API
 export const useCreatePurchase = () => {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: createPurchase,
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.PURCHASES.LIST });
       navigate(PATHS.PURCHASELIST);
     },
     onError: () => {

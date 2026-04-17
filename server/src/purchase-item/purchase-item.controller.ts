@@ -1,105 +1,32 @@
 import { Request, Response } from 'express';
 import { Prisma } from '@prisma/client';
 import { PurchaseItemService } from './purchase-item.service';
-import {
-  DateType,
-  SortOrder,
-  PurchaseItemSortBy,
-  DATE_TYPES,
-  SORT_ORDERS,
-  SORT_BY,
-} from '@jumble/shared';
-
-const isValidDate = (date: string) => /^\d{4}-\d{2}-\d{2}$/.test(date) && !isNaN(Date.parse(date));
+import { querySchema } from './query.schema';
 
 export const PurchaseItemController = {
   getPurchaseItems: async (req: Request, res: Response) => {
     try {
       const userId = req.user.id;
+      const result = querySchema.safeParse(req.query);
 
-      const rawPage = req.query.page as string | undefined;
-      const rawLimit = req.query.limit as string | undefined;
-      const page = rawPage === undefined ? 1 : Number(rawPage);
-      const limit = rawLimit === undefined ? 50 : Number(rawLimit);
-
-      const dateType = (req.query.dateType as DateType) ?? 'purchased';
-      const startDate = req.query.startDate as string | undefined;
-      const endDate = req.query.endDate as string | undefined;
-      const vendorName = req.query.vendorName as string | undefined;
-      const backorderOnly = req.query.backorderOnly === 'true';
-      const sortBy = (req.query.sortBy as PurchaseItemSortBy) ?? 'purchasedAt';
-      const sortOrder = (req.query.sortOrder as SortOrder) ?? 'desc';
-
-      if (!Number.isInteger(page) || !Number.isInteger(limit) || page < 1 || limit < 1) {
-        return res.status(400).json({
-          success: false,
-          status: 400,
-          message: 'page와 limit은 1 이상이어야 합니다.',
-        });
+      if (!result.success) {
+        return res
+          .status(400)
+          .json({ success: false, status: 400, message: result.error.issues[0].message });
       }
 
-      if ((startDate && !endDate) || (!startDate && endDate)) {
-        return res.status(400).json({
-          success: false,
-          status: 400,
-          message: 'startDate와 endDate는 함께 제공되어야 합니다.',
-        });
-      }
-
-      if (startDate && endDate && (!isValidDate(startDate) || !isValidDate(endDate))) {
-        return res.status(400).json({
-          success: false,
-          status: 400,
-          message: 'startDate와 endDate는 유효한 YYYY-MM-DD 형식이어야 합니다.',
-        });
-      }
-
-      if (!DATE_TYPES.includes(dateType)) {
-        return res.status(400).json({
-          success: false,
-          status: 400,
-          message: 'dateType은 purchased 또는 created여야 합니다.',
-        });
-      }
-
-      if (!SORT_BY.includes(sortBy)) {
-        return res.status(400).json({
-          success: false,
-          status: 400,
-          message: `sortBy는 다음 값 중 하나여야 합니다: ${SORT_BY.join(', ')}`,
-        });
-      }
-
-      if (!SORT_ORDERS.includes(sortOrder)) {
-        return res.status(400).json({
-          success: false,
-          status: 400,
-          message: 'sortOrder는 asc 또는 desc여야 합니다.',
-        });
-      }
-
-      const { items, total } = await PurchaseItemService.getPurchaseItems(userId, {
-        page,
-        limit,
-        dateType,
-        startDate,
-        endDate,
-        vendorName,
-        backorderOnly,
-        sortBy,
-        sortOrder,
-      });
+      const { records, total } = await PurchaseItemService.getPurchaseItems(userId, result.data);
 
       return res.status(200).json({
         success: true,
         status: 200,
         message: '사입내역 조회에 성공했습니다.',
-        items,
+        records,
         pagination: {
           total,
-          page,
-          limit,
-          totalPages: Math.ceil(total / limit),
+          page: result.data.page,
+          limit: result.data.limit,
+          totalPages: Math.ceil(total / result.data.limit),
         },
       });
     } catch (error) {

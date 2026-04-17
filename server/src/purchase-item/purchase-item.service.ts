@@ -2,67 +2,93 @@ import { Prisma } from '@prisma/client';
 import prisma from '../lib/prisma';
 import { serializeBigInt } from '../utils/serializeBigInt';
 import { formatPurchaseItem } from '../utils/format';
-import { GetPurchaseItemsQuery } from '@jumble/shared';
+import { Draft, DATE, FILTER, SORT_BY, PERIOD, Period } from '@jumble/shared';
+
+const getTodayKST = (): string => {
+  const kst = new Date(Date.now() + 9 * 60 * 60 * 1000);
+  return kst.toISOString().split('T')[0];
+};
+
+const getPeriodStartDate = (periodType: Exclude<Period, 'ALL'>): string => {
+  const daysAgoMap: Record<Exclude<Period, 'ALL'>, number> = {
+    [PERIOD.TODAY]: 0,
+    [PERIOD.ONE_WEEK]: 6,
+    [PERIOD.ONE_MONTH]: 29,
+    [PERIOD.THREE_MONTH]: 89,
+  };
+  const kst = new Date(
+    Date.now() - daysAgoMap[periodType] * 24 * 60 * 60 * 1000 + 9 * 60 * 60 * 1000,
+  );
+  return kst.toISOString().split('T')[0];
+};
 
 export const PurchaseItemService = {
-  getPurchaseItems: async (userId: bigint, params: GetPurchaseItemsQuery) => {
+  getPurchaseItems: async (userId: bigint, params: Draft) => {
     const {
       page,
       limit,
       dateType,
+      periodType,
       startDate,
       endDate,
-      vendorName,
-      backorderOnly,
+      filterType,
+      keyword,
+      isBackorderOnly,
       sortBy,
       sortOrder,
     } = params;
     const skip = (page - 1) * limit;
 
+    const resolvedStartDate =
+      startDate || (periodType && periodType !== PERIOD.ALL ? getPeriodStartDate(periodType) : '');
+    const resolvedEndDate =
+      endDate || (periodType && periodType !== PERIOD.ALL ? getTodayKST() : '');
+
     const purchaseWhere: Prisma.PurchaseWhereInput = {
       user_id: userId,
-      ...(vendorName && { vendor: { name: { contains: vendorName } } }),
-      ...(startDate &&
-        endDate &&
-        dateType === 'purchased' && {
+      ...(filterType === FILTER.VENDOR && { vendor: { name: { contains: keyword } } }),
+      ...(resolvedStartDate &&
+        resolvedEndDate &&
+        dateType === DATE.PURCHASED_AT && {
           purchased_at: {
-            gte: new Date(`${startDate}T00:00:00.000+09:00`),
-            lte: new Date(`${endDate}T23:59:59.999+09:00`),
+            gte: new Date(`${resolvedStartDate}T00:00:00.000+09:00`),
+            lte: new Date(`${resolvedEndDate}T23:59:59.999+09:00`),
           },
         }),
-      ...(startDate &&
-        endDate &&
-        dateType === 'created' && {
+      ...(resolvedStartDate &&
+        resolvedEndDate &&
+        dateType === DATE.CREATED_AT && {
           created_at: {
-            gte: new Date(`${startDate}T00:00:00.000+09:00`),
-            lte: new Date(`${endDate}T23:59:59.999+09:00`),
+            gte: new Date(`${resolvedStartDate}T00:00:00.000+09:00`),
+            lte: new Date(`${resolvedEndDate}T23:59:59.999+09:00`),
           },
         }),
     };
 
     const where: Prisma.PurchaseItemWhereInput = {
       purchase: purchaseWhere,
-      ...(backorderOnly && { backorder_quantity: { gt: 0 } }),
+      ...(filterType === FILTER.PRODUCT && { item_name: { contains: keyword } }),
+      ...(isBackorderOnly && { backorder_quantity: { gt: 0 } }),
     };
 
     const orderBy = ((): Prisma.PurchaseItemOrderByWithRelationInput => {
       switch (sortBy) {
-        case 'purchasedAt':
+        case SORT_BY.PURCHASED_AT:
           return { purchase: { purchased_at: sortOrder } };
-        case 'unitPrice':
+        case SORT_BY.PRICE:
           return { unit_price: sortOrder };
-        case 'quantity':
+        case SORT_BY.QUANTITY:
           return { quantity: sortOrder };
-        case 'backorderQuantity':
+        case SORT_BY.BACKORDER_QUANTITY:
           return { backorder_quantity: sortOrder };
-        // TODO : DB에 computed column (generated column) 추가
-        // case "totalAmount":      return { unit_price: sortOrder };
+        case SORT_BY.TOTAL_PRICE:
+          return { total_price: sortOrder };
         default:
           return { purchase: { purchased_at: 'desc' } };
       }
     })();
 
-    const [items, total] = await prisma.$transaction([
+    const [records, total] = await prisma.$transaction([
       prisma.purchaseItem.findMany({
         where,
         skip,
@@ -92,7 +118,7 @@ export const PurchaseItemService = {
       prisma.purchaseItem.count({ where }),
     ]);
 
-    const formattedPurchaseItems = items.map(
+    const formattedPurchaseItems = records.map(
       ({
         purchase,
         id,
@@ -104,21 +130,21 @@ export const PurchaseItemService = {
         ...rest
       }) => ({
         purchaseId: purchase.id,
-        itemId: id,
+        productId: id,
         purchaseNo: purchase.purchase_no,
-        purchaseItemNo: purchase_item_no,
+        productNo: purchase_item_no,
         purchasedAt: purchase.purchased_at,
         vendor: purchase.vendor.name,
-        itemName: item_name,
-        extraOption: extra_option,
-        unitPrice: unit_price,
-        totalAmount: unit_price * rest.quantity,
+        product: item_name,
+        option: extra_option,
+        price: unit_price,
+        totalPrice: unit_price * rest.quantity,
         backorderQuantity: backorder_quantity,
         ...rest,
       }),
     );
 
-    return { items: serializeBigInt(formattedPurchaseItems), total };
+    return { records: serializeBigInt(formattedPurchaseItems), total };
   },
 
   getPurchaseItem: async (userId: bigint, itemId: bigint) => {
