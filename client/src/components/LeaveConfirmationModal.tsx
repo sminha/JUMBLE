@@ -1,4 +1,4 @@
-import Modal from '@/pages/purchases/list/components/Modal';
+import Modal from '@/components/Modal';
 import { FieldValues, UseFormReset } from 'react-hook-form';
 
 interface LeaveConfirmationModalProps<T extends FieldValues> {

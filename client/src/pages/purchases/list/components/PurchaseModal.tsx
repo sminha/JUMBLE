@@ -5,7 +5,7 @@ import { purchaseSchema } from '@jumble/shared';
 import LeaveConfirmationModal from '@/components/LeaveConfirmationModal';
 import ProductTable from '@/components/ProductTable';
 import { formatDate } from '@/utils/format';
-import Modal, { ModalRow } from './Modal';
+import Modal, { ModalRow } from '../../../../components/Modal';
 import { PURCHASE_DETAIL_MOCK } from '../mocks/mock';
 
 interface PurchaseModalProps {

@@ -4,7 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { productSchema, CATEGORY_LABEL, CATEGORY_LABEL_NEW } from '@jumble/shared';
 import LeaveConfirmationModal from '@/components/LeaveConfirmationModal';
 import { formatPrice, formatDate } from '@/utils/format';
-import Modal, { ModalRow } from './Modal';
+import Modal, { ModalRow } from '../../../../components/Modal';
 import { PRODUCT_DETAIL_MOCK } from '../mocks/mock';
 import { cn } from '@/utils/cn';
 
