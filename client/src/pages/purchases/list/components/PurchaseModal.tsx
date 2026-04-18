@@ -2,11 +2,11 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { purchaseSchema } from '@jumble/shared';
+import LeaveConfirmationModal from '@/components/LeaveConfirmationModal';
 import ProductTable from '@/components/ProductTable';
 import { formatDate } from '@/utils/format';
-import { PURCHASE_DETAIL_MOCK } from '../mocks/mock';
 import Modal, { ModalRow } from './Modal';
-import LeaveConfirmationModal from '@/components/LeaveConfirmationModal';
+import { PURCHASE_DETAIL_MOCK } from '../mocks/mock';
 
 interface PurchaseModalProps {
   purchaseId: string;
@@ -55,9 +55,6 @@ export default function PurchaseModal({ purchaseId, open, onOpenChange }: Purcha
     onOpenChange(newOpen);
   };
 
-  const handleCancel = () => {
-    setIsEditing(false);
-  };
   const handleRemove = () => {
     // TODO: 사입내역 삭제 API 연동
     console.log(purchaseId);
@@ -68,6 +65,9 @@ export default function PurchaseModal({ purchaseId, open, onOpenChange }: Purcha
     console.log(data);
     onOpenChange(false);
   });
+  const handleCancel = () => {
+    setIsEditing(false);
+  };
   const handleEdit = () => {
     setIsEditing(true);
   };

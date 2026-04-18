@@ -1,20 +1,19 @@
 import Modal from '@/pages/purchases/list/components/Modal';
-import { Purchase } from '@jumble/shared';
-import { UseFormReset } from 'react-hook-form';
+import { FieldValues, UseFormReset } from 'react-hook-form';
 
-interface LeaveConfirmationModalProps {
+interface LeaveConfirmationModalProps<T extends FieldValues> {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onPrevOpenChange: (open: boolean) => void;
-  reset: UseFormReset<Purchase>;
+  reset: UseFormReset<T>;
 }
 
-export default function LeaveConfirmationModal({
+export default function LeaveConfirmationModal<T extends FieldValues>({
   open,
   onOpenChange,
   onPrevOpenChange,
   reset,
-}: LeaveConfirmationModalProps) {
+}: LeaveConfirmationModalProps<T>) {
   const handleLeave = () => {
     onOpenChange(false);
     onPrevOpenChange(false);

@@ -1,6 +1,5 @@
 import { ReactNode } from 'react';
-import { UseFormRegister, Path, FieldErrors, get } from 'react-hook-form';
-import { Purchase } from '@jumble/shared';
+import { get, Path, UseFormRegister, FieldErrors, FieldValues } from 'react-hook-form';
 import { cn } from '@/utils/cn';
 import {
   Dialog,
@@ -75,17 +74,17 @@ export default function Modal({
   );
 }
 
-type ModalRowProps = {
+type ModalRowProps<T extends FieldValues> = {
   label: ReactNode;
   value: ReactNode;
   inputType?: string;
   isEditing?: boolean;
-  field?: Path<Purchase>;
-  register?: UseFormRegister<Purchase>;
-  errors?: FieldErrors<Purchase>;
+  field?: Path<T>;
+  register?: UseFormRegister<T>;
+  errors?: FieldErrors<T>;
 };
 
-export function ModalRow({
+export function ModalRow<T extends FieldValues>({
   label,
   value,
   inputType,
@@ -93,7 +92,7 @@ export function ModalRow({
   field,
   register,
   errors,
-}: ModalRowProps) {
+}: ModalRowProps<T>) {
   return (
     <div className="flex gap-[0.8rem]">
       <span className="font-14-m text-gray-5 flex w-[8rem] shrink-0 items-center">{label}</span>
