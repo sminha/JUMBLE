@@ -1,6 +1,7 @@
 import { ReactNode } from 'react';
 import { UseFormRegister, Path, FieldErrors, get } from 'react-hook-form';
 import { Purchase } from '@jumble/shared';
+import { cn } from '@/utils/cn';
 import {
   Dialog,
   DialogContent,
@@ -13,14 +14,16 @@ import Button from '@/components/Button';
 import { STATUS } from '@/constants/status';
 
 export interface ModalProps {
-  title: string;
+  title?: string;
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onOpenChangeComplete?: (open: boolean) => void;
+  showCloseButton?: boolean;
   leftLabel: ReactNode;
   rightLabel: ReactNode;
   onLeftClick: () => void;
   onRightClick: () => void;
+  buttonClassName?: string;
   children: ReactNode;
 }
 
@@ -29,24 +32,41 @@ export default function Modal({
   open,
   onOpenChange,
   onOpenChangeComplete,
+  showCloseButton = true,
   leftLabel,
   rightLabel,
   onLeftClick,
   onRightClick,
+  buttonClassName,
   children,
 }: ModalProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange} onOpenChangeComplete={onOpenChangeComplete}>
-      <DialogContent className="flex flex-col gap-[3.2rem] p-[5rem]" showCloseButton>
-        <DialogHeader>
-          <DialogTitle className="title-16-sb text-gray-9">{title}</DialogTitle>
-        </DialogHeader>
+      <DialogContent
+        showCloseButton={showCloseButton}
+        className="flex max-h-[90vh] flex-col gap-[3.2rem] overflow-y-auto p-[5rem]"
+      >
+        {title && (
+          <DialogHeader>
+            <DialogTitle className="title-16-sb text-gray-9">{title}</DialogTitle>
+          </DialogHeader>
+        )}
         <div className="flex flex-col gap-[1.6rem]">{children}</div>
         <DialogFooter className="flex flex-row justify-end gap-[0.8rem] border-none bg-white">
-          <Button size="medium" variant="white" className="w-[10rem]" onClick={onLeftClick}>
+          <Button
+            size="medium"
+            variant="white"
+            className={cn('w-[10rem]', buttonClassName)}
+            onClick={onLeftClick}
+          >
             {leftLabel}
           </Button>
-          <Button size="medium" variant="primary" className="w-[10rem]" onClick={onRightClick}>
+          <Button
+            size="medium"
+            variant="primary"
+            className={cn('w-[10rem]', buttonClassName)}
+            onClick={onRightClick}
+          >
             {rightLabel}
           </Button>
         </DialogFooter>

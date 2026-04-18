@@ -32,9 +32,8 @@ export default function ProductTable({
   control,
   errors,
 }: ProductTableProps) {
-  // TODO: purchaseSchema items -> products
-  const { fields, append, remove } = useFieldArray({ control, name: 'items' });
-  const products = useWatch({ control, name: 'items' });
+  const { fields, append, remove } = useFieldArray({ control, name: 'products' });
+  const products = useWatch({ control, name: 'products' });
 
   const totalPrice = formatPrice(
     products.reduce((sum, product) => sum + (product?.price || 0) * (product.quantity || 0), 0),
@@ -67,7 +66,7 @@ export default function ProductTable({
             {fields.map((field, index) => (
               <ProductRow
                 key={field.id}
-                item={products[index] ?? field}
+                product={products[index] ?? field}
                 index={index}
                 count={fields.length}
                 hasProductId={hasProductId}
@@ -102,7 +101,7 @@ export default function ProductTable({
 }
 
 interface ProductRowProps {
-  item: Purchase['items'][number];
+  product: Purchase['products'][number];
   index: number;
   count: number;
   hasProductId: boolean;
@@ -129,7 +128,7 @@ const TD_CELL_STYLE = 'px-[0.8rem] py-[0.6rem]';
 const TD_TEXT_STYLE = 'font-14-r text-gray-6 flex justify-center';
 
 function ProductRow({
-  item,
+  product,
   index,
   count,
   hasProductId,
@@ -151,17 +150,17 @@ function ProductRow({
   return (
     <tr>
       {/* 상품사입번호 */}
-      {hasProductId && <td className={TD_TEXT_STYLE}>{item.productNo}</td>}
+      {hasProductId && <td className={TD_TEXT_STYLE}>{product.productNo}</td>}
 
       {/* 상품명 */}
       <td className={TD_CELL_STYLE}>
         {isEditing ? (
           <Input
-            {...register(`items.${index}.name`)}
-            status={errors.items?.[index]?.name ? STATUS.ERROR : STATUS.DEFAULT}
+            {...register(`products.${index}.name`)}
+            status={errors.products?.[index]?.name ? STATUS.ERROR : STATUS.DEFAULT}
           />
         ) : (
-          <span className={TD_TEXT_STYLE}>{item.name}</span>
+          <span className={TD_TEXT_STYLE}>{product.name}</span>
         )}
       </td>
 
@@ -170,20 +169,20 @@ function ProductRow({
         {isEditing ? (
           <Controller
             control={control}
-            name={`items.${index}.category`}
+            name={`products.${index}.category`}
             render={({ field }) => (
               <DropDown
                 options={OPTIONS_LABEL}
                 value={field.value}
                 onChange={field.onChange}
                 placeholder="선택"
-                status={errors.items?.[index]?.category ? STATUS.ERROR : STATUS.DEFAULT}
+                status={errors.products?.[index]?.category ? STATUS.ERROR : STATUS.DEFAULT}
               />
             )}
           />
         ) : (
           <span className={TD_TEXT_STYLE}>
-            {OPTIONS_LABEL.find((o) => o.value === item.category)?.label ?? item.category}
+            {OPTIONS_LABEL.find((o) => o.value === product.category)?.label ?? product.category}
           </span>
         )}
       </td>
@@ -191,27 +190,27 @@ function ProductRow({
       {/* 컬러 */}
       <td className={TD_CELL_STYLE}>
         {isEditing ? (
-          <Input {...register(`items.${index}.color`)} />
+          <Input {...register(`products.${index}.color`)} />
         ) : (
-          <span className={TD_TEXT_STYLE}>{item.color}</span>
+          <span className={TD_TEXT_STYLE}>{product.color}</span>
         )}
       </td>
 
       {/* 사이즈 */}
       <td className={TD_CELL_STYLE}>
         {isEditing ? (
-          <Input {...register(`items.${index}.size`)} />
+          <Input {...register(`products.${index}.size`)} />
         ) : (
-          <span className={TD_TEXT_STYLE}>{item.size}</span>
+          <span className={TD_TEXT_STYLE}>{product.size}</span>
         )}
       </td>
 
       {/* 기타옵션 */}
       <td className={TD_CELL_STYLE}>
         {isEditing ? (
-          <Input {...register(`items.${index}.option`)} />
+          <Input {...register(`products.${index}.option`)} />
         ) : (
-          <span className={TD_TEXT_STYLE}>{item.option ?? '-'}</span>
+          <span className={TD_TEXT_STYLE}>{product.option ?? '-'}</span>
         )}
       </td>
 
@@ -219,12 +218,12 @@ function ProductRow({
       <td className={TD_CELL_STYLE}>
         {isEditing ? (
           <Input
-            {...register(`items.${index}.price`, { valueAsNumber: true })}
-            status={errors.items?.[index]?.price ? STATUS.ERROR : STATUS.DEFAULT}
+            {...register(`products.${index}.price`, { valueAsNumber: true })}
+            status={errors.products?.[index]?.price ? STATUS.ERROR : STATUS.DEFAULT}
             className="text-center"
           />
         ) : (
-          <span className={TD_TEXT_STYLE}>{formatPrice(item.price)}</span>
+          <span className={TD_TEXT_STYLE}>{formatPrice(product.price)}</span>
         )}
       </td>
 
@@ -232,12 +231,12 @@ function ProductRow({
       <td className={TD_CELL_STYLE}>
         {isEditing ? (
           <Input
-            {...register(`items.${index}.quantity`, { valueAsNumber: true })}
-            status={errors.items?.[index]?.quantity ? STATUS.ERROR : STATUS.DEFAULT}
+            {...register(`products.${index}.quantity`, { valueAsNumber: true })}
+            status={errors.products?.[index]?.quantity ? STATUS.ERROR : STATUS.DEFAULT}
             className="text-center"
           />
         ) : (
-          <span className={TD_TEXT_STYLE}>{item.quantity}</span>
+          <span className={TD_TEXT_STYLE}>{product.quantity}</span>
         )}
       </td>
 
@@ -246,12 +245,12 @@ function ProductRow({
         {isEditing ? (
           <Input
             disabled
-            value={formatPrice((item?.price || 0) * (item?.quantity || 0))}
+            value={formatPrice((product?.price || 0) * (product?.quantity || 0))}
             className="bg-gray-1 cursor-not-allowed text-center"
           />
         ) : (
           <span className={TD_TEXT_STYLE}>
-            {formatPrice((item?.price || 0) * (item?.quantity || 0))}
+            {formatPrice((product?.price || 0) * (product?.quantity || 0))}
           </span>
         )}
       </td>
@@ -260,14 +259,14 @@ function ProductRow({
       <td className={TD_CELL_STYLE}>
         {isEditing ? (
           <Input
-            {...register(`items.${index}.backorderQuantity`, {
+            {...register(`products.${index}.backorderQuantity`, {
               valueAsNumber: true,
             })}
-            status={errors.items?.[index]?.backorderQuantity ? STATUS.ERROR : STATUS.DEFAULT}
+            status={errors.products?.[index]?.backorderQuantity ? STATUS.ERROR : STATUS.DEFAULT}
             className="text-center"
           />
         ) : (
-          <span className={TD_TEXT_STYLE}>{item.backorderQuantity}</span>
+          <span className={TD_TEXT_STYLE}>{product.backorderQuantity}</span>
         )}
       </td>
 

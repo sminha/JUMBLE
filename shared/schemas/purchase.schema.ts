@@ -27,7 +27,7 @@ export const purchaseSchema = z.object({
       '올바른 날짜/시간 형식이 아닙니다 (YYYY-MM-DDTHH:mm)',
     ),
   vendor: z.string().min(1, '거래처명을 입력하세요'),
-  items: z.array(productSchema).min(1, '상품을 1개 이상 추가하세요'),
+  products: z.array(productSchema).min(1, '상품을 1개 이상 추가하세요'),
   receipt: z.string().optional(),
 });
 
@@ -35,6 +35,7 @@ export type Purchase = z.infer<typeof purchaseSchema>;
 export type Product = z.infer<typeof productSchema>;
 
 export const DEFAULT_PRODUCT: Product = {
+  productNo: '-',
   name: '',
   category: '' as unknown as Category,
   color: '',
@@ -49,5 +50,5 @@ export const DEFAULT_PURCHASE: Purchase = {
   purchasedAt: '',
   vendor: '',
   receipt: '',
-  items: [DEFAULT_PRODUCT],
+  products: [DEFAULT_PRODUCT],
 };

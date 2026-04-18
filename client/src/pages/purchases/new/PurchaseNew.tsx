@@ -1,6 +1,6 @@
 import { useFieldArray, useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Category, Product, Purchase, purchaseSchema } from '@jumble/shared';
+import { Purchase, purchaseSchema, DEFAULT_PRODUCT, DEFAULT_PURCHASE } from '@jumble/shared';
 import { formatPrice } from '@/utils/format';
 import Input from '@/components/Input';
 import Header from '@/components/Header';
@@ -23,17 +23,6 @@ const TABLE_HEADERS: { label: string; width: string }[] = [
   { label: '', width: 'w-[4rem]' },
 ];
 
-const DEFAULT_ITEMS: Product = {
-  name: '',
-  category: '' as unknown as Category,
-  color: '',
-  size: '',
-  option: '',
-  price: undefined as unknown as number,
-  quantity: undefined as unknown as number,
-  backorderQuantity: undefined as unknown as number,
-};
-
 export default function PurchaseNew() {
   const {
     register,
@@ -43,24 +32,20 @@ export default function PurchaseNew() {
     formState: { errors },
   } = useForm<Purchase>({
     resolver: zodResolver(purchaseSchema),
-    defaultValues: {
-      purchasedAt: '',
-      vendor: '',
-      items: [DEFAULT_ITEMS],
-    },
+    defaultValues: DEFAULT_PURCHASE,
   });
-  const items = useWatch({ control, name: 'items' });
+  const products = useWatch({ control, name: 'products' });
   const { fields, append, remove, replace } = useFieldArray({
     control,
-    name: 'items',
+    name: 'products',
   });
 
   const totalPrice = formatPrice(
-    items.reduce((sum, item) => sum + (item?.price || 0) * (item.quantity || 0), 0),
+    products.reduce((sum, product) => sum + (product?.price || 0) * (product.quantity || 0), 0),
   );
-  const totalQuantity = items.reduce((sum, item) => sum + (item.quantity || 0), 0);
-  const totalBackorderQuantity = items.reduce(
-    (sum, item) => sum + (item.backorderQuantity || 0),
+  const totalQuantity = products.reduce((sum, product) => sum + (product.quantity || 0), 0);
+  const totalBackorderQuantity = products.reduce(
+    (sum, product) => sum + (product.backorderQuantity || 0),
     0,
   );
 
@@ -85,7 +70,7 @@ export default function PurchaseNew() {
           <div className="flex w-[48rem] items-center gap-[0.8rem]">
             <h2 className="title-16-m w-[9.4rem] shrink-0">사입일시</h2>
             <Input
-              type="date"
+              type="datetime-local"
               {...register('purchasedAt')}
               status={errors.purchasedAt ? STATUS.ERROR : STATUS.DEFAULT}
             />
@@ -120,7 +105,7 @@ export default function PurchaseNew() {
                   <ProductRow
                     key={field.id}
                     index={index}
-                    item={items[index]}
+                    product={products[index]}
                     register={register}
                     control={control}
                     errors={errors}
@@ -128,7 +113,7 @@ export default function PurchaseNew() {
                   />
                 ))}
                 <tr className="border-t-gray-3 text-gray-9 font-14-m border-t-1">
-                  <td className="py-[1.6rem] text-center">{items.length}건</td>
+                  <td className="py-[1.6rem] text-center">{products.length}건</td>
                   <td colSpan={5} />
                   <td className="py-[1.6rem] text-center">{totalQuantity}개</td>
                   <td className="py-[1.6rem] text-center">{totalPrice}원</td>
@@ -139,7 +124,7 @@ export default function PurchaseNew() {
             </table>
           </div>
           <div className="flex justify-center">
-            <Button size="medium" variant="white" onClick={() => append(DEFAULT_ITEMS)}>
+            <Button size="medium" variant="white" onClick={() => append(DEFAULT_PRODUCT)}>
               상품 추가하기
             </Button>
           </div>

@@ -10,7 +10,7 @@ export const PURCHASE_DETAIL_MOCK = {
     purchasedAt: '2024-11-14T00:00:00.000Z',
     vendor: '루프',
     receipt: 'https://loremflickr.com/600/400',
-    items: [
+    products: [
       {
         category: 'TOP' as Product['category'],
         color: '블랙',

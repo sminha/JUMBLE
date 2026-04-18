@@ -52,7 +52,7 @@ export const useImageUpload = ({
   replace,
 }: {
   setValue: UseFormSetValue<Purchase>;
-  replace: UseFieldArrayReplace<Purchase, 'items'>;
+  replace: UseFieldArrayReplace<Purchase, 'products'>;
 }) => {
   return useMutation({
     mutationFn: parseImage,

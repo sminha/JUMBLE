@@ -9,7 +9,7 @@ import { ValueLabel } from '@/types/value-label';
 
 interface ProductRowProps {
   index: number;
-  item: Purchase['items'][number];
+  product: Purchase['products'][number];
   register: UseFormRegister<Purchase>;
   control: Control<Purchase>;
   errors: FieldErrors<Purchase>;
@@ -30,7 +30,7 @@ const OPTIONS_LABEL: ValueLabel<Category>[] = [
 
 export default function ProductRow({
   index,
-  item,
+  product,
   register,
   control,
   errors,
@@ -41,8 +41,8 @@ export default function ProductRow({
       {/* 상품명 */}
       <td className="px-[0.8rem] py-[0.6rem]">
         <Input
-          {...register(`items.${index}.name`)}
-          status={errors.items?.[index]?.name ? STATUS.ERROR : STATUS.DEFAULT}
+          {...register(`products.${index}.name`)}
+          status={errors.products?.[index]?.name ? STATUS.ERROR : STATUS.DEFAULT}
         />
       </td>
 
@@ -50,14 +50,14 @@ export default function ProductRow({
       <td className="px-[0.8rem] py-[0.6rem]">
         <Controller
           control={control}
-          name={`items.${index}.category`}
+          name={`products.${index}.category`}
           render={({ field }) => (
             <DropDown
               options={OPTIONS_LABEL}
               value={field.value}
               onChange={field.onChange}
               placeholder="선택"
-              status={errors.items?.[index]?.category ? STATUS.ERROR : STATUS.DEFAULT}
+              status={errors.products?.[index]?.category ? STATUS.ERROR : STATUS.DEFAULT}
             />
           )}
         />
@@ -65,24 +65,24 @@ export default function ProductRow({
 
       {/* 컬러 */}
       <td className="px-[0.8rem] py-[0.6rem]">
-        <Input {...register(`items.${index}.color`)} />
+        <Input {...register(`products.${index}.color`)} />
       </td>
 
       {/* 사이즈 */}
       <td className="px-[0.8rem] py-[0.6rem]">
-        <Input {...register(`items.${index}.size`)} />
+        <Input {...register(`products.${index}.size`)} />
       </td>
 
       {/* 기타옵션 */}
       <td className="px-[0.8rem] py-[0.6rem]">
-        <Input {...register(`items.${index}.option`)} />
+        <Input {...register(`products.${index}.option`)} />
       </td>
 
       {/* 단가 */}
       <td className="px-[0.8rem] py-[0.6rem]">
         <Input
-          {...register(`items.${index}.price`, { valueAsNumber: true })}
-          status={errors.items?.[index]?.price ? STATUS.ERROR : STATUS.DEFAULT}
+          {...register(`products.${index}.price`, { valueAsNumber: true })}
+          status={errors.products?.[index]?.price ? STATUS.ERROR : STATUS.DEFAULT}
           className="text-center"
         />
       </td>
@@ -90,8 +90,8 @@ export default function ProductRow({
       {/* 수량 */}
       <td className="px-[0.8rem] py-[0.6rem]">
         <Input
-          {...register(`items.${index}.quantity`, { valueAsNumber: true })}
-          status={errors.items?.[index]?.quantity ? STATUS.ERROR : STATUS.DEFAULT}
+          {...register(`products.${index}.quantity`, { valueAsNumber: true })}
+          status={errors.products?.[index]?.quantity ? STATUS.ERROR : STATUS.DEFAULT}
           className="text-center"
         />
       </td>
@@ -100,7 +100,7 @@ export default function ProductRow({
       <td className="px-[0.8rem] py-[0.6rem]">
         <Input
           disabled
-          value={formatPrice((item?.price || 0) * (item?.quantity || 0))}
+          value={formatPrice((product?.price || 0) * (product?.quantity || 0))}
           className="bg-gray-1 cursor-not-allowed text-center"
         />
       </td>
@@ -108,10 +108,10 @@ export default function ProductRow({
       {/* 미송수량 */}
       <td className="px-[0.8rem] py-[0.6rem]">
         <Input
-          {...register(`items.${index}.backorderQuantity`, {
+          {...register(`products.${index}.backorderQuantity`, {
             valueAsNumber: true,
           })}
-          status={errors.items?.[index]?.backorderQuantity ? STATUS.ERROR : STATUS.DEFAULT}
+          status={errors.products?.[index]?.backorderQuantity ? STATUS.ERROR : STATUS.DEFAULT}
           className="text-center"
         />
       </td>
