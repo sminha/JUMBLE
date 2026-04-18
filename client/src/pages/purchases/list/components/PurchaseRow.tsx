@@ -1,4 +1,4 @@
-import { PurchaseRecord, CATEGORY_LABEL } from '@jumble/shared';
+import { PurchaseRecord, CATEGORY_LABEL_NEW } from '@jumble/shared';
 import { cn } from '@/utils/cn';
 import { formatPrice, formatDate } from '@/utils/format';
 import receiptIcon from '@/assets/receipt-icon.svg';
@@ -32,9 +32,7 @@ export default function PurchaseRow({ record }: PurchaseRowProps) {
       <td className={TD_CELL_STYLE}>{formatDate(record.purchasedAt)}</td>
       <td className={TD_CELL_STYLE}>{record.vendor}</td>
       <td className={TD_CELL_STYLE}>{record.product}</td>
-      <td className={TD_CELL_STYLE}>
-        {CATEGORY_LABEL.find((c) => c.value === record.category)?.label ?? record.category}
-      </td>
+      <td className={TD_CELL_STYLE}>{CATEGORY_LABEL_NEW[record.category]}</td>
       <td className={TD_CELL_STYLE}>{record.color || '-'}</td>
       <td className={TD_CELL_STYLE}>{record.size || '-'}</td>
       <td className={TD_CELL_STYLE}>{record.option || '-'}</td>

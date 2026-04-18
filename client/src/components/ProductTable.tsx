@@ -6,7 +6,7 @@ import {
   useFieldArray,
   UseFormRegister,
 } from 'react-hook-form';
-import { type Purchase, DEFAULT_PRODUCT, CATEGORY_LABEL } from '@jumble/shared';
+import { type Purchase, DEFAULT_PRODUCT, CATEGORY_LABEL, CATEGORY_LABEL_NEW } from '@jumble/shared';
 import Input from '@/components/Input';
 import DropDown from '@/components/Dropdown';
 import DeleteButton from '@/components/DeleteButton';
@@ -168,9 +168,7 @@ function ProductRow({
             )}
           />
         ) : (
-          <span className={TD_TEXT_STYLE}>
-            {CATEGORY_LABEL.find((c) => c.value === product.category)?.label ?? product.category}
-          </span>
+          <span className={TD_TEXT_STYLE}>{CATEGORY_LABEL_NEW[product.category]}</span>
         )}
       </td>
 

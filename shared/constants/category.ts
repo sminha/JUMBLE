@@ -29,4 +29,16 @@ export const CATEGORY_LABEL: ValueLabel<Category>[] = [
   { value: CATEGORY.ETC, label: '기타' },
 ];
 
+export const CATEGORY_LABEL_NEW: Record<Category, string> = {
+  TOP: '상의',
+  OUTER: '아우터',
+  BOTTOM: '하의',
+  SET: '세트',
+  BAG: '가방',
+  SHOES: '신발',
+  JEWELRY: '주얼리',
+  ACCESSORY: '악세사리',
+  ETC: '기타',
+};
+
 export type Category = (typeof CATEGORY_VALUES)[number];
