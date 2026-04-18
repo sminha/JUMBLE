@@ -13,6 +13,7 @@ import Checkbox from '../components/Checkbox';
 import PurchaseRow from '../components/PurchaseRow';
 import UnstyledButton from '../components/UnstyledButton';
 import PurchaseModal from '../components/PurchaseModal';
+import ProductModal from '../components/ProductModal';
 
 interface ResultSectionProps {
   params: Draft;
@@ -58,6 +59,7 @@ export default function ResultSection({
 }: ResultSectionProps) {
   const [isChecked, setIsChecked] = useState<boolean>(false);
   const [purchaseModalOpen, setPurchaseModalOpen] = useState<boolean>(false);
+  const [productModalOpen, setProductModalOpen] = useState<boolean>(false);
 
   if (isPending) {
     return (
@@ -131,6 +133,8 @@ export default function ResultSection({
       {/* TODO: PurchaseRow로 버튼 핸들러 이동 */}
       <button onClick={() => setPurchaseModalOpen((prev) => !prev)}>PurchaseModal 버튼</button>
       <PurchaseModal purchaseId="1" open={purchaseModalOpen} onOpenChange={setPurchaseModalOpen} />
+      <button onClick={() => setProductModalOpen((prev) => !prev)}>ProductModal 버튼</button>
+      <ProductModal productId="1" open={productModalOpen} onOpenChange={setProductModalOpen} />
 
       {/* 전체 개수, 드롭다운, 버튼 3개 */}
       <div className="flex justify-between">

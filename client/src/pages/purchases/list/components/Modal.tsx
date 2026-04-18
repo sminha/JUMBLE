@@ -1,5 +1,14 @@
 import { ReactNode } from 'react';
-import { get, Path, UseFormRegister, FieldErrors, FieldValues } from 'react-hook-form';
+import {
+  get,
+  Path,
+  UseFormRegister,
+  FieldErrors,
+  FieldValues,
+  Control,
+  Controller,
+  RegisterOptions,
+} from 'react-hook-form';
 import { cn } from '@/utils/cn';
 import {
   Dialog,
@@ -9,8 +18,10 @@ import {
   DialogFooter,
 } from '@/components/Dialog';
 import Input from '@/components/Input';
+import Dropdown from '@/components/Dropdown';
 import Button from '@/components/Button';
 import { STATUS } from '@/constants/status';
+import { ValueLabel } from '@/types/value-label';
 
 export interface ModalProps {
   title?: string;
@@ -77,31 +88,73 @@ export default function Modal({
 type ModalRowProps<T extends FieldValues> = {
   label: ReactNode;
   value: ReactNode;
+  numeric?: boolean;
   inputType?: string;
   isEditing?: boolean;
   field?: Path<T>;
   register?: UseFormRegister<T>;
+  registerOptions?: RegisterOptions<T>;
   errors?: FieldErrors<T>;
-};
+  className?: string;
+} & (
+  | { rowType?: 'input' | 'disabled'; control?: never; options?: never }
+  | { rowType: 'dropdown'; control: Control<T>; options: ValueLabel<string | number>[] }
+);
 
 export function ModalRow<T extends FieldValues>({
   label,
   value,
+  numeric,
   inputType,
   isEditing,
   field,
   register,
+  registerOptions,
   errors,
+  rowType = 'input',
+  control,
+  options,
+  className,
 }: ModalRowProps<T>) {
-  return (
-    <div className="flex gap-[0.8rem]">
-      <span className="font-14-m text-gray-5 flex w-[8rem] shrink-0 items-center">{label}</span>
-      {isEditing && field && register && errors ? (
+  const renderEditingField = () => {
+    if (rowType === 'dropdown' && field && control && options) {
+      return (
+        <Controller
+          name={field}
+          control={control}
+          render={({ field: { value, onChange }, fieldState: { error } }) => (
+            <Dropdown
+              options={options}
+              value={value}
+              onChange={onChange}
+              status={error ? STATUS.ERROR : STATUS.DEFAULT}
+            />
+          )}
+        />
+      );
+    }
+
+    if (rowType === 'disabled') {
+      return <Input type={inputType} value={value as string | number} disabled readOnly />;
+    }
+
+    if (field && register && errors) {
+      return (
         <Input
           type={inputType}
-          {...register(field)}
-          status={errors && get(errors, field) ? STATUS.ERROR : STATUS.DEFAULT}
+          numeric={numeric}
+          {...register(field, registerOptions)}
+          status={get(errors, field) ? STATUS.ERROR : STATUS.DEFAULT}
         />
+      );
+    }
+  };
+
+  return (
+    <div className={cn('flex gap-[0.8rem]', className)}>
+      <span className="font-14-m text-gray-5 flex w-[8rem] shrink-0 items-center">{label}</span>
+      {isEditing ? (
+        renderEditingField()
       ) : (
         <span className="font-14-m text-gray-8 w-[16rem] shrink-0">{value}</span>
       )}
