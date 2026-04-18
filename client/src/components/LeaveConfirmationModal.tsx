@@ -4,7 +4,8 @@ import { FieldValues, UseFormReset } from 'react-hook-form';
 interface LeaveConfirmationModalProps<T extends FieldValues> {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onEditingChange: (editing: boolean) => void;
+  onEditingChange?: (editing: boolean) => void;
+  onPrevOpenChange?: (open: boolean) => void;
   reset: UseFormReset<T>;
 }
 
@@ -12,12 +13,20 @@ export default function LeaveConfirmationModal<T extends FieldValues>({
   open,
   onOpenChange,
   onEditingChange,
+  onPrevOpenChange,
   reset,
 }: LeaveConfirmationModalProps<T>) {
   const handleLeave = () => {
     onOpenChange(false);
-    onEditingChange(false);
     reset();
+
+    if (onEditingChange) {
+      onEditingChange(false);
+    }
+
+    if (onPrevOpenChange) {
+      onPrevOpenChange(false);
+    }
   };
   const handleEdit = () => {
     onOpenChange(false);
