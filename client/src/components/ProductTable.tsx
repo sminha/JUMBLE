@@ -45,7 +45,7 @@ export default function ProductTable({
   );
 
   return (
-    <>
+    <div>
       <div className="flex gap-[0.8rem]">
         <table className="w-full table-fixed">
           <colgroup>
@@ -96,7 +96,7 @@ export default function ProductTable({
           </Button>
         </div>
       )}
-    </>
+    </div>
   );
 }
 

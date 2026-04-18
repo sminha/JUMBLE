@@ -1,13 +1,12 @@
-import { useFieldArray, useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Purchase, purchaseSchema, DEFAULT_PRODUCT, DEFAULT_PURCHASE } from '@jumble/shared';
-import { formatPrice } from '@/utils/format';
+import { useFieldArray, useForm } from 'react-hook-form';
+import { Purchase, purchaseSchema, DEFAULT_PURCHASE } from '@jumble/shared';
 import Input from '@/components/Input';
 import Header from '@/components/Header';
 import Button from '@/components/Button';
 import { STATUS } from '@/constants/status';
-import ProductRow from './components/ProductRow';
 import UploadButton from './components/UploadButton';
+import ProductTable from '@/components/ProductTable';
 import { useCreatePurchase, useImageUpload } from './apis';
 
 const TABLE_HEADERS: { label: string; width: string }[] = [
@@ -34,20 +33,10 @@ export default function PurchaseNew() {
     resolver: zodResolver(purchaseSchema),
     defaultValues: DEFAULT_PURCHASE,
   });
-  const products = useWatch({ control, name: 'products' });
-  const { fields, append, remove, replace } = useFieldArray({
+  const { replace } = useFieldArray({
     control,
     name: 'products',
   });
-
-  const totalPrice = formatPrice(
-    products.reduce((sum, product) => sum + (product?.price || 0) * (product.quantity || 0), 0),
-  );
-  const totalQuantity = products.reduce((sum, product) => sum + (product.quantity || 0), 0);
-  const totalBackorderQuantity = products.reduce(
-    (sum, product) => sum + (product.backorderQuantity || 0),
-    0,
-  );
 
   const { mutate: handleImageUpload, isPending: isImageUploading } = useImageUpload({
     setValue,
@@ -85,48 +74,14 @@ export default function PurchaseNew() {
           {/* 상품목록 */}
           <div className="flex gap-[0.8rem]">
             <h2 className="title-16-m w-[9.4rem] shrink-0">상품목록</h2>
-            <table className="w-full table-fixed">
-              <colgroup>
-                {TABLE_HEADERS.map(({ label, width }) => (
-                  <col key={label} className={width} />
-                ))}
-              </colgroup>
-              <thead>
-                <tr className="bg-gray-1">
-                  {TABLE_HEADERS.map((header) => (
-                    <th key={header.label} className="font-14-m text-gray-5 py-[1.6rem]">
-                      {header.label}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {fields.map((field, index) => (
-                  <ProductRow
-                    key={field.id}
-                    index={index}
-                    product={products[index]}
-                    register={register}
-                    control={control}
-                    errors={errors}
-                    remove={remove}
-                  />
-                ))}
-                <tr className="border-t-gray-3 text-gray-9 font-14-m border-t-1">
-                  <td className="py-[1.6rem] text-center">{products.length}건</td>
-                  <td colSpan={5} />
-                  <td className="py-[1.6rem] text-center">{totalQuantity}개</td>
-                  <td className="py-[1.6rem] text-center">{totalPrice}원</td>
-                  <td className="py-[1.6rem] text-center">{totalBackorderQuantity}개</td>
-                  <td className="py-[1.6rem] text-center"></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          <div className="flex justify-center">
-            <Button size="medium" variant="white" onClick={() => append(DEFAULT_PRODUCT)}>
-              상품 추가하기
-            </Button>
+            <ProductTable
+              headers={TABLE_HEADERS}
+              hasProductId={false}
+              isEditing={true}
+              register={register}
+              control={control}
+              errors={errors}
+            />
           </div>
         </section>
 
