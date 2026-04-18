@@ -49,7 +49,7 @@ export default function PurchaseModal({ purchaseId, open, onOpenChange }: Purcha
 
   const handleOpenChange = (newOpen: boolean) => {
     if (isEditing) {
-      setIsLeaveConfirmationModalOpen((prev) => !prev);
+      setIsLeaveConfirmationModalOpen(true);
       return;
     }
     onOpenChange(newOpen);
@@ -63,10 +63,10 @@ export default function PurchaseModal({ purchaseId, open, onOpenChange }: Purcha
   const handleSave = handleSubmit((data) => {
     // TODO: 사입내역 수정 API 연동
     console.log(data);
-    onOpenChange(false);
+    setIsEditing(false);
   });
   const handleCancel = () => {
-    setIsEditing(false);
+    setIsLeaveConfirmationModalOpen(true);
   };
   const handleEdit = () => {
     setIsEditing(true);
@@ -117,7 +117,7 @@ export default function PurchaseModal({ purchaseId, open, onOpenChange }: Purcha
       <LeaveConfirmationModal
         open={isLeaveConfirmationModalOpen}
         onOpenChange={setIsLeaveConfirmationModalOpen}
-        onPrevOpenChange={onOpenChange}
+        onEditingChange={setIsEditing}
         reset={reset}
       />
     </>

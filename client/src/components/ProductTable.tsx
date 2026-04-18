@@ -203,6 +203,7 @@ function ProductRow({
       <td className={TD_CELL_STYLE}>
         {isEditing ? (
           <Input
+            numeric
             {...register(`products.${index}.price`, { valueAsNumber: true })}
             status={errors.products?.[index]?.price ? STATUS.ERROR : STATUS.DEFAULT}
             className="text-center"
@@ -216,6 +217,7 @@ function ProductRow({
       <td className={TD_CELL_STYLE}>
         {isEditing ? (
           <Input
+            numeric
             {...register(`products.${index}.quantity`, { valueAsNumber: true })}
             status={errors.products?.[index]?.quantity ? STATUS.ERROR : STATUS.DEFAULT}
             className="text-center"
@@ -231,7 +233,7 @@ function ProductRow({
           <Input
             disabled
             value={formatPrice((product?.price || 0) * (product?.quantity || 0))}
-            className="bg-gray-1 cursor-not-allowed text-center"
+            className="text-center"
           />
         ) : (
           <span className={TD_TEXT_STYLE}>
@@ -244,6 +246,7 @@ function ProductRow({
       <td className={TD_CELL_STYLE}>
         {isEditing ? (
           <Input
+            numeric
             {...register(`products.${index}.backorderQuantity`, {
               valueAsNumber: true,
             })}
