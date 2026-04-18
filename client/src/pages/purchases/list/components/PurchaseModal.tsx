@@ -6,6 +6,7 @@ import ProductTable from '@/components/ProductTable';
 import { formatDate } from '@/utils/format';
 import { PURCHASE_DETAIL_MOCK } from '../mocks/mock';
 import Modal, { ModalRow } from './Modal';
+import LeaveConfirmationModal from '@/components/LeaveConfirmationModal';
 
 interface PurchaseModalProps {
   purchaseId: string;
@@ -30,11 +31,13 @@ const TABLE_HEADERS: { label: string; width: string }[] = [
 export default function PurchaseModal({ purchaseId, open, onOpenChange }: PurchaseModalProps) {
   const data = PURCHASE_DETAIL_MOCK.data;
 
+  const [isLeaveConfirmationModalOpen, setIsLeaveConfirmationModalOpen] = useState<boolean>(false);
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const {
     register,
     control,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(purchaseSchema),
@@ -44,59 +47,79 @@ export default function PurchaseModal({ purchaseId, open, onOpenChange }: Purcha
     },
   });
 
+  const handleOpenChange = (newOpen: boolean) => {
+    if (isEditing) {
+      setIsLeaveConfirmationModalOpen((prev) => !prev);
+      return;
+    }
+    onOpenChange(newOpen);
+  };
+
   const handleCancel = () => {
     setIsEditing(false);
   };
   const handleRemove = () => {
     // TODO: 사입내역 삭제 API 연동
     console.log(purchaseId);
+    onOpenChange(false);
   };
   const handleSave = handleSubmit((data) => {
     // TODO: 사입내역 수정 API 연동
     console.log(data);
+    onOpenChange(false);
   });
   const handleEdit = () => {
     setIsEditing(true);
   };
 
   return (
-    <Modal
-      title="사입내역 조회"
-      open={open}
-      onOpenChange={onOpenChange}
-      onOpenChangeComplete={() => setIsEditing(false)}
-      leftLabel={isEditing ? '취소' : '삭제'}
-      rightLabel={isEditing ? '저장' : '수정'}
-      onLeftClick={isEditing ? handleCancel : handleRemove}
-      onRightClick={isEditing ? handleSave : handleEdit}
-    >
-      <ModalRow label="사입번호" value={data.purchaseNo} />
-      {/* TODO: 시간 +3 이슈 해결 */}
-      <ModalRow
-        label="사입일시"
-        value={formatDate(data.purchasedAt)}
-        inputType="datetime-local"
-        isEditing={isEditing}
-        field="purchasedAt"
-        register={register}
-        errors={errors}
+    <>
+      <Modal
+        title="사입내역 조회"
+        open={open}
+        onOpenChange={handleOpenChange}
+        onOpenChangeComplete={() => setIsEditing(false)}
+        leftLabel={isEditing ? '취소' : '삭제'}
+        rightLabel={isEditing ? '저장' : '수정'}
+        onLeftClick={isEditing ? handleCancel : handleRemove}
+        onRightClick={isEditing ? handleSave : handleEdit}
+      >
+        <ModalRow label="사입번호" value={data.purchaseNo} />
+        {/* TODO: 시간 +3 이슈 해결 */}
+        <ModalRow
+          label="사입일시"
+          value={formatDate(data.purchasedAt)}
+          inputType="datetime-local"
+          isEditing={isEditing}
+          field="purchasedAt"
+          register={register}
+          errors={errors}
+        />
+        <ModalRow
+          label="거래처명"
+          value={data.vendor}
+          isEditing={isEditing}
+          field="vendor"
+          register={register}
+          errors={errors}
+        />
+        <ProductTable
+          headers={TABLE_HEADERS}
+          hasProductId={true}
+          isEditing={isEditing}
+          register={register}
+          control={control}
+          errors={errors}
+        />
+      </Modal>
+
+      {/* 이탈방지모달 */}
+      <LeaveConfirmationModal
+        open={isLeaveConfirmationModalOpen}
+        onOpenChange={setIsLeaveConfirmationModalOpen}
+        onPrevOpenChange={onOpenChange}
+        reset={reset}
       />
-      <ModalRow
-        label="거래처명"
-        value={data.vendor}
-        isEditing={isEditing}
-        field="vendor"
-        register={register}
-        errors={errors}
-      />
-      <ProductTable
-        headers={TABLE_HEADERS}
-        hasProductId={true}
-        isEditing={isEditing}
-        register={register}
-        control={control}
-        errors={errors}
-      />
-    </Modal>
+    </>
   );
 }
