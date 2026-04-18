@@ -48,7 +48,6 @@ export default function ProductTable({
   return (
     <>
       <div className="flex gap-[0.8rem]">
-        {/* <h2 className="title-16-m w-[9.4rem] shrink-0">상품목록</h2> */}
         <table className="w-full table-fixed">
           <colgroup>
             {headers.map(({ label, width }) => (
@@ -70,6 +69,7 @@ export default function ProductTable({
                 key={field.id}
                 item={products[index] ?? field}
                 index={index}
+                count={fields.length}
                 hasProductId={hasProductId}
                 isEditing={isEditing}
                 register={register}
@@ -104,6 +104,7 @@ export default function ProductTable({
 interface ProductRowProps {
   item: Purchase['items'][number];
   index: number;
+  count: number;
   hasProductId: boolean;
   isEditing: boolean;
   register: UseFormRegister<Purchase>;
@@ -130,6 +131,7 @@ const TD_TEXT_STYLE = 'font-14-r text-gray-6 flex justify-center';
 function ProductRow({
   item,
   index,
+  count,
   hasProductId,
   isEditing,
   register,
@@ -137,6 +139,15 @@ function ProductRow({
   errors,
   remove,
 }: ProductRowProps) {
+  const handleRemove = () => {
+    if (count === 1) {
+      // TODO: 토스트 띄우기
+      return;
+    }
+
+    remove(index);
+  };
+
   return (
     <tr>
       {/* 상품사입번호 */}
@@ -261,16 +272,11 @@ function ProductRow({
       </td>
 
       {/* 삭제 버튼 */}
-      {isEditing && <DeleteButton onClick={() => remove(index)} />}
-      {/* 
-      <td className="text-center">
-        {isEditing ? (
-        <DeleteButton onClick={() => remove(index)} />
-
-        ) : (
-
-        )}
-      </td> */}
+      {isEditing && (
+        <td>
+          <DeleteButton onClick={handleRemove} />
+        </td>
+      )}
     </tr>
   );
 }
