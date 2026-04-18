@@ -6,13 +6,12 @@ import {
   useFieldArray,
   UseFormRegister,
 } from 'react-hook-form';
-import { type Purchase, DEFAULT_PRODUCT, type Category, CATEGORY } from '@jumble/shared';
+import { type Purchase, DEFAULT_PRODUCT, CATEGORY_LABEL } from '@jumble/shared';
 import Input from '@/components/Input';
 import DropDown from '@/components/Dropdown';
 import DeleteButton from '@/components/DeleteButton';
 import { STATUS } from '@/constants/status';
 import { formatPrice } from '@/utils/format';
-import { ValueLabel } from '@/types/value-label';
 import Button from './Button';
 
 interface ProductTableProps {
@@ -112,18 +111,6 @@ interface ProductRowProps {
   remove: (index: number) => void;
 }
 
-const OPTIONS_LABEL: ValueLabel<Category>[] = [
-  { value: CATEGORY.TOP, label: '상의' },
-  { value: CATEGORY.OUTER, label: '아우터' },
-  { value: CATEGORY.BOTTOM, label: '하의' },
-  { value: CATEGORY.SET, label: '세트' },
-  { value: CATEGORY.BAG, label: '가방' },
-  { value: CATEGORY.SHOES, label: '신발' },
-  { value: CATEGORY.JEWELRY, label: '주얼리' },
-  { value: CATEGORY.ACCESSORY, label: '악세서리' },
-  { value: CATEGORY.ETC, label: '기타' },
-];
-
 const TD_CELL_STYLE = 'px-[0.8rem] py-[0.6rem]';
 const TD_TEXT_STYLE = 'font-14-r text-gray-6 flex justify-center';
 
@@ -172,7 +159,7 @@ function ProductRow({
             name={`products.${index}.category`}
             render={({ field }) => (
               <DropDown
-                options={OPTIONS_LABEL}
+                options={CATEGORY_LABEL}
                 value={field.value}
                 onChange={field.onChange}
                 placeholder="선택"
@@ -182,7 +169,7 @@ function ProductRow({
           />
         ) : (
           <span className={TD_TEXT_STYLE}>
-            {OPTIONS_LABEL.find((o) => o.value === product.category)?.label ?? product.category}
+            {CATEGORY_LABEL.find((c) => c.value === product.category)?.label ?? product.category}
           </span>
         )}
       </td>
