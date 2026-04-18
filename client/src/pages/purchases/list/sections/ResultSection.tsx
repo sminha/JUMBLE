@@ -12,6 +12,7 @@ import filterIcon from '@/assets/filter-icon.svg';
 import Checkbox from '../components/Checkbox';
 import PurchaseRow from '../components/PurchaseRow';
 import UnstyledButton from '../components/UnstyledButton';
+import PurchaseModal from '../components/PurchaseModal';
 
 interface ResultSectionProps {
   params: Draft;
@@ -56,6 +57,7 @@ export default function ResultSection({
   isError,
 }: ResultSectionProps) {
   const [isChecked, setIsChecked] = useState<boolean>(false);
+  const [purchaseModalOpen, setPurchaseModalOpen] = useState<boolean>(false);
 
   if (isPending) {
     return (
@@ -126,6 +128,10 @@ export default function ResultSection({
 
   return (
     <section className="flex flex-col gap-[2rem] rounded-[1.6rem] bg-white py-[3rem] pr-[2.4rem] pl-[3.8rem]">
+      {/* TODO: PurchaseRow로 버튼 핸들러 이동 */}
+      <button onClick={() => setPurchaseModalOpen((prev) => !prev)}>PurchaseModal 버튼</button>
+      <PurchaseModal purchaseId="1" open={purchaseModalOpen} onOpenChange={setPurchaseModalOpen} />
+
       {/* 전체 개수, 드롭다운, 버튼 3개 */}
       <div className="flex justify-between">
         <span className="font-14-m text-gray-9 flex shrink-0 items-center gap-[0.6rem]">

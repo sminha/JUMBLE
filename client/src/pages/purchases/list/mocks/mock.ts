@@ -1,3 +1,5 @@
+import { Product } from '@jumble/shared';
+
 export const PURCHASE_DETAIL_MOCK = {
   success: true,
   status: 200,
@@ -8,9 +10,9 @@ export const PURCHASE_DETAIL_MOCK = {
     purchasedAt: '2024-11-14T00:00:00.000Z',
     vendor: '루프',
     receipt: 'https://loremflickr.com/600/400',
-    products: [
+    items: [
       {
-        category: 'TOP',
+        category: 'TOP' as Product['category'],
         color: '블랙',
         size: 'Free',
         quantity: 5,
@@ -23,7 +25,7 @@ export const PURCHASE_DETAIL_MOCK = {
         backorderQuantity: 1,
       },
       {
-        category: 'OUTER',
+        category: 'OUTER' as Product['category'],
         color: '연핑크',
         size: 'Free',
         quantity: 4,
@@ -51,7 +53,7 @@ export const PRODUCT_DETAIL_MOCK = {
     productId: '1',
     productNo: '17115000000001',
     name: '린넨 자켓',
-    category: 'OUTER',
+    category: 'OUTER' as Product['category'],
     color: '베이지',
     size: 'FREE',
     option: null,
