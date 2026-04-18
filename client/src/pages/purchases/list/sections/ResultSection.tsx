@@ -15,6 +15,7 @@ import UnstyledButton from '../components/UnstyledButton';
 import PurchaseModal from '../components/PurchaseModal';
 import ProductModal from '../components/ProductModal';
 import BackorderModal from '../components/BackorderModal';
+import ReceiptModal from '../components/ReceiptModal';
 
 interface ResultSectionProps {
   params: Draft;
@@ -62,6 +63,7 @@ export default function ResultSection({
   const [purchaseModalOpen, setPurchaseModalOpen] = useState<boolean>(false);
   const [productModalOpen, setProductModalOpen] = useState<boolean>(false);
   const [backorderModalOpen, setBackorderModalOpen] = useState<boolean>(false);
+  const [receiptModalOpen, setReceiptModalOpen] = useState<boolean>(false);
 
   if (isPending) {
     return (
@@ -143,6 +145,8 @@ export default function ResultSection({
         open={backorderModalOpen}
         onOpenChange={setBackorderModalOpen}
       />
+      <button onClick={() => setReceiptModalOpen((prev) => !prev)}>ReceiptModal 버튼</button>
+      <ReceiptModal purchaseId="1" open={receiptModalOpen} onOpenChange={setReceiptModalOpen} />
 
       {/* 전체 개수, 드롭다운, 버튼 3개 */}
       <div className="flex justify-between">
