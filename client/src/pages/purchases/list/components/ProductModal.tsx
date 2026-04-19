@@ -6,7 +6,7 @@ import LeaveConfirmationModal from '@/components/LeaveConfirmationModal';
 import { formatPrice, formatDate } from '@/utils/format';
 import Modal, { ModalRow } from '@/components/Modal';
 import { cn } from '@/utils/cn';
-import { useGetProduct } from '../apis';
+import { useEditProduct, useGetProduct } from '../apis';
 
 interface ProductModalProps {
   purchaseId: string;
@@ -22,6 +22,7 @@ export default function ProductModal({
   onOpenChange,
 }: ProductModalProps) {
   const { data, isPending } = useGetProduct(purchaseId, productId, open);
+  const { mutate: handleEditProduct } = useEditProduct(productId);
   const [isLeaveConfirmationModalOpen, setIsLeaveConfirmationModalOpen] = useState<boolean>(false);
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const {
@@ -66,9 +67,16 @@ export default function ProductModal({
     onOpenChange(false);
   };
   const handleSave = handleSubmit((data) => {
-    // TODO: 상품 사입내역 수정 API 연동
-    console.log(data);
-    setIsEditing(false);
+    handleEditProduct(data, {
+      onSuccess: () => {
+        // TODO: 추후 토스트 추가
+        setIsEditing(false);
+      },
+      onError: () => {
+        // TODO: 추후 토스트로 변경
+        alert('상품사입내역 수정에 실패했습니다. 다시 시도해주세요.');
+      },
+    });
   });
   const handleCancel = () => {
     setIsLeaveConfirmationModalOpen(true);

@@ -14,6 +14,8 @@ import {
   GetProductDetailResponse,
   EditPurchaseResponse,
   Purchase,
+  EditProductResponse,
+  Product,
 } from '@jumble/shared';
 import { QUERY_KEYS } from '@/constants/query-key';
 
@@ -134,3 +136,36 @@ export const useEditPurchase = (purchaseId: string) => {
     },
   });
 };
+
+const editProduct = async (productId: string, form: Product) => {
+  const res = await fetchWithAuth(
+    `${import.meta.env.VITE_API_URL}/api/v1/purchases/products/${productId}`,
+    {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(form),
+    },
+  );
+
+  if (!res.ok) {
+    throw new Error('상품사입내역 수정 요청 실패');
+  }
+
+  const data: EditProductResponse = await res.json();
+
+  return data;
+};
+
+// 상품사입내역 수정 API
+export const useEditProduct = (productId: string) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (form: Product) => editProduct(productId, form),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.PURCHASES.ALL });
+    },
+  });
+};
+
+// 미송수량 수정 API
