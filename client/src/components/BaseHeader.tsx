@@ -15,7 +15,7 @@ export default function BaseHeader({ children }: BaseHeaderProps) {
   return (
     <header className="border-b-gray-1 flex w-full justify-between border-b-[0.1rem] bg-white px-[6.4rem] py-[1.2rem]">
       <Link
-        to={isLogin ? PATHS.PURCHASELIST : PATHS.HOME}
+        to={isLogin ? PATHS.PURCHASE_LIST : PATHS.HOME}
         className="flex items-center"
         aria-label={isLogin ? '조회 페이지로 이동' : '홈으로 이동'}
       >

@@ -9,7 +9,7 @@ export default function PurchaseDetailRoute() {
 
   const handleClose = () => {
     if (state?.background) navigate(-1);
-    else navigate(PATHS.PURCHASELIST);
+    else navigate(PATHS.PURCHASE_LIST);
   };
 
   return (

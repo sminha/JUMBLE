@@ -11,8 +11,8 @@ export const PATHS = {
   HOME: '/',
   KAKAOCALLBACK: '/auth/kakao/callback',
   PURCHASES: '/purchases',
-  PURCHASENEW: '/purchases/new',
-  PURCHASELIST: '/purchases/list',
+  PURCHASE_NEW: '/purchases/new',
+  PURCHASE_LIST: '/purchases/list',
   PURCHASE_DETAIL: '/purchases/:purchaseId',
   PRODUCT_DETAIL: '/purchases/products/:productId',
 } as const;
@@ -33,8 +33,8 @@ export function AppRoutes() {
         <Route path={PATHS.HOME} element={<Home />} />
         <Route path={PATHS.KAKAOCALLBACK} element={<KakaoCallback />} />
         <Route element={<ProtectedRoute />}>
-          <Route path={PATHS.PURCHASENEW} element={<PurchaseNew />} />
-          <Route path={PATHS.PURCHASELIST} element={<PurchaseList />} />
+          <Route path={PATHS.PURCHASE_NEW} element={<PurchaseNew />} />
+          <Route path={PATHS.PURCHASE_LIST} element={<PurchaseList />} />
           <Route path={PATHS.PRODUCT_DETAIL} element={<ProductDetailRoute />} />
           <Route path={PATHS.PURCHASE_DETAIL} element={<PurchaseDetailRoute />} />
         </Route>

@@ -91,7 +91,7 @@ export const useCreatePurchase = () => {
     mutationFn: createPurchase,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.PURCHASES.LIST });
-      navigate(PATHS.PURCHASELIST);
+      navigate(PATHS.PURCHASE_LIST);
     },
     onError: () => {
       // TODO: 추후 토스트로 변경

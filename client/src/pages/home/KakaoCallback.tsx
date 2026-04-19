@@ -23,7 +23,7 @@ export default function KakaoCallback() {
         localStorage.setItem('userId', userId);
         localStorage.setItem('name', name);
         localStorage.setItem('profile', profile);
-        navigate(PATHS.PURCHASELIST);
+        navigate(PATHS.PURCHASE_LIST);
       });
   }, []);
 
