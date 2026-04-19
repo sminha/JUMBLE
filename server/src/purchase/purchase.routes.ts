@@ -8,6 +8,7 @@ const router: Router = express.Router();
 router.post('/', authMiddleware, PurchaseController.createPurchase);
 router.get('/', authMiddleware, PurchaseController.getPurchases);
 router.get('/products/:productId', authMiddleware, PurchaseItemController.getPurchaseItem);
+router.put('/:id', authMiddleware, PurchaseController.updatePurchase);
 router.get('/:id/receipt', authMiddleware, PurchaseController.getPurchaseReceipt);
 router.get('/:id', authMiddleware, PurchaseController.getPurchase);
 

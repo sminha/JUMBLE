@@ -5,6 +5,7 @@ import { querySchema } from './query.schema';
 import { ProductDetail, GetProductDetailResponse } from '@jumble/shared';
 
 export const PurchaseItemController = {
+  // 사입내역 조회 API
   getPurchaseItems: async (req: Request, res: Response) => {
     try {
       const userId = req.user.id;
@@ -57,6 +58,7 @@ export const PurchaseItemController = {
     }
   },
 
+  // 상품사입내역 상세조회 API
   getPurchaseItem: async (req: Request, res: Response) => {
     try {
       const userId = req.user.id;

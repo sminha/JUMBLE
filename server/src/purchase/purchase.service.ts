@@ -4,6 +4,7 @@ import { serializeBigInt } from '../utils/serializeBigInt';
 import { formatPurchase } from '../utils/format';
 
 export const PurchaseService = {
+  // 사입내역 추가 API
   createPurchase: async (userId: bigint, data: Purchase) => {
     return await prisma.$transaction(async (tx) => {
       let vendor = await tx.vendor.findFirst({
@@ -58,6 +59,7 @@ export const PurchaseService = {
     });
   },
 
+  // 사용 안 되는 듯?
   getPurchases: async (userId: bigint, page: number, limit: number) => {
     const skip = (page - 1) * limit;
     const where = { user_id: userId };
@@ -98,6 +100,7 @@ export const PurchaseService = {
     return { purchases: serializeBigInt(formattedPurchases), total };
   },
 
+  // 사입내역 상세조회 API
   getPurchase: async (userId: bigint, purchaseId: bigint) => {
     const purchase = await prisma.purchase.findFirst({
       where: { id: purchaseId, user_id: userId },
@@ -127,6 +130,52 @@ export const PurchaseService = {
     if (!purchase) return null;
 
     return serializeBigInt(formatPurchase(purchase));
+  },
+
+  // 사입내역 수정 API
+  updatePurchase: async (userId: bigint, purchaseId: bigint, data: Purchase) => {
+    return await prisma.$transaction(async (tx) => {
+      const existing = await tx.purchase.findFirst({
+        where: { id: purchaseId, user_id: userId },
+      });
+
+      if (!existing) return null;
+
+      let vendor = await tx.vendor.findFirst({
+        where: { user_id: userId, name: data.vendor },
+      });
+
+      if (!vendor) {
+        vendor = await tx.vendor.create({
+          data: { user_id: userId, name: data.vendor },
+        });
+      }
+
+      await tx.purchaseItem.deleteMany({ where: { purchase_id: purchaseId } });
+
+      await tx.purchase.update({
+        where: { id: purchaseId },
+        data: {
+          vendor_id: vendor.id,
+          purchased_at: new Date(data.purchasedAt),
+          items: {
+            create: data.products.map((item, idx) => ({
+              purchase_item_no: `${Date.now()}${idx + 1}`,
+              item_name: item.name,
+              category: item.category,
+              color: item.color,
+              size: item.size,
+              extra_option: item.option,
+              unit_price: item.price,
+              quantity: item.quantity,
+              backorder_quantity: item.backorderQuantity,
+            })),
+          },
+        },
+      });
+
+      return true;
+    });
   },
 
   getPurchaseReceipt: async (userId: bigint, purchaseId: bigint) => {

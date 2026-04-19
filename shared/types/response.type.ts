@@ -41,6 +41,7 @@ export interface ProductDetail {
   backorderQuantity: number;
 }
 
+// 사입내역 상세조회 API 응답
 export interface GetPurchaseDetailResponse {
   success: boolean;
   status: number;
@@ -48,9 +49,17 @@ export interface GetPurchaseDetailResponse {
   data: PurchaseDetail;
 }
 
+// 상품사입내역 상세조회 API 응답
 export interface GetProductDetailResponse {
   success: boolean;
   status: number;
   message: string;
   data: ProductDetail;
+}
+
+// 사입내역 수정 API 응답
+export interface EditPurchaseResponse {
+  success: boolean;
+  status: number;
+  message: string;
 }

@@ -23,6 +23,7 @@ const getPeriodStartDate = (periodType: Exclude<Period, 'ALL'>): string => {
 };
 
 export const PurchaseItemService = {
+  // 사입내역 조회 API
   getPurchaseItems: async (userId: bigint, params: Draft) => {
     const {
       page,
@@ -149,6 +150,7 @@ export const PurchaseItemService = {
     return { records: serializeBigInt(formattedPurchaseItems), total };
   },
 
+  // 상품사입내역 상세조회 API
   getPurchaseItem: async (userId: bigint, itemId: bigint): Promise<ProductDetail | null> => {
     const item = await prisma.purchaseItem.findFirst({
       where: {

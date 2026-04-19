@@ -1,14 +1,18 @@
 import { Request, Response } from 'express';
 import { Prisma } from '@prisma/client';
+import { ZodError } from 'zod';
 import { PurchaseService } from './purchase.service';
 import {
   Purchase,
+  purchaseSchema,
   CATEGORY_VALUES,
   PurchaseDetail,
   GetPurchaseDetailResponse,
+  EditPurchaseResponse,
 } from '@jumble/shared';
 
 export const PurchaseController = {
+  // 사입내역 추가 API
   createPurchase: async (req: Request, res: Response) => {
     try {
       const data: Purchase = req.body;
@@ -97,6 +101,7 @@ export const PurchaseController = {
     }
   },
 
+  // 사용 안 되는 듯?
   getPurchases: async (req: Request, res: Response) => {
     try {
       const userId = req.user.id;
@@ -152,6 +157,7 @@ export const PurchaseController = {
     }
   },
 
+  // 사입내역 상세조회 API
   getPurchase: async (req: Request, res: Response) => {
     try {
       const userId = req.user.id;
@@ -191,6 +197,66 @@ export const PurchaseController = {
           status: 400,
           message: '잘못된 요청입니다.',
         });
+      }
+
+      return res.status(500).json({
+        success: false,
+        status: 500,
+        message: '서버 오류가 발생했습니다.',
+      });
+    }
+  },
+
+  // 사입내역 수정 API
+  updatePurchase: async (req: Request, res: Response) => {
+    try {
+      const userId = req.user.id;
+      const rawPurchaseId = req.params.id as string;
+
+      if (!/^\d+$/.test(rawPurchaseId)) {
+        return res.status(400).json({
+          success: false,
+          status: 400,
+          message: 'id는 정수여야 합니다.',
+        });
+      }
+
+      const data: Purchase = purchaseSchema.parse(req.body);
+      const purchaseId = BigInt(rawPurchaseId);
+      const found = await PurchaseService.updatePurchase(userId, purchaseId, data);
+
+      if (!found) {
+        return res.status(404).json({
+          success: false,
+          status: 404,
+          message: '사입내역을 찾을 수 없습니다.',
+        });
+      }
+
+      return res.status(200).json({
+        success: true,
+        status: 200,
+        message: '사입내역 수정에 성공했습니다.',
+      } satisfies EditPurchaseResponse);
+    } catch (error) {
+      console.error('🚨 서버 에러 발생:', error);
+
+      if (error instanceof ZodError) {
+        return res.status(400).json({
+          success: false,
+          status: 400,
+          message: error.issues[0].message,
+        });
+      }
+
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        if (error.code === 'P2003') {
+          return res.status(400).json({
+            success: false,
+            status: 400,
+            message: '유효하지 않은 참조 값입니다.',
+          });
+        }
       }
 
       return res.status(500).json({
