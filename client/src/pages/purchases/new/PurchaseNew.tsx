@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useFieldArray, useForm } from 'react-hook-form';
 import { Purchase, purchaseSchema, DEFAULT_PURCHASE } from '@jumble/shared';
@@ -8,6 +9,7 @@ import { STATUS } from '@/constants/status';
 import UploadButton from './components/UploadButton';
 import ProductTable from '@/components/ProductTable';
 import { useCreatePurchase, useImageUpload } from './apis';
+import { PATHS } from '@/router';
 
 const TABLE_HEADERS: { label: string; width: string }[] = [
   { label: '상품명', width: '' },
@@ -23,6 +25,8 @@ const TABLE_HEADERS: { label: string; width: string }[] = [
 ];
 
 export default function PurchaseNew() {
+  const navigate = useNavigate();
+
   const {
     register,
     control,
@@ -44,6 +48,19 @@ export default function PurchaseNew() {
   });
   const { mutate: handleCreatePurchase } = useCreatePurchase();
 
+  const handleSave = handleSubmit((data) => {
+    handleCreatePurchase(data, {
+      onSuccess: () => {
+        // TODO: 추후 토스트 추가
+        navigate(PATHS.PURCHASE_LIST);
+      },
+      onError: () => {
+        // TODO: 추후 토스트로 변경
+        alert('사입내역 추가에 실패했습니다. 다시 시도해주세요.');
+      },
+    });
+  });
+
   return (
     <main>
       <Header />
@@ -53,7 +70,7 @@ export default function PurchaseNew() {
           {isImageUploading ? '분석 중...' : '영수증으로 입력하기'}
         </UploadButton>
       </div>
-      <form onSubmit={handleSubmit((data) => handleCreatePurchase(data))}>
+      <form onSubmit={handleSave}>
         <section className="mx-[6.4rem] flex flex-col gap-[2.4rem] rounded-[1.6rem] bg-white px-[3.8rem] py-[3rem]">
           {/* 사입일시 */}
           <div className="flex w-[48rem] items-center gap-[0.8rem]">

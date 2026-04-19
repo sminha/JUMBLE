@@ -1,4 +1,10 @@
-import { keepPreviousData, useQuery } from '@tanstack/react-query';
+import {
+  keepPreviousData,
+  QueryClient,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from '@tanstack/react-query';
 import { fetchWithAuth } from '@/lib/api';
 import {
   Draft,
@@ -6,6 +12,8 @@ import {
   ProductDetail,
   GetPurchaseDetailResponse,
   GetProductDetailResponse,
+  EditPurchaseResponse,
+  Purchase,
 } from '@jumble/shared';
 import { QUERY_KEYS } from '@/constants/query-key';
 
@@ -93,5 +101,36 @@ export const useGetProduct = (purchaseId: string, productId: string, open: boole
     queryFn: () => getProduct(productId),
     queryKey: QUERY_KEYS.PURCHASES.PRODUCT_DETAIL(purchaseId, productId),
     enabled: open && !!Number(purchaseId) && !!Number(productId),
+  });
+};
+
+const editPurchase = async (purchaseId: string, form: Purchase) => {
+  const res = await fetchWithAuth(
+    `${import.meta.env.VITE_API_URL}/api/v1/purchases/${purchaseId}`,
+    {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(form),
+    },
+  );
+
+  if (!res.ok) {
+    throw new Error('사입내역 수정 요청 실패');
+  }
+
+  const data: EditPurchaseResponse = await res.json();
+
+  return data;
+};
+
+// 사입내역 수정 API
+export const useEditPurchase = (purchaseId: string) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (form: Purchase) => editPurchase(purchaseId, form),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.PURCHASES.ALL });
+    },
   });
 };
