@@ -13,6 +13,7 @@ router.patch(
   PurchaseController.updateBackorderQuantity,
 );
 router.put('/:id', authMiddleware, PurchaseController.updatePurchase);
+router.delete('/:id', authMiddleware, PurchaseController.deletePurchase);
 router.get('/:id/receipt', authMiddleware, PurchaseController.getPurchaseReceipt);
 router.get('/:id', authMiddleware, PurchaseController.getPurchase);
 

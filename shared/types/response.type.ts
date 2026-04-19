@@ -114,3 +114,10 @@ export interface EditBackorderResponse {
   status: number;
   message: string;
 }
+
+// 사입내역 삭제 API 응답
+export interface DeletePurchaseResponse {
+  success: boolean;
+  status: number;
+  message: string;
+}

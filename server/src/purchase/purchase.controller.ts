@@ -15,6 +15,7 @@ import {
   EditPurchaseResponse,
   EditProductResponse,
   EditBackorderResponse,
+  DeletePurchaseResponse,
 } from '@jumble/shared';
 
 export const PurchaseController = {
@@ -384,6 +385,55 @@ export const PurchaseController = {
         status: 200,
         message: '미송수량 수정에 성공했습니다.',
       } satisfies EditBackorderResponse);
+    } catch (error) {
+      console.error('🚨 서버 에러 발생:', error);
+
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        return res.status(400).json({
+          success: false,
+          status: 400,
+          message: '잘못된 요청입니다.',
+        });
+      }
+
+      return res.status(500).json({
+        success: false,
+        status: 500,
+        message: '서버 오류가 발생했습니다.',
+      });
+    }
+  },
+
+  // 사입내역 삭제 API
+  deletePurchase: async (req: Request, res: Response) => {
+    try {
+      const userId = req.user.id;
+      const rawPurchaseId = req.params.id as string;
+
+      if (!/^\d+$/.test(rawPurchaseId)) {
+        return res.status(400).json({
+          success: false,
+          status: 400,
+          message: 'id는 정수여야 합니다.',
+        });
+      }
+
+      const purchaseId = BigInt(rawPurchaseId);
+      const found = await PurchaseService.deletePurchase(userId, purchaseId);
+
+      if (!found) {
+        return res.status(404).json({
+          success: false,
+          status: 404,
+          message: '사입내역을 찾을 수 없습니다.',
+        });
+      }
+
+      return res.status(200).json({
+        success: true,
+        status: 200,
+        message: '사입내역 삭제에 성공했습니다.',
+      } satisfies DeletePurchaseResponse);
     } catch (error) {
       console.error('🚨 서버 에러 발생:', error);
 
