@@ -1,16 +1,12 @@
-import { useNavigate, useParams, useLocation } from 'react-router';
+import { useParams } from 'react-router';
 import { PATHS } from '@/router';
 import PurchaseModal from '../components/PurchaseModal';
+import { useModalClose } from '../hooks/useModalClose';
 
 export default function PurchaseDetailRoute() {
   const { purchaseId } = useParams();
-  const { state } = useLocation();
-  const navigate = useNavigate();
-
-  const handleClose = () => {
-    if (state?.background) navigate(-1);
-    else navigate(PATHS.PURCHASE_LIST);
-  };
+  const handleClose = useModalClose(PATHS.PURCHASE_LIST);
+  if (!purchaseId) return null;
 
   return (
     <PurchaseModal

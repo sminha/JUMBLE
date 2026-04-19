@@ -18,7 +18,6 @@ export const PATHS = {
 } as const;
 
 function ProtectedRoute() {
-  useNavigate();
   const token = localStorage.getItem(STORAGE_KEYS.ACCESS_TOKEN);
   return token ? <Outlet /> : <Navigate to={PATHS.HOME} replace />;
 }

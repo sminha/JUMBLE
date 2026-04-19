@@ -1,20 +1,16 @@
-import { useNavigate, useParams, useLocation } from 'react-router';
+import { useParams } from 'react-router';
 import { PATHS } from '@/router';
 import ProductModal from '../components/ProductModal';
+import { useModalClose } from '../hooks/useModalClose';
 
 export default function ProductDetailRoute() {
   const { productId } = useParams();
-  const { state } = useLocation();
-  const navigate = useNavigate();
-
-  const handleClose = () => {
-    if (state?.background) navigate(-1);
-    else navigate(PATHS.PURCHASE_LIST);
-  };
+  const handleClose = useModalClose(PATHS.PURCHASE_LIST);
+  if (!productId) return null;
 
   return (
     <ProductModal
-      productId={productId!}
+      productId={productId}
       open={true}
       onOpenChange={(open) => {
         if (!open) handleClose();

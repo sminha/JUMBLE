@@ -45,7 +45,7 @@ export default function LeaveConfirmationModal<T extends FieldValues>({
       onRightClick={handleEdit}
       buttonClassName="w-full"
     >
-      <span className="font-16-m text-gray-8 mt-[1rem] text-center">
+      <span className="font-16-m text-gray-8 text-center">
         현재 페이지를 벗어나면 수정내역이 사라져요.
         <br />
         그래도 나가시겠어요?
