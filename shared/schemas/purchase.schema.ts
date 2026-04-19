@@ -7,8 +7,8 @@ export const productSchema = z
     productNo: z.string().optional(),
     name: z.string().min(1, '상품명을 입력하세요'),
     category: z.enum(CATEGORY_VALUES),
-    color: z.string().optional(),
-    size: z.string().optional(),
+    color: z.string().optional().nullable(),
+    size: z.string().optional().nullable(),
     option: z.string().optional().nullable(),
     price: z.number().int().positive(),
     quantity: z.number().int().positive(),
@@ -28,7 +28,7 @@ export const purchaseSchema = z.object({
     ),
   vendor: z.string().min(1, '거래처명을 입력하세요'),
   products: z.array(productSchema).min(1, '상품을 1개 이상 추가하세요'),
-  receipt: z.string().optional(),
+  receipt: z.string().optional().nullable(),
 });
 
 export type Purchase = z.infer<typeof purchaseSchema>;

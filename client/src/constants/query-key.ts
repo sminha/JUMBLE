@@ -6,7 +6,7 @@ export const QUERY_KEYS = {
     LIST: ['purchases', 'list'] as const,
     FILTERED_LIST: (draft: Draft) => [...QUERY_KEYS.PURCHASES.ALL, 'list', draft] as const,
     DETAIL: (purchaseId: string) => [...QUERY_KEYS.PURCHASES.ALL, 'detail', purchaseId] as const,
-    ITEM_DETAIL: (purchaseId: string, productId: string) =>
+    PRODUCT_DETAIL: (purchaseId: string, productId: string) =>
       [...QUERY_KEYS.PURCHASES.ALL, 'detail', purchaseId, 'items', productId] as const,
   },
 } as const;

@@ -1,12 +1,12 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { purchaseSchema } from '@jumble/shared';
 import LeaveConfirmationModal from '@/components/LeaveConfirmationModal';
+import Modal, { ModalRow } from '@/components/Modal';
 import ProductTable from '@/components/ProductTable';
 import { formatDate } from '@/utils/format';
-import Modal, { ModalRow } from '../../../../components/Modal';
-import { PURCHASE_DETAIL_MOCK } from '../mocks/mock';
+import { useGetPurchase } from '../apis';
 
 interface PurchaseModalProps {
   purchaseId: string;
@@ -29,8 +29,7 @@ const TABLE_HEADERS: { label: string; width: string }[] = [
 ];
 
 export default function PurchaseModal({ purchaseId, open, onOpenChange }: PurchaseModalProps) {
-  const data = PURCHASE_DETAIL_MOCK.data;
-
+  const { data, isPending } = useGetPurchase(purchaseId, open);
   const [isLeaveConfirmationModalOpen, setIsLeaveConfirmationModalOpen] = useState<boolean>(false);
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const {
@@ -41,11 +40,23 @@ export default function PurchaseModal({ purchaseId, open, onOpenChange }: Purcha
     formState: { errors },
   } = useForm({
     resolver: zodResolver(purchaseSchema),
-    defaultValues: {
-      ...data,
-      purchasedAt: data.purchasedAt.slice(0, 16),
-    },
   });
+
+  useEffect(() => {
+    if (data) {
+      reset({ ...data, purchasedAt: data.purchasedAt.slice(0, 16) });
+    }
+  }, [data, reset]);
+
+  if (!open) return null;
+
+  if (isPending || !data) {
+    return (
+      <div className="bg-overlay fixed inset-0 z-20 flex items-center justify-center">
+        <div className="border-t-primary-3 border-gray-2 h-8 w-8 animate-spin rounded-full border-3"></div>
+      </div>
+    );
+  }
 
   const handleOpenChange = (newOpen: boolean) => {
     if (isEditing) {

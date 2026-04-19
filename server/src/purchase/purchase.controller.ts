@@ -1,7 +1,12 @@
 import { Request, Response } from 'express';
 import { Prisma } from '@prisma/client';
 import { PurchaseService } from './purchase.service';
-import { Purchase, CATEGORY_VALUES } from '@jumble/shared';
+import {
+  Purchase,
+  CATEGORY_VALUES,
+  PurchaseDetail,
+  GetPurchaseDetailResponse,
+} from '@jumble/shared';
 
 export const PurchaseController = {
   createPurchase: async (req: Request, res: Response) => {
@@ -161,7 +166,7 @@ export const PurchaseController = {
       }
 
       const purchaseId = BigInt(rawPurchaseId);
-      const purchase = await PurchaseService.getPurchase(userId, purchaseId);
+      const purchase: PurchaseDetail | null = await PurchaseService.getPurchase(userId, purchaseId);
 
       if (!purchase) {
         return res.status(404).json({
@@ -176,7 +181,7 @@ export const PurchaseController = {
         status: 200,
         message: '사입내역 상세 조회에 성공했습니다.',
         data: purchase,
-      });
+      } satisfies GetPurchaseDetailResponse);
     } catch (error) {
       console.error('🚨 서버 에러 발생:', error);
 

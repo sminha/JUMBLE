@@ -177,7 +177,7 @@ function ProductRow({
         {isEditing ? (
           <Input {...register(`products.${index}.color`)} />
         ) : (
-          <span className={TD_TEXT_STYLE}>{product.color}</span>
+          <span className={TD_TEXT_STYLE}>{product.color || '-'}</span>
         )}
       </td>
 
@@ -186,7 +186,7 @@ function ProductRow({
         {isEditing ? (
           <Input {...register(`products.${index}.size`)} />
         ) : (
-          <span className={TD_TEXT_STYLE}>{product.size}</span>
+          <span className={TD_TEXT_STYLE}>{product.size || '-'}</span>
         )}
       </td>
 
@@ -195,7 +195,7 @@ function ProductRow({
         {isEditing ? (
           <Input {...register(`products.${index}.option`)} />
         ) : (
-          <span className={TD_TEXT_STYLE}>{product.option ?? '-'}</span>
+          <span className={TD_TEXT_STYLE}>{product.option || '-'}</span>
         )}
       </td>
 

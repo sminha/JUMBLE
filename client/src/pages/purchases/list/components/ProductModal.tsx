@@ -1,22 +1,27 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { productSchema, CATEGORY_LABEL, CATEGORY_LABEL_NEW } from '@jumble/shared';
 import LeaveConfirmationModal from '@/components/LeaveConfirmationModal';
 import { formatPrice, formatDate } from '@/utils/format';
-import Modal, { ModalRow } from '../../../../components/Modal';
-import { PRODUCT_DETAIL_MOCK } from '../mocks/mock';
+import Modal, { ModalRow } from '@/components/Modal';
 import { cn } from '@/utils/cn';
+import { useGetProduct } from '../apis';
 
 interface ProductModalProps {
+  purchaseId: string;
   productId: string;
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
 
-export default function ProductModal({ productId, open, onOpenChange }: ProductModalProps) {
-  const data = PRODUCT_DETAIL_MOCK.data;
-
+export default function ProductModal({
+  purchaseId,
+  productId,
+  open,
+  onOpenChange,
+}: ProductModalProps) {
+  const { data, isPending } = useGetProduct(purchaseId, productId, open);
   const [isLeaveConfirmationModalOpen, setIsLeaveConfirmationModalOpen] = useState<boolean>(false);
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const {
@@ -27,10 +32,25 @@ export default function ProductModal({ productId, open, onOpenChange }: ProductM
     formState: { errors },
   } = useForm({
     resolver: zodResolver(productSchema),
-    defaultValues: data,
   });
   const [price, quantity] = useWatch({ control, name: ['price', 'quantity'] });
   const totalPrice = (price || 0) * (quantity || 0) || 0;
+
+  useEffect(() => {
+    if (data) {
+      reset(data);
+    }
+  }, [data, reset]);
+
+  if (!open) return null;
+
+  if (isPending || !data) {
+    return (
+      <div className="bg-overlay fixed inset-0 z-20 flex items-center justify-center">
+        <div className="border-t-primary-3 border-gray-2 h-8 w-8 animate-spin rounded-full border-3"></div>
+      </div>
+    );
+  }
 
   const handleOpenChange = (newOpen: boolean) => {
     if (isEditing) {

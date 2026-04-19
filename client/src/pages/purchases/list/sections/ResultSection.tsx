@@ -233,16 +233,21 @@ export default function ResultSection({
         </UnstyledButton>
       </div>
 
-      <BackorderModal
-        productId={selectedProductId}
-        open={selectedProductId !== null}
-        onOpenChange={(open) => !open && setSelectedProductId(null)}
-      />
-      <ReceiptModal
-        purchaseId={selectedPurchaseId}
-        open={selectedPurchaseId !== null}
-        onOpenChange={(open) => !open && setSelectedPurchaseId(null)}
-      />
+      {selectedPurchaseId && selectedProductId && (
+        <BackorderModal
+          purchaseId={selectedPurchaseId}
+          productId={selectedProductId}
+          open={selectedProductId !== null}
+          onOpenChange={(open) => !open && setSelectedProductId(null)}
+        />
+      )}
+      {selectedPurchaseId && (
+        <ReceiptModal
+          purchaseId={selectedPurchaseId}
+          open={selectedPurchaseId !== null}
+          onOpenChange={(open) => !open && setSelectedPurchaseId(null)}
+        />
+      )}
     </section>
   );
 }

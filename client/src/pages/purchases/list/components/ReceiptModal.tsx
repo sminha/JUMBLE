@@ -1,29 +1,41 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { purchaseSchema } from '@jumble/shared';
 import LeaveConfirmationModal from '@/components/LeaveConfirmationModal';
 import Modal, { ModalRow } from '@/components/Modal';
-import { PURCHASE_DETAIL_MOCK } from '../mocks/mock';
+import { useGetPurchase } from '../apis';
 
 interface ReceiptModalProps {
-  purchaseId: string | null;
+  purchaseId: string;
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
 
 export default function ReceiptModal({ purchaseId, open, onOpenChange }: ReceiptModalProps) {
-  const data = PURCHASE_DETAIL_MOCK.data;
+  const { data, isPending } = useGetPurchase(purchaseId, open);
 
   const [isLeaveConfirmationModalOpen, setIsLeaveConfirmationModalOpen] = useState<boolean>(false);
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const { handleSubmit, reset } = useForm({
     resolver: zodResolver(purchaseSchema),
-    defaultValues: {
-      ...data,
-      purchasedAt: data.purchasedAt.slice(0, 16),
-    },
   });
+
+  useEffect(() => {
+    if (data) {
+      reset({ ...data, purchasedAt: data.purchasedAt.slice(0, 16) });
+    }
+  }, [data, reset]);
+
+  if (!open) return null;
+
+  if (isPending || !data) {
+    return (
+      <div className="bg-overlay fixed inset-0 z-20 flex items-center justify-center">
+        <div className="border-t-primary-3 border-gray-2 h-8 w-8 animate-spin rounded-full border-3"></div>
+      </div>
+    );
+  }
 
   const handleOpenChange = (newOpen: boolean) => {
     if (isEditing) {
@@ -63,7 +75,7 @@ export default function ReceiptModal({ purchaseId, open, onOpenChange }: Receipt
         onRightClick={isEditing ? handleSave : handleEdit}
       >
         <ModalRow label="사입번호" value={data.purchaseNo} />
-        <img src={data.receipt} alt="영수증" />
+        {data.receipt && <img src={data.receipt} alt="영수증" />}
       </Modal>
 
       {/* 이탈방지모달 */}

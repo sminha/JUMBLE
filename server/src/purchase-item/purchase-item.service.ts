@@ -2,7 +2,7 @@ import { Prisma } from '@prisma/client';
 import prisma from '../lib/prisma';
 import { serializeBigInt } from '../utils/serializeBigInt';
 import { formatPurchaseItem } from '../utils/format';
-import { Draft, DATE, FILTER, SORT_BY, PERIOD, Period } from '@jumble/shared';
+import { Draft, DATE, FILTER, SORT_BY, PERIOD, Period, ProductDetail } from '@jumble/shared';
 
 const getTodayKST = (): string => {
   const kst = new Date(Date.now() + 9 * 60 * 60 * 1000);
@@ -111,6 +111,7 @@ export const PurchaseItemService = {
               purchase_no: true,
               purchased_at: true,
               vendor: { select: { name: true } },
+              receipt: { select: { receipt_image_url: true } },
             },
           },
         },
@@ -135,6 +136,7 @@ export const PurchaseItemService = {
         productNo: purchase_item_no,
         purchasedAt: purchase.purchased_at,
         vendor: purchase.vendor.name,
+        receipt: purchase.receipt?.receipt_image_url ?? null,
         product: item_name,
         option: extra_option,
         price: unit_price,
@@ -147,7 +149,7 @@ export const PurchaseItemService = {
     return { records: serializeBigInt(formattedPurchaseItems), total };
   },
 
-  getPurchaseItem: async (userId: bigint, itemId: bigint) => {
+  getPurchaseItem: async (userId: bigint, itemId: bigint): Promise<ProductDetail | null> => {
     const item = await prisma.purchaseItem.findFirst({
       where: {
         id: itemId,
