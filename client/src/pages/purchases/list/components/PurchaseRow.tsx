@@ -82,12 +82,14 @@ export default function PurchaseRow({
         </UnstyledButton>
       </td>
       <td className={TD_CELL_STYLE}>
-        <UnstyledButton
-          aria-label="영수증 조회"
-          onClick={() => onReceiptModalOpenChange(record.purchaseId)}
-        >
-          <img src={receiptIcon} alt="" aria-hidden="true" className="h-[1.6rem] w-[1.6rem]" />
-        </UnstyledButton>
+        {record.receipt && (
+          <UnstyledButton
+            aria-label="영수증 조회"
+            onClick={() => onReceiptModalOpenChange(record.purchaseId)}
+          >
+            <img src={receiptIcon} alt="" aria-hidden="true" className="h-[1.6rem] w-[1.6rem]" />
+          </UnstyledButton>
+        )}
       </td>
     </tr>
   );

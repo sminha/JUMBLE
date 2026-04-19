@@ -16,6 +16,7 @@ export interface PurchaseRecord {
   quantity: number;
   totalPrice: number;
   backorderQuantity: number;
+  receipt: string | null;
 }
 
 export interface PaginationMeta {
