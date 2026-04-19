@@ -65,7 +65,14 @@ export interface EditPurchaseResponse {
 }
 
 // 상품사입내역 수정 API 응답
-export interface EditPurchaseItemResponse {
+export interface EditProductResponse {
+  success: boolean;
+  status: number;
+  message: string;
+}
+
+// 미송수량 수정 API 응답
+export interface EditBackorderResponse {
   success: boolean;
   status: number;
   message: string;

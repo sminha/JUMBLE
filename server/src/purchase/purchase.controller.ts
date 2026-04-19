@@ -6,13 +6,15 @@ import {
   Purchase,
   purchaseSchema,
   productSchema,
+  updateBackorderQuantitySchema,
   CATEGORY_VALUES,
   PurchaseDetail,
   ProductDetail,
   GetPurchaseDetailResponse,
   GetProductDetailResponse,
   EditPurchaseResponse,
-  EditPurchaseItemResponse,
+  EditProductResponse,
+  EditBackorderResponse,
 } from '@jumble/shared';
 
 export const PurchaseController = {
@@ -303,7 +305,7 @@ export const PurchaseController = {
         success: true,
         status: 200,
         message: '상품 사입내역 수정에 성공했습니다.',
-      } satisfies EditPurchaseItemResponse);
+      } satisfies EditProductResponse);
     } catch (error) {
       console.error('🚨 서버 에러 발생:', error);
 
@@ -320,6 +322,76 @@ export const PurchaseController = {
           success: false,
           status: 400,
           message: '요청 데이터 형식이 올바르지 않습니다.',
+        });
+      }
+
+      return res.status(500).json({
+        success: false,
+        status: 500,
+        message: '서버 오류가 발생했습니다.',
+      });
+    }
+  },
+
+  // 미송수량 수정 API
+  updateBackorderQuantity: async (req: Request, res: Response) => {
+    try {
+      const userId = req.user.id;
+      const rawItemId = req.params.productId as string;
+
+      if (!/^\d+$/.test(rawItemId)) {
+        return res.status(400).json({
+          success: false,
+          status: 400,
+          message: 'id는 정수여야 합니다.',
+        });
+      }
+
+      const result = updateBackorderQuantitySchema.safeParse(req.body);
+      if (!result.success) {
+        return res.status(400).json({
+          success: false,
+          status: 400,
+          message: result.error.issues[0].message,
+        });
+      }
+
+      const itemId = BigInt(rawItemId);
+      let found: boolean | null;
+      try {
+        found = await PurchaseService.updateBackorderQuantity(
+          userId,
+          itemId,
+          result.data.backorderQuantity,
+        );
+      } catch (e) {
+        if (e instanceof Error) {
+          return res.status(400).json({ success: false, status: 400, message: e.message });
+        }
+        throw e;
+      }
+
+      if (!found) {
+        return res.status(404).json({
+          success: false,
+          status: 404,
+          message: '상품 사입내역을 찾을 수 없습니다.',
+        });
+      }
+
+      return res.status(200).json({
+        success: true,
+        status: 200,
+        message: '미송수량 수정에 성공했습니다.',
+      } satisfies EditBackorderResponse);
+    } catch (error) {
+      console.error('🚨 서버 에러 발생:', error);
+
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        return res.status(400).json({
+          success: false,
+          status: 400,
+          message: '잘못된 요청입니다.',
         });
       }
 

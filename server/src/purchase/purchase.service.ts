@@ -206,6 +206,30 @@ export const PurchaseService = {
     return true;
   },
 
+  // 미송수량 수정 API
+  updateBackorderQuantity: async (
+    userId: bigint,
+    itemId: bigint,
+    backorderQuantity: number,
+  ): Promise<boolean | null> => {
+    const existing = await prisma.purchaseItem.findFirst({
+      where: { id: itemId, purchase: { user_id: userId } },
+    });
+
+    if (!existing) return null;
+
+    if (backorderQuantity > existing.quantity) {
+      throw new Error('미송수량은 총 수량을 초과할 수 없습니다.');
+    }
+
+    await prisma.purchaseItem.update({
+      where: { id: itemId },
+      data: { backorder_quantity: backorderQuantity },
+    });
+
+    return true;
+  },
+
   getPurchaseReceipt: async (userId: bigint, purchaseId: bigint) => {
     const purchase = await prisma.purchase.findFirst({
       where: { id: purchaseId, user_id: userId },

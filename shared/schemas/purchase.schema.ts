@@ -34,6 +34,12 @@ export const purchaseSchema = z.object({
 export type Purchase = z.infer<typeof purchaseSchema>;
 export type Product = z.infer<typeof productSchema>;
 
+export const updateBackorderQuantitySchema = z.object({
+  backorderQuantity: z.number().int().min(0, '미송수량은 0 이상이어야 합니다.'),
+});
+
+export type UpdateBackorderQuantity = z.infer<typeof updateBackorderQuantitySchema>;
+
 export const DEFAULT_PRODUCT: Product = {
   productNo: '-',
   name: '',
