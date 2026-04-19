@@ -10,8 +10,8 @@ import UnstyledButton from './UnstyledButton';
 import { useGetProduct } from '../apis';
 
 interface BackorderModalProps {
-  purchaseId: string | null;
-  productId: string | null;
+  purchaseId: string;
+  productId: string;
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
@@ -22,7 +22,7 @@ export default function BackorderModal({
   open,
   onOpenChange,
 }: BackorderModalProps) {
-  const { data, isPending } = useGetProduct(purchaseId!, productId!);
+  const { data, isPending } = useGetProduct(purchaseId, productId, open);
 
   const [isLeaveConfirmationModalOpen, setIsLeaveConfirmationModalOpen] = useState<boolean>(false);
   const {
@@ -41,7 +41,7 @@ export default function BackorderModal({
     if (data) {
       reset(data);
     }
-  }, [data]);
+  }, [data, reset]);
 
   if (!open) return null;
 

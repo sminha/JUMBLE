@@ -62,11 +62,11 @@ const getPurchase = async (purchaseId: string): Promise<PurchaseDetail> => {
 };
 
 // 사입내역 상세조회 API
-export const useGetPurchase = (purchaseId: string) => {
+export const useGetPurchase = (purchaseId: string, open: boolean) => {
   return useQuery({
     queryFn: () => getPurchase(purchaseId!),
     queryKey: QUERY_KEYS.PURCHASES.DETAIL(purchaseId!),
-    enabled: !!purchaseId && !!Number(purchaseId),
+    enabled: open && !!Number(purchaseId),
   });
 };
 
@@ -88,10 +88,10 @@ const getProduct = async (productId: string): Promise<ProductDetail> => {
 };
 
 // 상품사입내역 상세조회 API
-export const useGetProduct = (purchaseId: string, productId: string) => {
+export const useGetProduct = (purchaseId: string, productId: string, open: boolean) => {
   return useQuery({
     queryFn: () => getProduct(productId),
     queryKey: QUERY_KEYS.PURCHASES.PRODUCT_DETAIL(purchaseId, productId),
-    enabled: !!Number(purchaseId) || !!Number(productId),
+    enabled: open && !!Number(purchaseId) && !!Number(productId),
   });
 };

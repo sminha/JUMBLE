@@ -29,7 +29,7 @@ const TABLE_HEADERS: { label: string; width: string }[] = [
 ];
 
 export default function PurchaseModal({ purchaseId, open, onOpenChange }: PurchaseModalProps) {
-  const { data, isPending } = useGetPurchase(purchaseId);
+  const { data, isPending } = useGetPurchase(purchaseId, open);
   const [isLeaveConfirmationModalOpen, setIsLeaveConfirmationModalOpen] = useState<boolean>(false);
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const {
@@ -46,7 +46,9 @@ export default function PurchaseModal({ purchaseId, open, onOpenChange }: Purcha
     if (data) {
       reset({ ...data, purchasedAt: data.purchasedAt.slice(0, 16) });
     }
-  }, [data]);
+  }, [data, reset]);
+
+  if (!open) return null;
 
   if (isPending || !data) {
     return (

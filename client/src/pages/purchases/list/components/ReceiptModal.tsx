@@ -7,13 +7,13 @@ import Modal, { ModalRow } from '@/components/Modal';
 import { useGetPurchase } from '../apis';
 
 interface ReceiptModalProps {
-  purchaseId: string | null;
+  purchaseId: string;
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
 
 export default function ReceiptModal({ purchaseId, open, onOpenChange }: ReceiptModalProps) {
-  const { data, isPending } = useGetPurchase(purchaseId!);
+  const { data, isPending } = useGetPurchase(purchaseId, open);
 
   const [isLeaveConfirmationModalOpen, setIsLeaveConfirmationModalOpen] = useState<boolean>(false);
   const [isEditing, setIsEditing] = useState<boolean>(false);
@@ -25,7 +25,7 @@ export default function ReceiptModal({ purchaseId, open, onOpenChange }: Receipt
     if (data) {
       reset({ ...data, purchasedAt: data.purchasedAt.slice(0, 16) });
     }
-  }, [data]);
+  }, [data, reset]);
 
   if (!open) return null;
 
@@ -75,7 +75,7 @@ export default function ReceiptModal({ purchaseId, open, onOpenChange }: Receipt
         onRightClick={isEditing ? handleSave : handleEdit}
       >
         <ModalRow label="사입번호" value={data.purchaseNo} />
-        <img src={data.receipt!} alt="영수증" />
+        {data.receipt && <img src={data.receipt} alt="영수증" />}
       </Modal>
 
       {/* 이탈방지모달 */}

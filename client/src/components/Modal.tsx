@@ -158,7 +158,9 @@ export function ModalRow<T extends FieldValues>({
       {isEditing ? (
         renderEditingField()
       ) : (
-        <span className="font-14-m text-gray-8 w-[16rem] shrink-0">{value || '-'}</span>
+        <span className="font-14-m text-gray-8 w-[16rem] shrink-0">
+          {value === '' ? '-' : value}
+        </span>
       )}
     </div>
   );

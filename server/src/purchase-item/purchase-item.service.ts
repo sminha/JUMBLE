@@ -2,7 +2,7 @@ import { Prisma } from '@prisma/client';
 import prisma from '../lib/prisma';
 import { serializeBigInt } from '../utils/serializeBigInt';
 import { formatPurchaseItem } from '../utils/format';
-import { Draft, DATE, FILTER, SORT_BY, PERIOD, Period } from '@jumble/shared';
+import { Draft, DATE, FILTER, SORT_BY, PERIOD, Period, ProductDetail } from '@jumble/shared';
 
 const getTodayKST = (): string => {
   const kst = new Date(Date.now() + 9 * 60 * 60 * 1000);
@@ -149,7 +149,7 @@ export const PurchaseItemService = {
     return { records: serializeBigInt(formattedPurchaseItems), total };
   },
 
-  getPurchaseItem: async (userId: bigint, itemId: bigint) => {
+  getPurchaseItem: async (userId: bigint, itemId: bigint): Promise<ProductDetail | null> => {
     const item = await prisma.purchaseItem.findFirst({
       where: {
         id: itemId,

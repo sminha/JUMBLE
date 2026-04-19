@@ -21,7 +21,7 @@ export default function ProductModal({
   open,
   onOpenChange,
 }: ProductModalProps) {
-  const { data, isPending } = useGetProduct(purchaseId, productId);
+  const { data, isPending } = useGetProduct(purchaseId, productId, open);
   const [isLeaveConfirmationModalOpen, setIsLeaveConfirmationModalOpen] = useState<boolean>(false);
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const {
@@ -40,7 +40,9 @@ export default function ProductModal({
     if (data) {
       reset(data);
     }
-  }, [data]);
+  }, [data, reset]);
+
+  if (!open) return null;
 
   if (isPending || !data) {
     return (
