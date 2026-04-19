@@ -12,10 +12,10 @@ import filterIcon from '@/assets/filter-icon.svg';
 import Checkbox from '../components/Checkbox';
 import PurchaseRow from '../components/PurchaseRow';
 import UnstyledButton from '../components/UnstyledButton';
-import PurchaseModal from '../components/PurchaseModal';
-import ProductModal from '../components/ProductModal';
 import BackorderModal from '../components/BackorderModal';
 import ReceiptModal from '../components/ReceiptModal';
+import { useNavigate, useLocation } from 'react-router';
+import { PATHS } from '@/router';
 
 interface ResultSectionProps {
   params: Draft;
@@ -60,10 +60,23 @@ export default function ResultSection({
   isError,
 }: ResultSectionProps) {
   const [isChecked, setIsChecked] = useState<boolean>(false);
-  const [purchaseModalOpen, setPurchaseModalOpen] = useState<boolean>(false);
-  const [productModalOpen, setProductModalOpen] = useState<boolean>(false);
   const [backorderModalOpen, setBackorderModalOpen] = useState<boolean>(false);
   const [receiptModalOpen, setReceiptModalOpen] = useState<boolean>(false);
+
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const handlePurchaseModalOpen = (purchaseId: string) => {
+    navigate(`${PATHS.PURCHASES}/${purchaseId}`, {
+      state: { background: location },
+    });
+  };
+
+  const handleProductModalOpen = (productId: string) => {
+    navigate(`${PATHS.PURCHASES}/products/${productId}`, {
+      state: { background: location },
+    });
+  };
 
   if (isPending) {
     return (
@@ -135,10 +148,8 @@ export default function ResultSection({
   return (
     <section className="flex flex-col gap-[2rem] rounded-[1.6rem] bg-white py-[3rem] pr-[2.4rem] pl-[3.8rem]">
       {/* TODO: PurchaseRow로 버튼 핸들러 이동 */}
-      <button onClick={() => setPurchaseModalOpen((prev) => !prev)}>PurchaseModal 버튼</button>
-      <PurchaseModal purchaseId="1" open={purchaseModalOpen} onOpenChange={setPurchaseModalOpen} />
-      <button onClick={() => setProductModalOpen((prev) => !prev)}>ProductModal 버튼</button>
-      <ProductModal productId="1" open={productModalOpen} onOpenChange={setProductModalOpen} />
+      <button onClick={() => handlePurchaseModalOpen('1')}>PurchaseModal 버튼</button>
+      <button onClick={() => handleProductModalOpen('1')}>ProductModal 버튼</button>
       <button onClick={() => setBackorderModalOpen((prev) => !prev)}>BackorderModal 버튼</button>
       <BackorderModal
         productId="1"
