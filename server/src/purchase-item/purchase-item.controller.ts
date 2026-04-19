@@ -2,9 +2,8 @@ import { Request, Response } from 'express';
 import { Prisma } from '@prisma/client';
 import { PurchaseItemService } from './purchase-item.service';
 import { querySchema } from './query.schema';
-import { ProductDetail, GetProductDetailResponse } from '@jumble/shared';
-
 export const PurchaseItemController = {
+  // 사입내역 조회 API
   getPurchaseItems: async (req: Request, res: Response) => {
     try {
       const userId = req.user.id;
@@ -46,55 +45,6 @@ export const PurchaseItemController = {
           success: false,
           status: 400,
           message: '요청 데이터 형식이 올바르지 않습니다.',
-        });
-      }
-
-      return res.status(500).json({
-        success: false,
-        status: 500,
-        message: '서버 오류가 발생했습니다.',
-      });
-    }
-  },
-
-  getPurchaseItem: async (req: Request, res: Response) => {
-    try {
-      const userId = req.user.id;
-      const rawItemId = req.params.productId as string;
-
-      if (!/^\d+$/.test(rawItemId)) {
-        return res.status(400).json({
-          success: false,
-          status: 400,
-          message: 'id는 정수여야 합니다.',
-        });
-      }
-
-      const itemId = BigInt(rawItemId);
-      const item: ProductDetail | null = await PurchaseItemService.getPurchaseItem(userId, itemId);
-
-      if (!item) {
-        return res.status(404).json({
-          success: false,
-          status: 404,
-          message: '상품 사입내역을 찾을 수 없습니다.',
-        });
-      }
-
-      return res.status(200).json({
-        success: true,
-        status: 200,
-        message: '상품 사입내역 상세 조회에 성공했습니다.',
-        data: item,
-      } satisfies GetProductDetailResponse);
-    } catch (error) {
-      console.error('🚨 서버 에러 발생:', error);
-
-      if (error instanceof Prisma.PrismaClientKnownRequestError) {
-        return res.status(400).json({
-          success: false,
-          status: 400,
-          message: '잘못된 요청입니다.',
         });
       }
 
