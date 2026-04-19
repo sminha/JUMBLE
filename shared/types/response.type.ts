@@ -63,3 +63,10 @@ export interface EditPurchaseResponse {
   status: number;
   message: string;
 }
+
+// 상품사입내역 수정 API 응답
+export interface EditPurchaseItemResponse {
+  success: boolean;
+  status: number;
+  message: string;
+}

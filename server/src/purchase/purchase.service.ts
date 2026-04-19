@@ -133,7 +133,11 @@ export const PurchaseService = {
   },
 
   // 사입내역 수정 API
-  updatePurchase: async (userId: bigint, purchaseId: bigint, data: Purchase) => {
+  updatePurchase: async (
+    userId: bigint,
+    purchaseId: bigint,
+    data: Purchase,
+  ): Promise<boolean | null> => {
     return await prisma.$transaction(async (tx) => {
       const existing = await tx.purchase.findFirst({
         where: { id: purchaseId, user_id: userId },

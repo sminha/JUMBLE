@@ -2,7 +2,16 @@ import { Prisma } from '@prisma/client';
 import prisma from '../lib/prisma';
 import { serializeBigInt } from '../utils/serializeBigInt';
 import { formatPurchaseItem } from '../utils/format';
-import { Draft, DATE, FILTER, SORT_BY, PERIOD, Period, ProductDetail } from '@jumble/shared';
+import {
+  Draft,
+  DATE,
+  FILTER,
+  SORT_BY,
+  PERIOD,
+  Period,
+  ProductDetail,
+  Product,
+} from '@jumble/shared';
 
 const getTodayKST = (): string => {
   const kst = new Date(Date.now() + 9 * 60 * 60 * 1000);
@@ -191,5 +200,34 @@ export const PurchaseItemService = {
     };
 
     return serializeBigInt(formatted);
+  },
+
+  // 상품사입내역 수정 API
+  updatePurchaseItem: async (
+    userId: bigint,
+    itemId: bigint,
+    data: Product,
+  ): Promise<boolean | null> => {
+    const existing = await prisma.purchaseItem.findFirst({
+      where: { id: itemId, purchase: { user_id: userId } },
+    });
+
+    if (!existing) return null;
+
+    await prisma.purchaseItem.update({
+      where: { id: itemId },
+      data: {
+        item_name: data.name,
+        category: data.category,
+        color: data.color,
+        size: data.size,
+        extra_option: data.option,
+        unit_price: data.price,
+        quantity: data.quantity,
+        backorder_quantity: data.backorderQuantity,
+      },
+    });
+
+    return true;
   },
 };
