@@ -1,18 +1,39 @@
+import { useNavigate, useLocation } from 'react-router';
 import { PurchaseRecord, CATEGORY_LABEL_NEW } from '@jumble/shared';
+import { PATHS } from '@/router';
 import { cn } from '@/utils/cn';
 import { formatPrice, formatDate } from '@/utils/format';
 import receiptIcon from '@/assets/receipt-icon.svg';
 import UnstyledButton from './UnstyledButton';
 import Checkbox from './Checkbox';
-
 interface PurchaseRowProps {
   record: PurchaseRecord;
+  onBackorderModalOpenChange: (open: boolean) => void;
+  onReceiptModalOpenChange: (open: boolean) => void;
 }
 
 const TD_CELL_STYLE = 'py-[1.6rem] text-center align-middle';
 const TEXT_BUTTON_STYLE = 'text-secondary-5';
 
-export default function PurchaseRow({ record }: PurchaseRowProps) {
+export default function PurchaseRow({
+  record,
+  onBackorderModalOpenChange,
+  onReceiptModalOpenChange,
+}: PurchaseRowProps) {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const handlePurchaseModalOpen = (purchaseId: string) => {
+    navigate(`${PATHS.PURCHASES}/${purchaseId}`, {
+      state: { background: location },
+    });
+  };
+  const handleProductModalOpen = (productId: string) => {
+    navigate(`${PATHS.PURCHASES}/products/${productId}`, {
+      state: { background: location },
+    });
+  };
+
   return (
     <tr className="text-gray-8 font-14-r">
       <td
@@ -24,10 +45,22 @@ export default function PurchaseRow({ record }: PurchaseRowProps) {
         <Checkbox isChecked={false} onChange={() => {}} />
       </td>
       <td className={TD_CELL_STYLE}>
-        <UnstyledButton className={TEXT_BUTTON_STYLE}>{record.purchaseNo}</UnstyledButton>
+        <UnstyledButton
+          aria-label="사입내역 상세조회"
+          className={TEXT_BUTTON_STYLE}
+          onClick={() => handlePurchaseModalOpen(record.purchaseId)}
+        >
+          {record.purchaseNo}
+        </UnstyledButton>
       </td>
       <td className={TD_CELL_STYLE}>
-        <UnstyledButton className={TEXT_BUTTON_STYLE}>{record.productNo}</UnstyledButton>
+        <UnstyledButton
+          aria-label="상품 사입내역 상세조회"
+          className={TEXT_BUTTON_STYLE}
+          onClick={() => handleProductModalOpen(record.productId)}
+        >
+          {record.productNo}
+        </UnstyledButton>
       </td>
       <td className={TD_CELL_STYLE}>{formatDate(record.purchasedAt)}</td>
       <td className={TD_CELL_STYLE}>{record.vendor}</td>
@@ -40,10 +73,16 @@ export default function PurchaseRow({ record }: PurchaseRowProps) {
       <td className={TD_CELL_STYLE}>{record.quantity}</td>
       <td className={TD_CELL_STYLE}>{formatPrice(record.totalPrice)}</td>
       <td className={TD_CELL_STYLE}>
-        <UnstyledButton className={TEXT_BUTTON_STYLE}>{record.backorderQuantity}</UnstyledButton>
+        <UnstyledButton
+          aria-label="미송수량 조회"
+          className={TEXT_BUTTON_STYLE}
+          onClick={() => onBackorderModalOpenChange(true)}
+        >
+          {record.backorderQuantity}
+        </UnstyledButton>
       </td>
       <td className={TD_CELL_STYLE}>
-        <UnstyledButton aria-label="영수증 조회">
+        <UnstyledButton aria-label="영수증 조회" onClick={() => onReceiptModalOpenChange(true)}>
           <img src={receiptIcon} alt="" aria-hidden="true" className="h-[1.6rem] w-[1.6rem]" />
         </UnstyledButton>
       </td>
