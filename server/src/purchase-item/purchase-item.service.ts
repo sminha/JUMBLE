@@ -1,17 +1,7 @@
 import { Prisma } from '@prisma/client';
 import prisma from '../lib/prisma';
 import { serializeBigInt } from '../utils/serializeBigInt';
-import { formatPurchaseItem } from '../utils/format';
-import {
-  Draft,
-  DATE,
-  FILTER,
-  SORT_BY,
-  PERIOD,
-  Period,
-  ProductDetail,
-  Product,
-} from '@jumble/shared';
+import { Draft, DATE, FILTER, SORT_BY, PERIOD, Period } from '@jumble/shared';
 
 const getTodayKST = (): string => {
   const kst = new Date(Date.now() + 9 * 60 * 60 * 1000);
@@ -157,77 +147,5 @@ export const PurchaseItemService = {
     );
 
     return { records: serializeBigInt(formattedPurchaseItems), total };
-  },
-
-  // 상품사입내역 상세조회 API
-  getPurchaseItem: async (userId: bigint, itemId: bigint): Promise<ProductDetail | null> => {
-    const item = await prisma.purchaseItem.findFirst({
-      where: {
-        id: itemId,
-        purchase: { user_id: userId },
-      },
-      select: {
-        id: true,
-        purchase_item_no: true,
-        item_name: true,
-        category: true,
-        color: true,
-        size: true,
-        extra_option: true,
-        unit_price: true,
-        quantity: true,
-        backorder_quantity: true,
-        purchase: {
-          select: {
-            id: true,
-            purchase_no: true,
-            purchased_at: true,
-            vendor: { select: { name: true } },
-          },
-        },
-      },
-    });
-
-    if (!item) return null;
-
-    const { purchase, ...rest } = item;
-    const formatted = {
-      purchaseId: purchase.id,
-      purchaseNo: purchase.purchase_no,
-      purchasedAt: purchase.purchased_at,
-      vendor: purchase.vendor.name,
-      ...formatPurchaseItem(rest),
-    };
-
-    return serializeBigInt(formatted);
-  },
-
-  // 상품사입내역 수정 API
-  updatePurchaseItem: async (
-    userId: bigint,
-    itemId: bigint,
-    data: Product,
-  ): Promise<boolean | null> => {
-    const existing = await prisma.purchaseItem.findFirst({
-      where: { id: itemId, purchase: { user_id: userId } },
-    });
-
-    if (!existing) return null;
-
-    await prisma.purchaseItem.update({
-      where: { id: itemId },
-      data: {
-        item_name: data.name,
-        category: data.category,
-        color: data.color,
-        size: data.size,
-        extra_option: data.option,
-        unit_price: data.price,
-        quantity: data.quantity,
-        backorder_quantity: data.backorderQuantity,
-      },
-    });
-
-    return true;
   },
 };
