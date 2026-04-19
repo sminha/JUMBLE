@@ -269,6 +269,21 @@ export const PurchaseService = {
     return true;
   },
 
+  // 상품사입내역 삭제 API
+  deleteProduct: async (userId: bigint, itemId: bigint): Promise<boolean | null> => {
+    const existing = await prisma.purchaseItem.findFirst({
+      where: { id: itemId, purchase: { user_id: userId } },
+    });
+
+    if (!existing) return null;
+
+    await prisma.purchaseItem.delete({
+      where: { id: itemId },
+    });
+
+    return true;
+  },
+
   getPurchaseReceipt: async (userId: bigint, purchaseId: bigint) => {
     const purchase = await prisma.purchase.findFirst({
       where: { id: purchaseId, user_id: userId },
