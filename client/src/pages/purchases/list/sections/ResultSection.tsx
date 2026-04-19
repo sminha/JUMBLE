@@ -58,8 +58,8 @@ export default function ResultSection({
   isError,
 }: ResultSectionProps) {
   const [isChecked, setIsChecked] = useState<boolean>(false);
-  const [backorderModalOpen, setBackorderModalOpen] = useState<boolean>(false);
-  const [receiptModalOpen, setReceiptModalOpen] = useState<boolean>(false);
+  const [selectedPurchaseId, setSelectedPurchaseId] = useState<string | null>(null);
+  const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
 
   if (isPending) {
     return (
@@ -197,8 +197,8 @@ export default function ResultSection({
               <PurchaseRow
                 key={record.productId}
                 record={record}
-                onBackorderModalOpenChange={setBackorderModalOpen}
-                onReceiptModalOpenChange={setReceiptModalOpen}
+                onBackorderModalOpenChange={setSelectedProductId}
+                onReceiptModalOpenChange={setSelectedPurchaseId}
               />
             ))}
           </tbody>
@@ -234,11 +234,15 @@ export default function ResultSection({
       </div>
 
       <BackorderModal
-        productId="1"
-        open={backorderModalOpen}
-        onOpenChange={setBackorderModalOpen}
+        productId={selectedProductId}
+        open={selectedProductId !== null}
+        onOpenChange={(open) => !open && setSelectedProductId(null)}
       />
-      <ReceiptModal purchaseId="1" open={receiptModalOpen} onOpenChange={setReceiptModalOpen} />
+      <ReceiptModal
+        purchaseId={selectedPurchaseId}
+        open={selectedPurchaseId !== null}
+        onOpenChange={(open) => !open && setSelectedPurchaseId(null)}
+      />
     </section>
   );
 }

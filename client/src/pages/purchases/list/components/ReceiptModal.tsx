@@ -7,7 +7,7 @@ import Modal, { ModalRow } from '@/components/Modal';
 import { PURCHASE_DETAIL_MOCK } from '../mocks/mock';
 
 interface ReceiptModalProps {
-  purchaseId: string;
+  purchaseId: string | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
@@ -63,7 +63,7 @@ export default function ReceiptModal({ purchaseId, open, onOpenChange }: Receipt
         onRightClick={isEditing ? handleSave : handleEdit}
       >
         <ModalRow label="사입번호" value={data.purchaseNo} />
-        <img src={data.receipt} />
+        <img src={data.receipt} alt="영수증" />
       </Modal>
 
       {/* 이탈방지모달 */}

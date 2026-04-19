@@ -24,9 +24,16 @@ export default function Input({
   status = STATUS.DEFAULT,
   errorMessage = '',
   className,
+  onChange,
   onKeyDown,
   ...props
 }: InputProps) {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (numeric) {
+      e.target.value = e.target.value.replace(/\D/g, '');
+    }
+    onChange?.(e);
+  };
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (
       numeric &&
@@ -44,6 +51,7 @@ export default function Input({
     <div className="relative flex w-full flex-col gap-[0.4rem]">
       <input
         type={type}
+        disabled={disabled}
         className={cn(
           'font-14-r text-gray-6 placeholder:text-gray-4 rounded-[0.8rem] border bg-white p-[1.2rem]',
           disabled && 'bg-gray-1 cursor-not-allowed',
@@ -51,6 +59,7 @@ export default function Input({
           className,
         )}
         aria-invalid={status === STATUS.ERROR}
+        onChange={handleChange}
         onKeyDown={handleKeyDown}
         {...props}
       />

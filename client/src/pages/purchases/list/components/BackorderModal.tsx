@@ -10,7 +10,7 @@ import { PRODUCT_DETAIL_MOCK } from '../mocks/mock';
 import UnstyledButton from './UnstyledButton';
 
 interface BackorderModalProps {
-  productId: string;
+  productId: string | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
@@ -46,10 +46,12 @@ export default function BackorderModal({ productId, open, onOpenChange }: Backor
   };
 
   const handleMinus = () => {
-    setValue('backorderQuantity', Math.max(0, backorderQuantity - 1));
+    const current = Number.isFinite(backorderQuantity) ? backorderQuantity : 0;
+    setValue('backorderQuantity', Math.max(0, current - 1));
   };
   const handlePlus = () => {
-    setValue('backorderQuantity', Math.min(data.quantity, backorderQuantity + 1));
+    const current = Number.isFinite(backorderQuantity) ? backorderQuantity : 0;
+    setValue('backorderQuantity', Math.min(data.quantity, current + 1));
   };
 
   return (

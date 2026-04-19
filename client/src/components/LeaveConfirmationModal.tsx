@@ -34,6 +34,8 @@ export default function LeaveConfirmationModal<T extends FieldValues>({
 
   return (
     <Modal
+      title="페이지 이탈 확인"
+      hideTitle={true}
       open={open}
       onOpenChange={onOpenChange}
       showCloseButton={false}

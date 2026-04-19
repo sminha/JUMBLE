@@ -8,8 +8,8 @@ import UnstyledButton from './UnstyledButton';
 import Checkbox from './Checkbox';
 interface PurchaseRowProps {
   record: PurchaseRecord;
-  onBackorderModalOpenChange: (open: boolean) => void;
-  onReceiptModalOpenChange: (open: boolean) => void;
+  onBackorderModalOpenChange: (productId: string | null) => void;
+  onReceiptModalOpenChange: (purchaseId: string | null) => void;
 }
 
 const TD_CELL_STYLE = 'py-[1.6rem] text-center align-middle';
@@ -76,13 +76,16 @@ export default function PurchaseRow({
         <UnstyledButton
           aria-label="미송수량 조회"
           className={TEXT_BUTTON_STYLE}
-          onClick={() => onBackorderModalOpenChange(true)}
+          onClick={() => onBackorderModalOpenChange(record.productId)}
         >
           {record.backorderQuantity}
         </UnstyledButton>
       </td>
       <td className={TD_CELL_STYLE}>
-        <UnstyledButton aria-label="영수증 조회" onClick={() => onReceiptModalOpenChange(true)}>
+        <UnstyledButton
+          aria-label="영수증 조회"
+          onClick={() => onReceiptModalOpenChange(record.purchaseId)}
+        >
           <img src={receiptIcon} alt="" aria-hidden="true" className="h-[1.6rem] w-[1.6rem]" />
         </UnstyledButton>
       </td>

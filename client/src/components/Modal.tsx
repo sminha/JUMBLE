@@ -24,7 +24,8 @@ import { STATUS } from '@/constants/status';
 import { ValueLabel } from '@/types/value-label';
 
 export interface ModalProps {
-  title?: string;
+  title: string;
+  hideTitle?: boolean;
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onOpenChangeComplete?: (open: boolean) => void;
@@ -39,6 +40,7 @@ export interface ModalProps {
 
 export default function Modal({
   title,
+  hideTitle = false,
   open,
   onOpenChange,
   onOpenChangeComplete,
@@ -56,11 +58,11 @@ export default function Modal({
         showCloseButton={showCloseButton}
         className="flex max-h-[90vh] flex-col gap-[3.2rem] overflow-y-auto p-[5rem]"
       >
-        {title && (
-          <DialogHeader>
-            <DialogTitle className="title-16-sb text-gray-9">{title}</DialogTitle>
-          </DialogHeader>
-        )}
+        <DialogHeader>
+          <DialogTitle className={cn('title-16-sb text-gray-9', hideTitle && 'sr-only')}>
+            {title}
+          </DialogTitle>
+        </DialogHeader>
         <div className="flex flex-col gap-[1.6rem]">{children}</div>
         <DialogFooter className="flex flex-row justify-end gap-[0.8rem] border-none bg-white">
           <Button

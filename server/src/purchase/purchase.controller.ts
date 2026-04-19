@@ -18,7 +18,7 @@ export const PurchaseController = {
         });
       }
 
-      // items 검증
+      // products 검증
       if (!Array.isArray(data.products) || data.products.length === 0) {
         return res.status(400).json({
           success: false,

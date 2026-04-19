@@ -32,7 +32,7 @@ export default function ProductTable({
   errors,
 }: ProductTableProps) {
   const { fields, append, remove } = useFieldArray({ control, name: 'products' });
-  const products = useWatch({ control, name: 'products' });
+  const products = useWatch({ control, name: 'products' }) ?? [];
 
   const totalPrice = formatPrice(
     products.reduce((sum, product) => sum + (product?.price || 0) * (product.quantity || 0), 0),
@@ -83,7 +83,7 @@ export default function ProductTable({
               <td className="py-[1.6rem] text-center">{totalQuantity}개</td>
               <td className="py-[1.6rem] text-center">{totalPrice}원</td>
               <td className="py-[1.6rem] text-center">{totalBackorderQuantity}개</td>
-              <td className="py-[1.6rem] text-center"></td>
+              {isEditing && <td className="py-[1.6rem] text-center" />}
             </tr>
           </tbody>
         </table>
