@@ -154,15 +154,39 @@ export const PurchaseService = {
         });
       }
 
-      await tx.purchaseItem.deleteMany({ where: { purchase_id: purchaseId } });
+      const incomingIds = data.products.filter((p) => p.productId).map((p) => BigInt(p.productId!));
+
+      await tx.purchaseItem.deleteMany({
+        where: { purchase_id: purchaseId, id: { notIn: incomingIds } },
+      });
 
       await tx.purchase.update({
         where: { id: purchaseId },
         data: {
           vendor_id: vendor.id,
           purchased_at: new Date(data.purchasedAt),
-          items: {
-            create: data.products.map((item, idx) => ({
+        },
+      });
+
+      for (const [idx, item] of data.products.entries()) {
+        if (item.productId) {
+          await tx.purchaseItem.update({
+            where: { id: BigInt(item.productId) },
+            data: {
+              item_name: item.name,
+              category: item.category,
+              color: item.color,
+              size: item.size,
+              extra_option: item.option,
+              unit_price: item.price,
+              quantity: item.quantity,
+              backorder_quantity: item.backorderQuantity,
+            },
+          });
+        } else {
+          await tx.purchaseItem.create({
+            data: {
+              purchase_id: purchaseId,
               purchase_item_no: `${Date.now()}${idx + 1}`,
               item_name: item.name,
               category: item.category,
@@ -172,10 +196,10 @@ export const PurchaseService = {
               unit_price: item.price,
               quantity: item.quantity,
               backorder_quantity: item.backorderQuantity,
-            })),
-          },
-        },
-      });
+            },
+          });
+        }
+      }
 
       return true;
     });
