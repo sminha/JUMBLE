@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Draft, GetPurchaseRecordsResponse, SortBy, SORT_BY, SORT_ORDER } from '@jumble/shared';
+import { Draft, GetPurchaseResponse, SortBy, SORT_BY, SORT_ORDER } from '@jumble/shared';
 import { cn } from '@/utils/cn';
 import Button from '@/components/Button';
 import Dropdown from '@/components/Dropdown';
@@ -18,7 +18,7 @@ import ReceiptModal from '../components/ReceiptModal';
 interface ResultSectionProps {
   params: Draft;
   setParams: React.Dispatch<React.SetStateAction<Draft>>;
-  data: GetPurchaseRecordsResponse;
+  data: GetPurchaseResponse;
   isPending: boolean;
   isError: boolean;
 }
