@@ -15,7 +15,7 @@ export default function Header() {
           <ul className="flex gap-[3rem]">
             <li>
               <NavLink
-                to={PATHS.PURCHASELIST}
+                to={PATHS.PURCHASE_LIST}
                 className={NAVLINK_STYLE}
                 aria-label="조회 페이지로 이동"
               >
@@ -24,7 +24,7 @@ export default function Header() {
             </li>
             <li>
               <NavLink
-                to={PATHS.PURCHASENEW}
+                to={PATHS.PURCHASE_NEW}
                 className={NAVLINK_STYLE}
                 aria-label="추가 페이지로 이동"
               >

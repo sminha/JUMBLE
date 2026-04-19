@@ -4,6 +4,7 @@ export const formatPurchaseItem = ({
   item_name,
   extra_option,
   unit_price,
+  quantity,
   backorder_quantity,
   ...rest
 }: {
@@ -12,15 +13,18 @@ export const formatPurchaseItem = ({
   item_name: string;
   extra_option: string | null;
   unit_price: number;
+  quantity: number;
   backorder_quantity: number;
   [key: string]: unknown;
 }) => ({
   ...rest,
-  itemId: id,
-  purchaseItemNo: purchase_item_no,
-  itemName: item_name,
-  extraOption: extra_option,
-  unitPrice: unit_price,
+  productId: id,
+  productNo: purchase_item_no,
+  name: item_name,
+  option: extra_option,
+  price: unit_price,
+  quantity,
+  totalPrice: unit_price * quantity,
   backorderQuantity: backorder_quantity,
 });
 
@@ -47,5 +51,5 @@ export const formatPurchase = ({
   purchasedAt: purchased_at,
   vendor: vendor.name,
   receipt: receipt?.receipt_image_url ?? null,
-  items: items.map(formatPurchaseItem),
+  products: items.map(formatPurchaseItem),
 });

@@ -29,7 +29,7 @@ export const PurchaseService = {
           purchase_no: Date.now().toString(),
           purchased_at: new Date(data.purchasedAt),
           items: {
-            create: data.items.map((item: Product, idx) => ({
+            create: data.products.map((item: Product, idx) => ({
               purchase_item_no: `${Date.now()}${idx + 1}`,
               item_name: item.name,
               category: item.category,

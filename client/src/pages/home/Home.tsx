@@ -8,7 +8,7 @@ import { STORAGE_KEYS } from '@/constants/storage';
 export default function Home() {
   const token = localStorage.getItem(STORAGE_KEYS.ACCESS_TOKEN);
   if (token) {
-    return <Navigate to={PATHS.PURCHASELIST} />;
+    return <Navigate to={PATHS.PURCHASE_LIST} />;
   }
 
   return (

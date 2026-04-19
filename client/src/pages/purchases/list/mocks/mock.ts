@@ -1,0 +1,65 @@
+import { Product } from '@jumble/shared';
+
+export const PURCHASE_DETAIL_MOCK = {
+  success: true,
+  status: 200,
+  message: '사입내역 상세 조회에 성공했습니다.',
+  data: {
+    purchaseId: '2',
+    purchaseNo: '1774276974195',
+    purchasedAt: '2024-11-14T00:00:00.000Z',
+    vendor: '루프',
+    receipt: 'https://loremflickr.com/600/400',
+    products: [
+      {
+        category: 'TOP' as Product['category'],
+        color: '블랙',
+        size: 'Free',
+        quantity: 5,
+        productId: '3',
+        productNo: '17742769741951',
+        name: '나그랑 티셔츠',
+        option: null,
+        price: 15000,
+        totalPrice: 75000,
+        backorderQuantity: 1,
+      },
+      {
+        category: 'OUTER' as Product['category'],
+        color: '연핑크',
+        size: 'Free',
+        quantity: 4,
+        productId: '4',
+        productNo: '17742769741952',
+        name: '봄 가디건',
+        option: null,
+        price: 25000,
+        totalPrice: 100000,
+        backorderQuantity: 0,
+      },
+    ],
+  },
+};
+
+export const PRODUCT_DETAIL_MOCK = {
+  success: true,
+  status: 200,
+  message: '상품 사입내역 상세 조회에 성공했습니다.',
+  data: {
+    purchaseId: '1',
+    purchaseNo: '1774276974195',
+    purchasedAt: '2024-11-14T00:00:00.000Z',
+    vendor: '오리',
+    productId: '1',
+    productNo: '17115000000001',
+    name: '린넨 자켓',
+    category: 'OUTER' as Product['category'],
+    color: '베이지',
+    size: 'FREE',
+    option: null,
+    price: 35000,
+    totalPrice: 75000,
+    quantity: 10,
+    backorderQuantity: 0,
+  },
+};

@@ -12,6 +12,8 @@ import filterIcon from '@/assets/filter-icon.svg';
 import Checkbox from '../components/Checkbox';
 import PurchaseRow from '../components/PurchaseRow';
 import UnstyledButton from '../components/UnstyledButton';
+import BackorderModal from '../components/BackorderModal';
+import ReceiptModal from '../components/ReceiptModal';
 
 interface ResultSectionProps {
   params: Draft;
@@ -56,6 +58,8 @@ export default function ResultSection({
   isError,
 }: ResultSectionProps) {
   const [isChecked, setIsChecked] = useState<boolean>(false);
+  const [selectedPurchaseId, setSelectedPurchaseId] = useState<string | null>(null);
+  const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
 
   if (isPending) {
     return (
@@ -190,7 +194,12 @@ export default function ResultSection({
           </thead>
           <tbody>
             {records.map((record) => (
-              <PurchaseRow key={record.productId} record={record} />
+              <PurchaseRow
+                key={record.productId}
+                record={record}
+                onBackorderModalOpenChange={setSelectedProductId}
+                onReceiptModalOpenChange={setSelectedPurchaseId}
+              />
             ))}
           </tbody>
         </table>
@@ -223,6 +232,17 @@ export default function ResultSection({
           <img src={pageLastIcon} alt="" aria-hidden="true" />
         </UnstyledButton>
       </div>
+
+      <BackorderModal
+        productId={selectedProductId}
+        open={selectedProductId !== null}
+        onOpenChange={(open) => !open && setSelectedProductId(null)}
+      />
+      <ReceiptModal
+        purchaseId={selectedPurchaseId}
+        open={selectedPurchaseId !== null}
+        onOpenChange={(open) => !open && setSelectedPurchaseId(null)}
+      />
     </section>
   );
 }

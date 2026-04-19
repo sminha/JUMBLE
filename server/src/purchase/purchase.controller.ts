@@ -18,26 +18,26 @@ export const PurchaseController = {
         });
       }
 
-      // items 검증
-      if (!Array.isArray(data.items) || data.items.length === 0) {
+      // products 검증
+      if (!Array.isArray(data.products) || data.products.length === 0) {
         return res.status(400).json({
           success: false,
           status: 400,
-          message: 'items는 1개 이상이어야 합니다.',
+          message: 'products는 1개 이상이어야 합니다.',
         });
       }
 
-      // items 내 필수 필드 및 category enum 검증
-      for (const item of data.items) {
-        if (!item.name || item.price == null || item.quantity == null) {
+      // products 내 필수 필드 및 category enum 검증
+      for (const product of data.products) {
+        if (!product.name || product.price == null || product.quantity == null) {
           return res.status(400).json({
             success: false,
             status: 400,
-            message: '각 item에 productName, unitPrice, quantity는 필수 값입니다.',
+            message: '각 product에 name, price, quantity는 필수 값입니다.',
           });
         }
 
-        if (!CATEGORY_VALUES.includes(item.category)) {
+        if (!CATEGORY_VALUES.includes(product.category)) {
           return res.status(400).json({
             success: false,
             status: 400,
@@ -175,7 +175,7 @@ export const PurchaseController = {
         success: true,
         status: 200,
         message: '사입내역 상세 조회에 성공했습니다.',
-        purchase,
+        data: purchase,
       });
     } catch (error) {
       console.error('🚨 서버 에러 발생:', error);

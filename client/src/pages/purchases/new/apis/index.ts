@@ -2,7 +2,7 @@ import { UseFormSetValue, UseFieldArrayReplace } from 'react-hook-form';
 import { useQueryClient, useMutation } from '@tanstack/react-query';
 import { QUERY_KEYS } from '@/constants/query-key';
 import { Purchase } from '@jumble/shared';
-import { fetchWithAuth } from '@/libs/api';
+import { fetchWithAuth } from '@/lib/api';
 import { useNavigate } from 'react-router';
 import { PATHS } from '@/router';
 
@@ -52,7 +52,7 @@ export const useImageUpload = ({
   replace,
 }: {
   setValue: UseFormSetValue<Purchase>;
-  replace: UseFieldArrayReplace<Purchase, 'items'>;
+  replace: UseFieldArrayReplace<Purchase, 'products'>;
 }) => {
   return useMutation({
     mutationFn: parseImage,
@@ -91,7 +91,7 @@ export const useCreatePurchase = () => {
     mutationFn: createPurchase,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.PURCHASES.LIST });
-      navigate(PATHS.PURCHASELIST);
+      navigate(PATHS.PURCHASE_LIST);
     },
     onError: () => {
       // TODO: 추후 토스트로 변경

@@ -164,11 +164,28 @@ export const PurchaseItemService = {
         unit_price: true,
         quantity: true,
         backorder_quantity: true,
+        purchase: {
+          select: {
+            id: true,
+            purchase_no: true,
+            purchased_at: true,
+            vendor: { select: { name: true } },
+          },
+        },
       },
     });
 
     if (!item) return null;
 
-    return serializeBigInt(formatPurchaseItem(item));
+    const { purchase, ...rest } = item;
+    const formatted = {
+      purchaseId: purchase.id,
+      purchaseNo: purchase.purchase_no,
+      purchasedAt: purchase.purchased_at,
+      vendor: purchase.vendor.name,
+      ...formatPurchaseItem(rest),
+    };
+
+    return serializeBigInt(formatted);
   },
 };
