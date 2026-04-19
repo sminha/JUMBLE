@@ -1,6 +1,12 @@
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import { fetchWithAuth } from '@/lib/api';
-import { Draft } from '@jumble/shared';
+import {
+  Draft,
+  PurchaseDetail,
+  ProductDetail,
+  GetPurchaseDetailResponse,
+  GetProductDetailResponse,
+} from '@jumble/shared';
 import { QUERY_KEYS } from '@/constants/query-key';
 
 export const getPurchases = async (draft: Draft) => {
@@ -38,7 +44,7 @@ export const useGetPurchases = (draft: Draft) => {
   });
 };
 
-const getPurchase = async (purchaseId: string) => {
+const getPurchase = async (purchaseId: string): Promise<PurchaseDetail> => {
   const res = await fetchWithAuth(
     `${import.meta.env.VITE_API_URL}/api/v1/purchases/${purchaseId}`,
     {
@@ -50,7 +56,7 @@ const getPurchase = async (purchaseId: string) => {
     throw new Error('사입내역 상세조회 요청 실패');
   }
 
-  const data = await res.json();
+  const data: GetPurchaseDetailResponse = await res.json();
 
   return data.data;
 };
@@ -58,13 +64,13 @@ const getPurchase = async (purchaseId: string) => {
 // 사입내역 상세조회 API
 export const useGetPurchase = (purchaseId: string) => {
   return useQuery({
-    queryFn: () => getPurchase(purchaseId),
-    queryKey: QUERY_KEYS.PURCHASES.DETAIL(purchaseId),
-    enabled: !!Number(purchaseId),
+    queryFn: () => getPurchase(purchaseId!),
+    queryKey: QUERY_KEYS.PURCHASES.DETAIL(purchaseId!),
+    enabled: !!purchaseId && !!Number(purchaseId),
   });
 };
 
-const getProduct = async (productId: string) => {
+const getProduct = async (productId: string): Promise<ProductDetail> => {
   const res = await fetchWithAuth(
     `${import.meta.env.VITE_API_URL}/api/v1/purchases/products/${productId}`,
     {
@@ -76,7 +82,7 @@ const getProduct = async (productId: string) => {
     throw new Error('상품사입내역 상세조회 요청 실패');
   }
 
-  const data = await res.json();
+  const data: GetProductDetailResponse = await res.json();
 
   return data.data;
 };

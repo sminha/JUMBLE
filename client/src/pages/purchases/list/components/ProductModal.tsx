@@ -32,7 +32,6 @@ export default function ProductModal({
     formState: { errors },
   } = useForm({
     resolver: zodResolver(productSchema),
-    // defaultValues: data,
   });
   const [price, quantity] = useWatch({ control, name: ['price', 'quantity'] });
   const totalPrice = (price || 0) * (quantity || 0) || 0;
@@ -43,7 +42,7 @@ export default function ProductModal({
     }
   }, [data]);
 
-  if (isPending) {
+  if (isPending || !data) {
     return (
       <div className="bg-overlay fixed inset-0 z-20 flex items-center justify-center">
         <div className="border-t-primary-3 border-gray-2 h-8 w-8 animate-spin rounded-full border-3"></div>

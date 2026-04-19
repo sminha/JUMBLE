@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { Prisma } from '@prisma/client';
 import { PurchaseItemService } from './purchase-item.service';
 import { querySchema } from './query.schema';
+import { ProductDetail, GetProductDetailResponse } from '@jumble/shared';
 
 export const PurchaseItemController = {
   getPurchaseItems: async (req: Request, res: Response) => {
@@ -70,7 +71,7 @@ export const PurchaseItemController = {
       }
 
       const itemId = BigInt(rawItemId);
-      const item = await PurchaseItemService.getPurchaseItem(userId, itemId);
+      const item: ProductDetail | null = await PurchaseItemService.getPurchaseItem(userId, itemId);
 
       if (!item) {
         return res.status(404).json({
@@ -85,7 +86,7 @@ export const PurchaseItemController = {
         status: 200,
         message: '상품 사입내역 상세 조회에 성공했습니다.',
         data: item,
-      });
+      } satisfies GetProductDetailResponse);
     } catch (error) {
       console.error('🚨 서버 에러 발생:', error);
 

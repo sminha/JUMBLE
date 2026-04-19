@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { productSchema } from '@jumble/shared';
@@ -6,17 +6,23 @@ import { STATUS } from '@/constants/status';
 import Modal from '@/components/Modal';
 import Input from '@/components/Input';
 import LeaveConfirmationModal from '@/components/LeaveConfirmationModal';
-import { PRODUCT_DETAIL_MOCK } from '../mocks/mock';
 import UnstyledButton from './UnstyledButton';
+import { useGetProduct } from '../apis';
 
 interface BackorderModalProps {
+  purchaseId: string | null;
   productId: string | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
 
-export default function BackorderModal({ productId, open, onOpenChange }: BackorderModalProps) {
-  const data = PRODUCT_DETAIL_MOCK.data;
+export default function BackorderModal({
+  purchaseId,
+  productId,
+  open,
+  onOpenChange,
+}: BackorderModalProps) {
+  const { data, isPending } = useGetProduct(purchaseId!, productId!);
 
   const [isLeaveConfirmationModalOpen, setIsLeaveConfirmationModalOpen] = useState<boolean>(false);
   const {
@@ -28,9 +34,24 @@ export default function BackorderModal({ productId, open, onOpenChange }: Backor
     formState: { errors },
   } = useForm({
     resolver: zodResolver(productSchema),
-    defaultValues: data,
   });
   const backorderQuantity = useWatch({ control, name: 'backorderQuantity' });
+
+  useEffect(() => {
+    if (data) {
+      reset(data);
+    }
+  }, [data]);
+
+  if (!open) return null;
+
+  if (isPending || !data) {
+    return (
+      <div className="bg-overlay fixed inset-0 z-20 flex items-center justify-center">
+        <div className="border-t-primary-3 border-gray-2 h-8 w-8 animate-spin rounded-full border-3"></div>
+      </div>
+    );
+  }
 
   const handleOpenChange = () => {
     setIsLeaveConfirmationModalOpen(true);

@@ -234,6 +234,7 @@ export default function ResultSection({
       </div>
 
       <BackorderModal
+        purchaseId={selectedPurchaseId}
         productId={selectedProductId}
         open={selectedProductId !== null}
         onOpenChange={(open) => !open && setSelectedProductId(null)}
