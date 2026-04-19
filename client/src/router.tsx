@@ -14,7 +14,7 @@ export const PATHS = {
   PURCHASE_NEW: '/purchases/new',
   PURCHASE_LIST: '/purchases/list',
   PURCHASE_DETAIL: '/purchases/:purchaseId',
-  PRODUCT_DETAIL: '/purchases/products/:productId',
+  PRODUCT_DETAIL: '/purchases/:purchaseId/products/:productId',
 } as const;
 
 function ProtectedRoute() {

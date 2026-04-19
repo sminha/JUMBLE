@@ -37,3 +37,55 @@ export const useGetPurchases = (draft: Draft) => {
     placeholderData: keepPreviousData,
   });
 };
+
+const getPurchase = async (purchaseId: string) => {
+  const res = await fetchWithAuth(
+    `${import.meta.env.VITE_API_URL}/api/v1/purchases/${purchaseId}`,
+    {
+      method: 'GET',
+    },
+  );
+
+  if (!res.ok) {
+    throw new Error('사입내역 상세조회 요청 실패');
+  }
+
+  const data = await res.json();
+
+  return data.data;
+};
+
+// 사입내역 상세조회 API
+export const useGetPurchase = (purchaseId: string) => {
+  return useQuery({
+    queryFn: () => getPurchase(purchaseId),
+    queryKey: QUERY_KEYS.PURCHASES.DETAIL(purchaseId),
+    enabled: !!Number(purchaseId),
+  });
+};
+
+const getProduct = async (productId: string) => {
+  const res = await fetchWithAuth(
+    `${import.meta.env.VITE_API_URL}/api/v1/purchases/products/${productId}`,
+    {
+      method: 'GET',
+    },
+  );
+
+  if (!res.ok) {
+    throw new Error('상품사입내역 상세조회 요청 실패');
+  }
+
+  const data = await res.json();
+
+  return data.data;
+};
+
+// 상품사입내역 상세조회 API
+export const useGetProduct = (purchaseId: string, productId: string) => {
+  return useQuery({
+    queryFn: () => getProduct(productId),
+    queryKey: QUERY_KEYS.PURCHASES.PRODUCT_DETAIL(purchaseId, productId),
+    enabled: !!Number(purchaseId) || !!Number(productId),
+  });
+};

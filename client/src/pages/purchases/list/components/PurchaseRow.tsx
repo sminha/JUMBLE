@@ -28,8 +28,8 @@ export default function PurchaseRow({
       state: { background: location },
     });
   };
-  const handleProductModalOpen = (productId: string) => {
-    navigate(`${PATHS.PURCHASES}/products/${productId}`, {
+  const handleProductModalOpen = (purchaseId: string, productId: string) => {
+    navigate(`${PATHS.PURCHASES}/${purchaseId}/products/${productId}`, {
       state: { background: location },
     });
   };
@@ -57,7 +57,7 @@ export default function PurchaseRow({
         <UnstyledButton
           aria-label="상품 사입내역 상세조회"
           className={TEXT_BUTTON_STYLE}
-          onClick={() => handleProductModalOpen(record.productId)}
+          onClick={() => handleProductModalOpen(record.purchaseId, record.productId)}
         >
           {record.productNo}
         </UnstyledButton>
