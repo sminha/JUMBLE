@@ -197,3 +197,63 @@ export const useUpdateBackorder = (purchaseId: string, productId: string) => {
     },
   });
 };
+
+const deletePurchase = async (purchaseId: string) => {
+  const res = await fetchWithAuth(
+    `${import.meta.env.VITE_API_URL}/api/v1/purchases/${purchaseId}`,
+    {
+      method: 'DELETE',
+    },
+  );
+
+  if (!res.ok) {
+    throw new Error('사입내역 삭제 요청 실패');
+  }
+
+  const data = await res.json();
+
+  return data;
+};
+
+// 사입내역 삭제 API
+export const useDeletePurchase = (purchaseId: string) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: () => deletePurchase(purchaseId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.PURCHASES.LIST() });
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.PURCHASES.DETAIL(purchaseId) });
+    },
+  });
+};
+
+const deleteProduct = async (productId: string) => {
+  const res = await fetchWithAuth(
+    `${import.meta.env.VITE_API_URL}/api/v1/purchases/products/${productId}`,
+    {
+      method: 'DELETE',
+    },
+  );
+
+  if (!res.ok) {
+    throw new Error('상품사입내역 삭제 요청 실패');
+  }
+
+  const data = await res.json();
+
+  return data;
+};
+
+// 상품사입내역 삭제 API
+export const useDeleteProduct = (purchaseId: string, productId: string) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: () => deleteProduct(productId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.PURCHASES.LIST() });
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.PURCHASES.DETAIL(purchaseId) });
+    },
+  });
+};

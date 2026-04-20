@@ -6,7 +6,7 @@ import LeaveConfirmationModal from '@/components/LeaveConfirmationModal';
 import Modal, { ModalRow } from '@/components/Modal';
 import ProductTable from '@/components/ProductTable';
 import { formatDate } from '@/utils/format';
-import { useUpdatePurchase, useGetPurchase } from '../apis';
+import { useUpdatePurchase, useGetPurchase, useDeletePurchase } from '../apis';
 
 interface PurchaseModalProps {
   purchaseId: string;
@@ -31,6 +31,7 @@ const TABLE_HEADERS: { label: string; width: string }[] = [
 export default function PurchaseModal({ purchaseId, open, onOpenChange }: PurchaseModalProps) {
   const { data, isPending } = useGetPurchase(purchaseId, open);
   const { mutate: handleUpdatePurchase } = useUpdatePurchase(purchaseId);
+  const { mutate: handleDeletePurchase } = useDeletePurchase(purchaseId);
   const [isLeaveConfirmationModalOpen, setIsLeaveConfirmationModalOpen] = useState<boolean>(false);
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const {
@@ -68,9 +69,16 @@ export default function PurchaseModal({ purchaseId, open, onOpenChange }: Purcha
   };
 
   const handleRemove = () => {
-    // TODO: 사입내역 삭제 API 연동
-    console.log(purchaseId);
-    onOpenChange(false);
+    handleDeletePurchase(undefined, {
+      onSuccess: () => {
+        // TODO: 추후 토스트 추가
+        onOpenChange(false);
+      },
+      onError: () => {
+        // TODO: 추후 토스트로 변경
+        alert('사입내역 삭제에 실패했습니다. 다시 시도해주세요.');
+      },
+    });
   };
   const handleSave = handleSubmit((data) => {
     handleUpdatePurchase(data, {

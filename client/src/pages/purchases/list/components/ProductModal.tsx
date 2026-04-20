@@ -6,7 +6,7 @@ import LeaveConfirmationModal from '@/components/LeaveConfirmationModal';
 import { formatPrice, formatDate } from '@/utils/format';
 import Modal, { ModalRow } from '@/components/Modal';
 import { cn } from '@/utils/cn';
-import { useUpdateProduct, useGetProduct } from '../apis';
+import { useUpdateProduct, useGetProduct, useDeleteProduct } from '../apis';
 
 interface ProductModalProps {
   purchaseId: string;
@@ -23,6 +23,7 @@ export default function ProductModal({
 }: ProductModalProps) {
   const { data, isPending } = useGetProduct(purchaseId, productId, open);
   const { mutate: handleUpdateProduct } = useUpdateProduct(purchaseId, productId);
+  const { mutate: handleDeleteProduct } = useDeleteProduct(purchaseId, productId);
   const [isLeaveConfirmationModalOpen, setIsLeaveConfirmationModalOpen] = useState<boolean>(false);
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const {
@@ -62,9 +63,16 @@ export default function ProductModal({
   };
 
   const handleRemove = () => {
-    // TODO: 상품 사입내역 삭제 API 연동
-    console.log(productId);
-    onOpenChange(false);
+    handleDeleteProduct(undefined, {
+      onSuccess: () => {
+        // TODO: 추후 토스트 추가
+        onOpenChange(false);
+      },
+      onError: () => {
+        // TODO: 추후 토스트로 변경
+        alert('상품사입내역 삭제에 실패했습니다. 다시 시도해주세요.');
+      },
+    });
   };
   const handleSave = handleSubmit((data) => {
     handleUpdateProduct(data, {
