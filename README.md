@@ -28,7 +28,7 @@
 
 <div align="center">
 
-<img width="600" height="2005" alt="Untitled diagram-2026-03-30-093600" src="https://github.com/user-attachments/assets/079b4c72-c43a-43ba-8a60-577f85562e7a" />
+<img alt="Untitled diagram-2026-03-30-093600" src="https://github.com/user-attachments/assets/079b4c72-c43a-43ba-8a60-577f85562e7a" />
 
 </div>
 
