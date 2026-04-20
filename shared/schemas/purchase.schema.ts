@@ -15,7 +15,7 @@ export const productSchema = z
     backorderQuantity: z.number().int().min(0),
   })
   .refine((data) => data.backorderQuantity <= data.quantity, {
-    message: '미송 수량은 총 수량을 초과할 수 없습니다.',
+    message: '미송수량은 총 수량을 초과할 수 없습니다.',
     path: ['backorderQuantity'],
   });
 
@@ -35,6 +35,7 @@ export type Purchase = z.infer<typeof purchaseSchema>;
 export type Product = z.infer<typeof productSchema>;
 
 export const updateBackorderQuantitySchema = z.object({
+  // TODO: quantity 초과할 수 없다는 제한조건 추가
   backorderQuantity: z.number().int().min(0, '미송수량은 0 이상이어야 합니다.'),
 });
 

@@ -58,7 +58,10 @@ export default function ResultSection({
   isError,
 }: ResultSectionProps) {
   const [isChecked, setIsChecked] = useState<boolean>(false);
-  const [selectedPurchaseId, setSelectedPurchaseId] = useState<string | null>(null);
+  const [selectedReceiptPurchaseId, setSelectedReceiptPurchaseId] = useState<string | null>(null);
+  const [selectedBackorderPurchaseId, setSelectedBackorderPurchaseId] = useState<string | null>(
+    null,
+  );
   const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
 
   if (isPending) {
@@ -197,8 +200,11 @@ export default function ResultSection({
               <PurchaseRow
                 key={record.productId}
                 record={record}
-                onBackorderModalOpenChange={setSelectedProductId}
-                onReceiptModalOpenChange={setSelectedPurchaseId}
+                onBackorderModalOpenChange={(purchaseId, productId) => {
+                  setSelectedBackorderPurchaseId(purchaseId);
+                  setSelectedProductId(productId);
+                }}
+                onReceiptModalOpenChange={setSelectedReceiptPurchaseId}
               />
             ))}
           </tbody>
@@ -233,19 +239,19 @@ export default function ResultSection({
         </UnstyledButton>
       </div>
 
-      {selectedPurchaseId && selectedProductId && (
+      {selectedBackorderPurchaseId && selectedProductId && (
         <BackorderModal
-          purchaseId={selectedPurchaseId}
+          purchaseId={selectedBackorderPurchaseId}
           productId={selectedProductId}
-          open={selectedProductId !== null}
-          onOpenChange={(open) => !open && setSelectedProductId(null)}
+          open={selectedBackorderPurchaseId !== null}
+          onOpenChange={(open) => !open && setSelectedBackorderPurchaseId(null)}
         />
       )}
-      {selectedPurchaseId && (
+      {selectedReceiptPurchaseId && (
         <ReceiptModal
-          purchaseId={selectedPurchaseId}
-          open={selectedPurchaseId !== null}
-          onOpenChange={(open) => !open && setSelectedPurchaseId(null)}
+          purchaseId={selectedReceiptPurchaseId}
+          open={selectedReceiptPurchaseId !== null}
+          onOpenChange={(open) => !open && setSelectedReceiptPurchaseId(null)}
         />
       )}
     </section>

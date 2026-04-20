@@ -1,13 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { productSchema } from '@jumble/shared';
+import { updateBackorderQuantitySchema } from '@jumble/shared';
 import { STATUS } from '@/constants/status';
 import Modal from '@/components/Modal';
 import Input from '@/components/Input';
 import LeaveConfirmationModal from '@/components/LeaveConfirmationModal';
 import UnstyledButton from './UnstyledButton';
-import { useGetProduct } from '../apis';
+import { useEditBackorder, useGetProduct } from '../apis';
 
 interface BackorderModalProps {
   purchaseId: string;
@@ -23,6 +23,7 @@ export default function BackorderModal({
   onOpenChange,
 }: BackorderModalProps) {
   const { data, isPending } = useGetProduct(purchaseId, productId, open);
+  const { mutate: handleEditBackorder } = useEditBackorder(productId);
 
   const [isLeaveConfirmationModalOpen, setIsLeaveConfirmationModalOpen] = useState<boolean>(false);
   const {
@@ -33,7 +34,7 @@ export default function BackorderModal({
     setValue,
     formState: { errors },
   } = useForm({
-    resolver: zodResolver(productSchema),
+    resolver: zodResolver(updateBackorderQuantitySchema),
   });
   const backorderQuantity = useWatch({ control, name: 'backorderQuantity' });
 
@@ -58,9 +59,16 @@ export default function BackorderModal({
   };
 
   const handleSave = handleSubmit((data) => {
-    // TODO: 미송수량 수정 API 연동
-    console.log(data);
-    console.log(productId);
+    handleEditBackorder(data, {
+      onSuccess: () => {
+        // TODO: 추후 토스트 추가
+        onOpenChange(false);
+      },
+      onError: () => {
+        // TODO: 추후 토스트로 변경
+        alert('상품사입내역 수정에 실패했습니다. 다시 시도해주세요.');
+      },
+    });
   });
   const handleCancel = () => {
     setIsLeaveConfirmationModalOpen(true);

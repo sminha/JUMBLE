@@ -8,7 +8,7 @@ import UnstyledButton from './UnstyledButton';
 import Checkbox from './Checkbox';
 interface PurchaseRowProps {
   record: PurchaseRecord;
-  onBackorderModalOpenChange: (productId: string | null) => void;
+  onBackorderModalOpenChange: (purchaseId: string, productId: string) => void;
   onReceiptModalOpenChange: (purchaseId: string | null) => void;
 }
 
@@ -76,7 +76,7 @@ export default function PurchaseRow({
         <UnstyledButton
           aria-label="미송수량 조회"
           className={TEXT_BUTTON_STYLE}
-          onClick={() => onBackorderModalOpenChange(record.productId)}
+          onClick={() => onBackorderModalOpenChange(record.purchaseId, record.productId)}
         >
           {record.backorderQuantity}
         </UnstyledButton>
