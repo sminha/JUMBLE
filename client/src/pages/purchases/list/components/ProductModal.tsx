@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { productSchema, CATEGORY_LABEL, CATEGORY_LABEL_NEW } from '@jumble/shared';
+import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
+import { productSchema, CATEGORY_LABEL, CATEGORY_LABEL_NEW, type Product } from '@jumble/shared';
 import LeaveConfirmationModal from '@/components/LeaveConfirmationModal';
 import { formatPrice, formatDate } from '@/utils/format';
 import Modal, { ModalRow } from '@/components/Modal';
@@ -31,8 +31,8 @@ export default function ProductModal({
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm({
-    resolver: zodResolver(productSchema),
+  } = useForm<Product>({
+    resolver: standardSchemaResolver(productSchema),
   });
   const [price, quantity] = useWatch({ control, name: ['price', 'quantity'] });
   const totalPrice = (price || 0) * (quantity || 0) || 0;

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
+import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
 import { updateBackorderQuantitySchema } from '@jumble/shared';
 import { STATUS } from '@/constants/status';
 import Modal from '@/components/Modal';
@@ -34,7 +34,7 @@ export default function BackorderModal({
     setValue,
     formState: { errors },
   } = useForm({
-    resolver: zodResolver(updateBackorderQuantitySchema),
+    resolver: standardSchemaResolver(updateBackorderQuantitySchema),
   });
   const backorderQuantity = useWatch({ control, name: 'backorderQuantity' });
 

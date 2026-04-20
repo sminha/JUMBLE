@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
+import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
 import { purchaseSchema } from '@jumble/shared';
 import LeaveConfirmationModal from '@/components/LeaveConfirmationModal';
 import Modal, { ModalRow } from '@/components/Modal';
@@ -40,7 +40,7 @@ export default function PurchaseModal({ purchaseId, open, onOpenChange }: Purcha
     reset,
     formState: { errors },
   } = useForm({
-    resolver: zodResolver(purchaseSchema),
+    resolver: standardSchemaResolver(purchaseSchema),
   });
 
   useEffect(() => {
