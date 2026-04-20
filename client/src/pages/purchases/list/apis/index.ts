@@ -1,11 +1,17 @@
-import { keepPreviousData, useQuery } from '@tanstack/react-query';
+import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { fetchWithAuth } from '@/lib/api';
 import {
   Draft,
+  Purchase,
+  Product,
   PurchaseDetail,
   ProductDetail,
   GetPurchaseDetailResponse,
   GetProductDetailResponse,
+  UpdatePurchaseResponse,
+  UpdateProductResponse,
+  UpdateBackorder,
+  UpdateBackorderResponse,
 } from '@jumble/shared';
 import { QUERY_KEYS } from '@/constants/query-key';
 
@@ -93,5 +99,101 @@ export const useGetProduct = (purchaseId: string, productId: string, open: boole
     queryFn: () => getProduct(productId),
     queryKey: QUERY_KEYS.PURCHASES.PRODUCT_DETAIL(purchaseId, productId),
     enabled: open && !!Number(purchaseId) && !!Number(productId),
+  });
+};
+
+const updatePurchase = async (purchaseId: string, form: Purchase) => {
+  const res = await fetchWithAuth(
+    `${import.meta.env.VITE_API_URL}/api/v1/purchases/${purchaseId}`,
+    {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(form),
+    },
+  );
+
+  if (!res.ok) {
+    throw new Error('사입내역 수정 요청 실패');
+  }
+
+  const data: UpdatePurchaseResponse = await res.json();
+
+  return data;
+};
+
+// 사입내역 수정 API
+export const useUpdatePurchase = (purchaseId: string) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (form: Purchase) => updatePurchase(purchaseId, form),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.PURCHASES.LIST() });
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.PURCHASES.DETAIL(purchaseId) });
+    },
+  });
+};
+
+const updateProduct = async (productId: string, form: Product) => {
+  const res = await fetchWithAuth(
+    `${import.meta.env.VITE_API_URL}/api/v1/purchases/products/${productId}`,
+    {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(form),
+    },
+  );
+
+  if (!res.ok) {
+    throw new Error('상품사입내역 수정 요청 실패');
+  }
+
+  const data: UpdateProductResponse = await res.json();
+
+  return data;
+};
+
+// 상품사입내역 수정 API
+export const useUpdateProduct = (purchaseId: string, productId: string) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (form: Product) => updateProduct(productId, form),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.PURCHASES.LIST() });
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.PURCHASES.DETAIL(purchaseId) });
+    },
+  });
+};
+
+const updateBackorder = async (productId: string, form: UpdateBackorder) => {
+  const res = await fetchWithAuth(
+    `${import.meta.env.VITE_API_URL}/api/v1/purchases/products/${productId}/backorder`,
+    {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(form),
+    },
+  );
+
+  if (!res.ok) {
+    throw new Error('미송수량 수정 요청 실패');
+  }
+
+  const data: UpdateBackorderResponse = await res.json();
+
+  return data;
+};
+
+// 미송수량 수정 API
+export const useUpdateBackorder = (purchaseId: string, productId: string) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (form: UpdateBackorder) => updateBackorder(productId, form),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.PURCHASES.LIST() });
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.PURCHASES.DETAIL(purchaseId) });
+    },
   });
 };

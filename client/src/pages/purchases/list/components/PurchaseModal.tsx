@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
+import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
 import { purchaseSchema } from '@jumble/shared';
 import LeaveConfirmationModal from '@/components/LeaveConfirmationModal';
 import Modal, { ModalRow } from '@/components/Modal';
 import ProductTable from '@/components/ProductTable';
 import { formatDate } from '@/utils/format';
-import { useGetPurchase } from '../apis';
+import { useUpdatePurchase, useGetPurchase } from '../apis';
 
 interface PurchaseModalProps {
   purchaseId: string;
@@ -30,6 +30,7 @@ const TABLE_HEADERS: { label: string; width: string }[] = [
 
 export default function PurchaseModal({ purchaseId, open, onOpenChange }: PurchaseModalProps) {
   const { data, isPending } = useGetPurchase(purchaseId, open);
+  const { mutate: handleUpdatePurchase } = useUpdatePurchase(purchaseId);
   const [isLeaveConfirmationModalOpen, setIsLeaveConfirmationModalOpen] = useState<boolean>(false);
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const {
@@ -39,7 +40,7 @@ export default function PurchaseModal({ purchaseId, open, onOpenChange }: Purcha
     reset,
     formState: { errors },
   } = useForm({
-    resolver: zodResolver(purchaseSchema),
+    resolver: standardSchemaResolver(purchaseSchema),
   });
 
   useEffect(() => {
@@ -72,9 +73,16 @@ export default function PurchaseModal({ purchaseId, open, onOpenChange }: Purcha
     onOpenChange(false);
   };
   const handleSave = handleSubmit((data) => {
-    // TODO: 사입내역 수정 API 연동
-    console.log(data);
-    setIsEditing(false);
+    handleUpdatePurchase(data, {
+      onSuccess: () => {
+        // TODO: 추후 토스트 추가
+        setIsEditing(false);
+      },
+      onError: () => {
+        // TODO: 추후 토스트로 변경
+        alert('사입내역 수정에 실패했습니다. 다시 시도해주세요.');
+      },
+    });
   });
   const handleCancel = () => {
     setIsLeaveConfirmationModalOpen(true);
@@ -86,7 +94,7 @@ export default function PurchaseModal({ purchaseId, open, onOpenChange }: Purcha
   return (
     <>
       <Modal
-        title="사입내역 조회"
+        title={isEditing ? '사입내역 수정' : '사입내역 조회'}
         open={open}
         onOpenChange={handleOpenChange}
         onOpenChangeComplete={() => setIsEditing(false)}

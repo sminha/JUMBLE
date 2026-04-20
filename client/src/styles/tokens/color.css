@@ -20,6 +20,6 @@
   --color-error: #ff828f;
   --color-background: #f5f7fa;
 
-  --color-overlay: rgba(0, 0, 0, 0.36);
+  --color-overlay: rgba(0, 0, 0, 0.25);
   --color-selected: rgba(207, 225, 255, 0.4);
 }

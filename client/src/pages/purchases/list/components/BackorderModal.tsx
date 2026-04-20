@@ -1,13 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { productSchema } from '@jumble/shared';
+import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
+import { updateBackorderSchema } from '@jumble/shared';
 import { STATUS } from '@/constants/status';
 import Modal from '@/components/Modal';
 import Input from '@/components/Input';
 import LeaveConfirmationModal from '@/components/LeaveConfirmationModal';
 import UnstyledButton from './UnstyledButton';
-import { useGetProduct } from '../apis';
+import { useUpdateBackorder, useGetProduct } from '../apis';
 
 interface BackorderModalProps {
   purchaseId: string;
@@ -23,6 +23,7 @@ export default function BackorderModal({
   onOpenChange,
 }: BackorderModalProps) {
   const { data, isPending } = useGetProduct(purchaseId, productId, open);
+  const { mutate: handleUpdateBackorder } = useUpdateBackorder(purchaseId, productId);
 
   const [isLeaveConfirmationModalOpen, setIsLeaveConfirmationModalOpen] = useState<boolean>(false);
   const {
@@ -33,7 +34,7 @@ export default function BackorderModal({
     setValue,
     formState: { errors },
   } = useForm({
-    resolver: zodResolver(productSchema),
+    resolver: standardSchemaResolver(updateBackorderSchema),
   });
   const backorderQuantity = useWatch({ control, name: 'backorderQuantity' });
 
@@ -58,9 +59,16 @@ export default function BackorderModal({
   };
 
   const handleSave = handleSubmit((data) => {
-    // TODO: 미송수량 수정 API 연동
-    console.log(data);
-    console.log(productId);
+    handleUpdateBackorder(data, {
+      onSuccess: () => {
+        // TODO: 추후 토스트 추가
+        onOpenChange(false);
+      },
+      onError: () => {
+        // TODO: 추후 토스트로 변경
+        alert('미송수량 수정에 실패했습니다. 다시 시도해주세요.');
+      },
+    });
   });
   const handleCancel = () => {
     setIsLeaveConfirmationModalOpen(true);
@@ -93,7 +101,11 @@ export default function BackorderModal({
           <div className="w-[8rem]">
             <Input
               numeric
-              {...register('backorderQuantity', { valueAsNumber: true })}
+              {...register('backorderQuantity', {
+                valueAsNumber: true,
+                validate: (value) =>
+                  value <= data.quantity || '미송수량은 총 수량을 초과할 수 없습니다.',
+              })}
               status={errors.backorderQuantity ? STATUS.ERROR : STATUS.DEFAULT}
               className="text-center"
             />

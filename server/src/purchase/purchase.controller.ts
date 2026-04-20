@@ -6,15 +6,15 @@ import {
   Purchase,
   purchaseSchema,
   productSchema,
-  updateBackorderQuantitySchema,
+  updateBackorderSchema,
   CATEGORY_VALUES,
   PurchaseDetail,
   ProductDetail,
   GetPurchaseDetailResponse,
   GetProductDetailResponse,
-  EditPurchaseResponse,
-  EditProductResponse,
-  EditBackorderResponse,
+  UpdatePurchaseResponse,
+  UpdateProductResponse,
+  UpdateBackorderResponse,
   DeletePurchaseResponse,
   DeleteProductResponse,
 } from '@jumble/shared';
@@ -239,7 +239,7 @@ export const PurchaseController = {
         success: true,
         status: 200,
         message: '사입내역 수정에 성공했습니다.',
-      } satisfies EditPurchaseResponse);
+      } satisfies UpdatePurchaseResponse);
     } catch (error) {
       console.error('🚨 서버 에러 발생:', error);
 
@@ -307,7 +307,7 @@ export const PurchaseController = {
         success: true,
         status: 200,
         message: '상품 사입내역 수정에 성공했습니다.',
-      } satisfies EditProductResponse);
+      } satisfies UpdateProductResponse);
     } catch (error) {
       console.error('🚨 서버 에러 발생:', error);
 
@@ -336,7 +336,7 @@ export const PurchaseController = {
   },
 
   // 미송수량 수정 API
-  updateBackorderQuantity: async (req: Request, res: Response) => {
+  updateBackorder: async (req: Request, res: Response) => {
     try {
       const userId = req.user.id;
       const rawItemId = req.params.productId as string;
@@ -349,7 +349,7 @@ export const PurchaseController = {
         });
       }
 
-      const result = updateBackorderQuantitySchema.safeParse(req.body);
+      const result = updateBackorderSchema.safeParse(req.body);
       if (!result.success) {
         return res.status(400).json({
           success: false,
@@ -361,7 +361,7 @@ export const PurchaseController = {
       const itemId = BigInt(rawItemId);
       let found: boolean | null;
       try {
-        found = await PurchaseService.updateBackorderQuantity(
+        found = await PurchaseService.updateBackorder(
           userId,
           itemId,
           result.data.backorderQuantity,
@@ -385,7 +385,7 @@ export const PurchaseController = {
         success: true,
         status: 200,
         message: '미송수량 수정에 성공했습니다.',
-      } satisfies EditBackorderResponse);
+      } satisfies UpdateBackorderResponse);
     } catch (error) {
       console.error('🚨 서버 에러 발생:', error);
 

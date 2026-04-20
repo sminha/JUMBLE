@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { productSchema, CATEGORY_LABEL, CATEGORY_LABEL_NEW } from '@jumble/shared';
+import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
+import { productSchema, CATEGORY_LABEL, CATEGORY_LABEL_NEW, type Product } from '@jumble/shared';
 import LeaveConfirmationModal from '@/components/LeaveConfirmationModal';
 import { formatPrice, formatDate } from '@/utils/format';
 import Modal, { ModalRow } from '@/components/Modal';
 import { cn } from '@/utils/cn';
-import { useGetProduct } from '../apis';
+import { useUpdateProduct, useGetProduct } from '../apis';
 
 interface ProductModalProps {
   purchaseId: string;
@@ -22,6 +22,7 @@ export default function ProductModal({
   onOpenChange,
 }: ProductModalProps) {
   const { data, isPending } = useGetProduct(purchaseId, productId, open);
+  const { mutate: handleUpdateProduct } = useUpdateProduct(purchaseId, productId);
   const [isLeaveConfirmationModalOpen, setIsLeaveConfirmationModalOpen] = useState<boolean>(false);
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const {
@@ -30,8 +31,8 @@ export default function ProductModal({
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm({
-    resolver: zodResolver(productSchema),
+  } = useForm<Product>({
+    resolver: standardSchemaResolver(productSchema),
   });
   const [price, quantity] = useWatch({ control, name: ['price', 'quantity'] });
   const totalPrice = (price || 0) * (quantity || 0) || 0;
@@ -66,9 +67,16 @@ export default function ProductModal({
     onOpenChange(false);
   };
   const handleSave = handleSubmit((data) => {
-    // TODO: 상품 사입내역 수정 API 연동
-    console.log(data);
-    setIsEditing(false);
+    handleUpdateProduct(data, {
+      onSuccess: () => {
+        // TODO: 추후 토스트 추가
+        setIsEditing(false);
+      },
+      onError: () => {
+        // TODO: 추후 토스트로 변경
+        alert('상품사입내역 수정에 실패했습니다. 다시 시도해주세요.');
+      },
+    });
   });
   const handleCancel = () => {
     setIsLeaveConfirmationModalOpen(true);
@@ -80,7 +88,7 @@ export default function ProductModal({
   return (
     <>
       <Modal
-        title="상품 사입내역 조회"
+        title={isEditing ? '상품 사입내역 수정' : '상품 사입내역 조회'}
         open={open}
         onOpenChange={handleOpenChange}
         onOpenChangeComplete={() => setIsEditing(false)}

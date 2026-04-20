@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
+import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
 import { purchaseSchema } from '@jumble/shared';
 import LeaveConfirmationModal from '@/components/LeaveConfirmationModal';
 import Modal, { ModalRow } from '@/components/Modal';
@@ -18,7 +18,7 @@ export default function ReceiptModal({ purchaseId, open, onOpenChange }: Receipt
   const [isLeaveConfirmationModalOpen, setIsLeaveConfirmationModalOpen] = useState<boolean>(false);
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const { handleSubmit, reset } = useForm({
-    resolver: zodResolver(purchaseSchema),
+    resolver: standardSchemaResolver(purchaseSchema),
   });
 
   useEffect(() => {

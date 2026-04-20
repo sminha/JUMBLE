@@ -84,18 +84,12 @@ const createPurchase = async (form: Purchase) => {
 
 // 사입내역 추가 API
 export const useCreatePurchase = () => {
-  const navigate = useNavigate();
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: createPurchase,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.PURCHASES.LIST });
-      navigate(PATHS.PURCHASE_LIST);
-    },
-    onError: () => {
-      // TODO: 추후 토스트로 변경
-      alert('사입내역 추가에 실패했습니다. 다시 시도해주세요.');
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.PURCHASES.LIST() });
     },
   });
 };
