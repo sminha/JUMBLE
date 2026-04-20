@@ -1,23 +1,17 @@
-import {
-  keepPreviousData,
-  QueryClient,
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from '@tanstack/react-query';
+import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { fetchWithAuth } from '@/lib/api';
 import {
   Draft,
+  Purchase,
+  Product,
   PurchaseDetail,
   ProductDetail,
   GetPurchaseDetailResponse,
   GetProductDetailResponse,
-  EditPurchaseResponse,
-  Purchase,
-  EditProductResponse,
-  Product,
+  UpdatePurchaseResponse,
+  UpdateProductResponse,
   UpdateBackorderQuantity,
-  EditBackorderResponse,
+  UpdateBackorderResponse,
 } from '@jumble/shared';
 import { QUERY_KEYS } from '@/constants/query-key';
 
@@ -108,7 +102,7 @@ export const useGetProduct = (purchaseId: string, productId: string, open: boole
   });
 };
 
-const editPurchase = async (purchaseId: string, form: Purchase) => {
+const updatePurchase = async (purchaseId: string, form: Purchase) => {
   const res = await fetchWithAuth(
     `${import.meta.env.VITE_API_URL}/api/v1/purchases/${purchaseId}`,
     {
@@ -122,24 +116,24 @@ const editPurchase = async (purchaseId: string, form: Purchase) => {
     throw new Error('사입내역 수정 요청 실패');
   }
 
-  const data: EditPurchaseResponse = await res.json();
+  const data: UpdatePurchaseResponse = await res.json();
 
   return data;
 };
 
 // 사입내역 수정 API
-export const useEditPurchase = (purchaseId: string) => {
+export const useUpdatePurchase = (purchaseId: string) => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (form: Purchase) => editPurchase(purchaseId, form),
+    mutationFn: (form: Purchase) => updatePurchase(purchaseId, form),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.PURCHASES.ALL });
     },
   });
 };
 
-const editProduct = async (productId: string, form: Product) => {
+const updateProduct = async (productId: string, form: Product) => {
   const res = await fetchWithAuth(
     `${import.meta.env.VITE_API_URL}/api/v1/purchases/products/${productId}`,
     {
@@ -153,24 +147,24 @@ const editProduct = async (productId: string, form: Product) => {
     throw new Error('상품사입내역 수정 요청 실패');
   }
 
-  const data: EditProductResponse = await res.json();
+  const data: UpdateProductResponse = await res.json();
 
   return data;
 };
 
 // 상품사입내역 수정 API
-export const useEditProduct = (productId: string) => {
+export const useUpdateProduct = (productId: string) => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (form: Product) => editProduct(productId, form),
+    mutationFn: (form: Product) => updateProduct(productId, form),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.PURCHASES.ALL });
     },
   });
 };
 
-const editBackorder = async (productId: string, form: UpdateBackorderQuantity) => {
+const updateBackorder = async (productId: string, form: UpdateBackorderQuantity) => {
   const res = await fetchWithAuth(
     `${import.meta.env.VITE_API_URL}/api/v1/purchases/products/${productId}/backorder`,
     {
@@ -184,17 +178,17 @@ const editBackorder = async (productId: string, form: UpdateBackorderQuantity) =
     throw new Error('상품사입내역 수정 요청 실패');
   }
 
-  const data: EditBackorderResponse = await res.json();
+  const data: UpdateBackorderResponse = await res.json();
 
   return data;
 };
 
 // 미송수량 수정 API
-export const useEditBackorder = (productId: string) => {
+export const useUpdateBackorder = (productId: string) => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (form: UpdateBackorderQuantity) => editBackorder(productId, form),
+    mutationFn: (form: UpdateBackorderQuantity) => updateBackorder(productId, form),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.PURCHASES.ALL });
     },

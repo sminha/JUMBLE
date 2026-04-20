@@ -7,7 +7,7 @@ import Modal from '@/components/Modal';
 import Input from '@/components/Input';
 import LeaveConfirmationModal from '@/components/LeaveConfirmationModal';
 import UnstyledButton from './UnstyledButton';
-import { useEditBackorder, useGetProduct } from '../apis';
+import { useUpdateBackorder, useGetProduct } from '../apis';
 
 interface BackorderModalProps {
   purchaseId: string;
@@ -23,7 +23,7 @@ export default function BackorderModal({
   onOpenChange,
 }: BackorderModalProps) {
   const { data, isPending } = useGetProduct(purchaseId, productId, open);
-  const { mutate: handleEditBackorder } = useEditBackorder(productId);
+  const { mutate: handleUpdateBackorder } = useUpdateBackorder(productId);
 
   const [isLeaveConfirmationModalOpen, setIsLeaveConfirmationModalOpen] = useState<boolean>(false);
   const {
@@ -59,7 +59,7 @@ export default function BackorderModal({
   };
 
   const handleSave = handleSubmit((data) => {
-    handleEditBackorder(data, {
+    handleUpdateBackorder(data, {
       onSuccess: () => {
         // TODO: 추후 토스트 추가
         onOpenChange(false);

@@ -6,7 +6,7 @@ import LeaveConfirmationModal from '@/components/LeaveConfirmationModal';
 import { formatPrice, formatDate } from '@/utils/format';
 import Modal, { ModalRow } from '@/components/Modal';
 import { cn } from '@/utils/cn';
-import { useEditProduct, useGetProduct } from '../apis';
+import { useUpdateProduct, useGetProduct } from '../apis';
 
 interface ProductModalProps {
   purchaseId: string;
@@ -22,7 +22,7 @@ export default function ProductModal({
   onOpenChange,
 }: ProductModalProps) {
   const { data, isPending } = useGetProduct(purchaseId, productId, open);
-  const { mutate: handleEditProduct } = useEditProduct(productId);
+  const { mutate: handleUpdateProduct } = useUpdateProduct(productId);
   const [isLeaveConfirmationModalOpen, setIsLeaveConfirmationModalOpen] = useState<boolean>(false);
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const {
@@ -67,7 +67,7 @@ export default function ProductModal({
     onOpenChange(false);
   };
   const handleSave = handleSubmit((data) => {
-    handleEditProduct(data, {
+    handleUpdateProduct(data, {
       onSuccess: () => {
         // TODO: 추후 토스트 추가
         setIsEditing(false);

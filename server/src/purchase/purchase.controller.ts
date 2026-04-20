@@ -12,9 +12,9 @@ import {
   ProductDetail,
   GetPurchaseDetailResponse,
   GetProductDetailResponse,
-  EditPurchaseResponse,
-  EditProductResponse,
-  EditBackorderResponse,
+  UpdatePurchaseResponse,
+  UpdateProductResponse,
+  UpdateBackorderResponse,
   DeletePurchaseResponse,
   DeleteProductResponse,
 } from '@jumble/shared';
@@ -239,7 +239,7 @@ export const PurchaseController = {
         success: true,
         status: 200,
         message: '사입내역 수정에 성공했습니다.',
-      } satisfies EditPurchaseResponse);
+      } satisfies UpdatePurchaseResponse);
     } catch (error) {
       console.error('🚨 서버 에러 발생:', error);
 
@@ -307,7 +307,7 @@ export const PurchaseController = {
         success: true,
         status: 200,
         message: '상품 사입내역 수정에 성공했습니다.',
-      } satisfies EditProductResponse);
+      } satisfies UpdateProductResponse);
     } catch (error) {
       console.error('🚨 서버 에러 발생:', error);
 
@@ -385,7 +385,7 @@ export const PurchaseController = {
         success: true,
         status: 200,
         message: '미송수량 수정에 성공했습니다.',
-      } satisfies EditBackorderResponse);
+      } satisfies UpdateBackorderResponse);
     } catch (error) {
       console.error('🚨 서버 에러 발생:', error);
 

@@ -95,21 +95,21 @@ export interface GetProductDetailResponse {
 }
 
 // 사입내역 수정 API 응답
-export interface EditPurchaseResponse {
+export interface UpdatePurchaseResponse {
   success: boolean;
   status: number;
   message: string;
 }
 
 // 상품사입내역 수정 API 응답
-export interface EditProductResponse {
+export interface UpdateProductResponse {
   success: boolean;
   status: number;
   message: string;
 }
 
 // 미송수량 수정 API 응답
-export interface EditBackorderResponse {
+export interface UpdateBackorderResponse {
   success: boolean;
   status: number;
   message: string;

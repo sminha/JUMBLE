@@ -6,7 +6,7 @@ import LeaveConfirmationModal from '@/components/LeaveConfirmationModal';
 import Modal, { ModalRow } from '@/components/Modal';
 import ProductTable from '@/components/ProductTable';
 import { formatDate } from '@/utils/format';
-import { useEditPurchase, useGetPurchase } from '../apis';
+import { useUpdatePurchase, useGetPurchase } from '../apis';
 
 interface PurchaseModalProps {
   purchaseId: string;
@@ -30,7 +30,7 @@ const TABLE_HEADERS: { label: string; width: string }[] = [
 
 export default function PurchaseModal({ purchaseId, open, onOpenChange }: PurchaseModalProps) {
   const { data, isPending } = useGetPurchase(purchaseId, open);
-  const { mutate: handleEditPurchase } = useEditPurchase(purchaseId);
+  const { mutate: handleUpdatePurchase } = useUpdatePurchase(purchaseId);
   const [isLeaveConfirmationModalOpen, setIsLeaveConfirmationModalOpen] = useState<boolean>(false);
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const {
@@ -73,7 +73,7 @@ export default function PurchaseModal({ purchaseId, open, onOpenChange }: Purcha
     onOpenChange(false);
   };
   const handleSave = handleSubmit((data) => {
-    handleEditPurchase(data, {
+    handleUpdatePurchase(data, {
       onSuccess: () => {
         // TODO: 추후 토스트 추가
         setIsEditing(false);
