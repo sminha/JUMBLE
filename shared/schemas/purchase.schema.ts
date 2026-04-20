@@ -34,12 +34,12 @@ export const purchaseSchema = z.object({
 export type Purchase = z.infer<typeof purchaseSchema>;
 export type Product = z.infer<typeof productSchema>;
 
-export const updateBackorderQuantitySchema = z.object({
+export const updateBackorderSchema = z.object({
   // TODO: quantity 초과할 수 없다는 제한조건 추가
   backorderQuantity: z.number().int().min(0, '미송수량은 0 이상이어야 합니다.'),
 });
 
-export type UpdateBackorderQuantity = z.infer<typeof updateBackorderQuantitySchema>;
+export type UpdateBackorder = z.infer<typeof updateBackorderSchema>;
 
 export const DEFAULT_PRODUCT: Product = {
   productNo: '-',

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
-import { updateBackorderQuantitySchema } from '@jumble/shared';
+import { updateBackorderSchema } from '@jumble/shared';
 import { STATUS } from '@/constants/status';
 import Modal from '@/components/Modal';
 import Input from '@/components/Input';
@@ -34,7 +34,7 @@ export default function BackorderModal({
     setValue,
     formState: { errors },
   } = useForm({
-    resolver: standardSchemaResolver(updateBackorderQuantitySchema),
+    resolver: standardSchemaResolver(updateBackorderSchema),
   });
   const backorderQuantity = useWatch({ control, name: 'backorderQuantity' });
 

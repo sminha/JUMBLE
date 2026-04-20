@@ -231,7 +231,7 @@ export const PurchaseService = {
   },
 
   // 미송수량 수정 API
-  updateBackorderQuantity: async (
+  updateBackorder: async (
     userId: bigint,
     itemId: bigint,
     backorderQuantity: number,

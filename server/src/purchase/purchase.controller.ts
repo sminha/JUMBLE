@@ -6,7 +6,7 @@ import {
   Purchase,
   purchaseSchema,
   productSchema,
-  updateBackorderQuantitySchema,
+  updateBackorderSchema,
   CATEGORY_VALUES,
   PurchaseDetail,
   ProductDetail,
@@ -336,7 +336,7 @@ export const PurchaseController = {
   },
 
   // 미송수량 수정 API
-  updateBackorderQuantity: async (req: Request, res: Response) => {
+  updateBackorder: async (req: Request, res: Response) => {
     try {
       const userId = req.user.id;
       const rawItemId = req.params.productId as string;
@@ -349,7 +349,7 @@ export const PurchaseController = {
         });
       }
 
-      const result = updateBackorderQuantitySchema.safeParse(req.body);
+      const result = updateBackorderSchema.safeParse(req.body);
       if (!result.success) {
         return res.status(400).json({
           success: false,
@@ -361,7 +361,7 @@ export const PurchaseController = {
       const itemId = BigInt(rawItemId);
       let found: boolean | null;
       try {
-        found = await PurchaseService.updateBackorderQuantity(
+        found = await PurchaseService.updateBackorder(
           userId,
           itemId,
           result.data.backorderQuantity,

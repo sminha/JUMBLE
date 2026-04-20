@@ -10,7 +10,7 @@ import {
   GetProductDetailResponse,
   UpdatePurchaseResponse,
   UpdateProductResponse,
-  UpdateBackorderQuantity,
+  UpdateBackorder,
   UpdateBackorderResponse,
 } from '@jumble/shared';
 import { QUERY_KEYS } from '@/constants/query-key';
@@ -164,7 +164,7 @@ export const useUpdateProduct = (productId: string) => {
   });
 };
 
-const updateBackorder = async (productId: string, form: UpdateBackorderQuantity) => {
+const updateBackorder = async (productId: string, form: UpdateBackorder) => {
   const res = await fetchWithAuth(
     `${import.meta.env.VITE_API_URL}/api/v1/purchases/products/${productId}/backorder`,
     {
@@ -188,7 +188,7 @@ export const useUpdateBackorder = (productId: string) => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (form: UpdateBackorderQuantity) => updateBackorder(productId, form),
+    mutationFn: (form: UpdateBackorder) => updateBackorder(productId, form),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.PURCHASES.ALL });
     },
