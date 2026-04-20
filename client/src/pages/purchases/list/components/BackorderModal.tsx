@@ -66,7 +66,7 @@ export default function BackorderModal({
       },
       onError: () => {
         // TODO: 추후 토스트로 변경
-        alert('상품사입내역 수정에 실패했습니다. 다시 시도해주세요.');
+        alert('미송수량 수정에 실패했습니다. 다시 시도해주세요.');
       },
     });
   });
