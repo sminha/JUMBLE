@@ -22,7 +22,7 @@ export default function ProductModal({
   onOpenChange,
 }: ProductModalProps) {
   const { data, isPending } = useGetProduct(purchaseId, productId, open);
-  const { mutate: handleUpdateProduct } = useUpdateProduct(productId);
+  const { mutate: handleUpdateProduct } = useUpdateProduct(purchaseId, productId);
   const [isLeaveConfirmationModalOpen, setIsLeaveConfirmationModalOpen] = useState<boolean>(false);
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const {
@@ -88,7 +88,7 @@ export default function ProductModal({
   return (
     <>
       <Modal
-        title="상품 사입내역 조회"
+        title={isEditing ? '상품 사입내역 수정' : '상품 사입내역 조회'}
         open={open}
         onOpenChange={handleOpenChange}
         onOpenChangeComplete={() => setIsEditing(false)}

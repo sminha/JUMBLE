@@ -23,7 +23,7 @@ export default function BackorderModal({
   onOpenChange,
 }: BackorderModalProps) {
   const { data, isPending } = useGetProduct(purchaseId, productId, open);
-  const { mutate: handleUpdateBackorder } = useUpdateBackorder(productId);
+  const { mutate: handleUpdateBackorder } = useUpdateBackorder(purchaseId, productId);
 
   const [isLeaveConfirmationModalOpen, setIsLeaveConfirmationModalOpen] = useState<boolean>(false);
   const {
@@ -101,7 +101,11 @@ export default function BackorderModal({
           <div className="w-[8rem]">
             <Input
               numeric
-              {...register('backorderQuantity', { valueAsNumber: true })}
+              {...register('backorderQuantity', {
+                valueAsNumber: true,
+                validate: (value) =>
+                  value <= data.quantity || '미송수량은 총 수량을 초과할 수 없습니다.',
+              })}
               status={errors.backorderQuantity ? STATUS.ERROR : STATUS.DEFAULT}
               className="text-center"
             />

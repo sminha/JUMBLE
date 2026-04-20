@@ -94,7 +94,7 @@ export default function PurchaseModal({ purchaseId, open, onOpenChange }: Purcha
   return (
     <>
       <Modal
-        title="사입내역 조회"
+        title={isEditing ? '사입내역 수정' : '사입내역 조회'}
         open={open}
         onOpenChange={handleOpenChange}
         onOpenChangeComplete={() => setIsEditing(false)}

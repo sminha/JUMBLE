@@ -128,7 +128,8 @@ export const useUpdatePurchase = (purchaseId: string) => {
   return useMutation({
     mutationFn: (form: Purchase) => updatePurchase(purchaseId, form),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.PURCHASES.ALL });
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.PURCHASES.LIST() });
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.PURCHASES.DETAIL(purchaseId) });
     },
   });
 };
@@ -153,13 +154,14 @@ const updateProduct = async (productId: string, form: Product) => {
 };
 
 // 상품사입내역 수정 API
-export const useUpdateProduct = (productId: string) => {
+export const useUpdateProduct = (purchaseId: string, productId: string) => {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: (form: Product) => updateProduct(productId, form),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.PURCHASES.ALL });
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.PURCHASES.LIST() });
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.PURCHASES.DETAIL(purchaseId) });
     },
   });
 };
@@ -175,7 +177,7 @@ const updateBackorder = async (productId: string, form: UpdateBackorder) => {
   );
 
   if (!res.ok) {
-    throw new Error('상품사입내역 수정 요청 실패');
+    throw new Error('미송수량 수정 요청 실패');
   }
 
   const data: UpdateBackorderResponse = await res.json();
@@ -184,13 +186,14 @@ const updateBackorder = async (productId: string, form: UpdateBackorder) => {
 };
 
 // 미송수량 수정 API
-export const useUpdateBackorder = (productId: string) => {
+export const useUpdateBackorder = (purchaseId: string, productId: string) => {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: (form: UpdateBackorder) => updateBackorder(productId, form),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.PURCHASES.ALL });
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.PURCHASES.LIST() });
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.PURCHASES.DETAIL(purchaseId) });
     },
   });
 };

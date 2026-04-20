@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router';
-import { zodResolver } from '@hookform/resolvers/zod';
+import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
 import { useFieldArray, useForm } from 'react-hook-form';
 import { Purchase, purchaseSchema, DEFAULT_PURCHASE } from '@jumble/shared';
 import Input from '@/components/Input';
@@ -34,7 +34,7 @@ export default function PurchaseNew() {
     setValue,
     formState: { errors },
   } = useForm<Purchase>({
-    resolver: zodResolver(purchaseSchema),
+    resolver: standardSchemaResolver(purchaseSchema),
     defaultValues: DEFAULT_PURCHASE,
   });
   const { replace } = useFieldArray({

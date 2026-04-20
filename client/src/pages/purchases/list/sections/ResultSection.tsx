@@ -243,14 +243,14 @@ export default function ResultSection({
         <BackorderModal
           purchaseId={selectedBackorderPurchaseId}
           productId={selectedProductId}
-          open={selectedBackorderPurchaseId !== null}
+          open
           onOpenChange={(open) => !open && setSelectedBackorderPurchaseId(null)}
         />
       )}
       {selectedReceiptPurchaseId && (
         <ReceiptModal
           purchaseId={selectedReceiptPurchaseId}
-          open={selectedReceiptPurchaseId !== null}
+          open
           onOpenChange={(open) => !open && setSelectedReceiptPurchaseId(null)}
         />
       )}
