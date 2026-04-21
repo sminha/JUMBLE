@@ -19,7 +19,7 @@ export const getPurchases = async (draft: Draft) => {
   const searchParams = new URLSearchParams(
     Object.fromEntries(
       Object.entries(draft)
-        .filter(([_, v]) => v !== '' && v !== false)
+        .filter(([_, v]) => v !== '' && v !== false && v !== null)
         .map(([k, v]) => [k, String(v)]),
     ),
   );

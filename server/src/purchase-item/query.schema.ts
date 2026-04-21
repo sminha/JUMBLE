@@ -30,10 +30,8 @@ export const querySchema = z
       })
       .default(INITIAL_DRAFT.dateType),
     periodType: z
-      .preprocess(
-        (val) => (val === 'null' ? null : val),
-        z.enum(Object.values(PERIOD) as [Period, ...Period[]]).nullable(),
-      )
+      .enum(Object.values(PERIOD) as [Period, ...Period[]])
+      .nullable()
       .default(INITIAL_DRAFT.periodType),
     startDate: z.string().default(INITIAL_DRAFT.startDate),
     endDate: z.string().default(INITIAL_DRAFT.endDate),

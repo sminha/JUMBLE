@@ -3,12 +3,9 @@ import { useForm, useWatch } from 'react-hook-form';
 import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
 import { updateBackorderSchema } from '@jumble/shared';
 import { STATUS } from '@/constants/status';
-import Modal from '@/components/modal/Modal';
-import Input from '@/components/input/Input';
-import LeaveConfirmationModal from '@/components/modal/LeaveConfirmationModal';
+import { Input, Modal, LeaveConfirmationModal, useToast } from '@/components';
 import UnstyledButton from './UnstyledButton';
 import { useUpdateBackorder, useGetProduct } from '../apis';
-import { useToast } from '@/components/toast';
 
 interface BackorderModalProps {
   purchaseId: string;

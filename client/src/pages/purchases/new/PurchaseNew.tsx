@@ -67,10 +67,8 @@ export default function PurchaseNew() {
         },
       });
     },
-    (errors: FieldErrors<Purchase>) => {
-      if (Object.keys(errors).length !== 0) {
-        toast.error('입력하지 않은 항목이 있습니다.');
-      }
+    () => {
+      toast.error('입력하지 않은 항목이 있습니다.');
     },
   );
 

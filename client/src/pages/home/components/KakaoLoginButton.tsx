@@ -12,14 +12,15 @@ export default function KakaoLoginButton({
   imageClassName,
 }: KakaoLoginButtonProps) {
   const handleKakaoLogin = () =>
-    (window.location.href = `${import.meta.env.VITE_API_URL}/api/v1/auth/kakaoIcon`);
+    (window.location.href = `${import.meta.env.VITE_API_URL}/api/v1/auth/kakao`);
 
   return (
     <Button
-      className={cn('text-primary-5 relative rounded-[1rem] bg-[#FDDC3F]', buttonClassName)}
+      aria-label="카카오 로그인"
       onClick={handleKakaoLogin}
+      className={cn('text-primary-5 relative rounded-[1rem] bg-[#FDDC3F]', buttonClassName)}
     >
-      <img src={kakaoIcon} className={cn('absolute', imageClassName)} />
+      <img src={kakaoIcon} alt="" aria-hidden="true" className={cn('absolute', imageClassName)} />
       카카오 로그인
     </Button>
   );
