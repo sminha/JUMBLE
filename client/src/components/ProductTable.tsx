@@ -13,6 +13,7 @@ import DeleteButton from '@/components/DeleteButton';
 import { STATUS } from '@/constants/status';
 import { formatPrice } from '@/utils/format';
 import Button from './Button';
+import { useToast } from './toast';
 
 interface ProductTableProps {
   headers: { label: string; width: string }[];
@@ -130,9 +131,11 @@ function ProductRow({
   errors,
   remove,
 }: ProductRowProps) {
+  const { toast } = useToast();
+
   const handleRemove = () => {
     if (count === 1) {
-      // TODO: 토스트 띄우기
+      toast.error('최소 1개 이상의 상품을 등록해주세요.');
       return;
     }
 

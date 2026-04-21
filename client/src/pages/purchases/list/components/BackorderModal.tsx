@@ -8,6 +8,7 @@ import Input from '@/components/Input';
 import LeaveConfirmationModal from '@/components/LeaveConfirmationModal';
 import UnstyledButton from './UnstyledButton';
 import { useUpdateBackorder, useGetProduct } from '../apis';
+import { useToast } from '@/components/toast';
 
 interface BackorderModalProps {
   purchaseId: string;
@@ -22,6 +23,7 @@ export default function BackorderModal({
   open,
   onOpenChange,
 }: BackorderModalProps) {
+  const { toast } = useToast();
   const { data, isPending } = useGetProduct(purchaseId, productId, open);
   const { mutate: handleUpdateBackorder } = useUpdateBackorder(purchaseId, productId);
 
@@ -61,12 +63,11 @@ export default function BackorderModal({
   const handleSave = handleSubmit((data) => {
     handleUpdateBackorder(data, {
       onSuccess: () => {
-        // TODO: 추후 토스트 추가
+        toast.success('미송수량을 수정했습니다.');
         onOpenChange(false);
       },
       onError: () => {
-        // TODO: 추후 토스트로 변경
-        alert('미송수량 수정에 실패했습니다. 다시 시도해주세요.');
+        toast.error('미송수량 수정에 실패했습니다.');
       },
     });
   });

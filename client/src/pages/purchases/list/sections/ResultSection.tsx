@@ -14,6 +14,7 @@ import PurchaseRow from '../components/PurchaseRow';
 import UnstyledButton from '../components/UnstyledButton';
 import BackorderModal from '../components/BackorderModal';
 import ReceiptModal from '../components/ReceiptModal';
+import { useToast } from '@/components/toast';
 
 interface ResultSectionProps {
   params: Draft;
@@ -57,6 +58,7 @@ export default function ResultSection({
   isPending,
   isError,
 }: ResultSectionProps) {
+  const { toast } = useToast();
   const [isChecked, setIsChecked] = useState<boolean>(false);
   const [selectedReceiptPurchaseId, setSelectedReceiptPurchaseId] = useState<string | null>(null);
   const [selectedBackorderPurchaseId, setSelectedBackorderPurchaseId] = useState<string | null>(
@@ -76,7 +78,10 @@ export default function ResultSection({
   const totalPages = pagination.totalPages;
 
   if (isError || !data || records.length === 0) {
-    // TODO: isError || !data  -> 토스트 띄우기
+    if (isError || !data) {
+      toast.error('사입내역 조회에 실패했습니다.');
+    }
+
     return (
       <section className="flex h-[28rem] items-center justify-center rounded-[1.6rem] bg-white">
         <span className="font-14-r text-gray-4">조회 결과가 없어요.</span>

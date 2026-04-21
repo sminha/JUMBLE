@@ -59,10 +59,6 @@ export const useImageUpload = ({
       if (data.vendor) setValue('vendor', data.vendor);
       if (data.products?.length) replace(data.products);
     },
-    onError: () => {
-      // TODO: 추후 토스트로 변경
-      alert('영수증 분석에 실패했습니다. 다시 시도해주세요.');
-    },
   });
 };
 

@@ -7,6 +7,7 @@ import { formatPrice, formatDate } from '@/utils/format';
 import Modal, { ModalRow } from '@/components/Modal';
 import { cn } from '@/utils/cn';
 import { useUpdateProduct, useGetProduct, useDeleteProduct } from '../apis';
+import { useToast } from '@/components/toast';
 
 interface ProductModalProps {
   purchaseId: string;
@@ -21,6 +22,7 @@ export default function ProductModal({
   open,
   onOpenChange,
 }: ProductModalProps) {
+  const { toast } = useToast();
   const { data, isPending } = useGetProduct(purchaseId, productId, open);
   const { mutate: handleUpdateProduct } = useUpdateProduct(purchaseId, productId);
   const { mutate: handleDeleteProduct } = useDeleteProduct(purchaseId, productId);
@@ -65,24 +67,22 @@ export default function ProductModal({
   const handleRemove = () => {
     handleDeleteProduct(undefined, {
       onSuccess: () => {
-        // TODO: 추후 토스트 추가
+        toast.success('상품사입내역이 삭제되었습니다.');
         onOpenChange(false);
       },
       onError: () => {
-        // TODO: 추후 토스트로 변경
-        alert('상품사입내역 삭제에 실패했습니다. 다시 시도해주세요.');
+        toast.error('사입내역 삭제에 실패했습니다.');
       },
     });
   };
   const handleSave = handleSubmit((data) => {
     handleUpdateProduct(data, {
       onSuccess: () => {
-        // TODO: 추후 토스트 추가
+        toast.success('상품사입내역을 수정했습니다.');
         setIsEditing(false);
       },
       onError: () => {
-        // TODO: 추후 토스트로 변경
-        alert('상품사입내역 수정에 실패했습니다. 다시 시도해주세요.');
+        toast.error('상품사입내역 수정에 실패했습니다.');
       },
     });
   });

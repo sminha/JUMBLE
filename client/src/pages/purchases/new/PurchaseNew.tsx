@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router';
 import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
-import { useFieldArray, useForm } from 'react-hook-form';
+import { FieldErrors, useFieldArray, useForm } from 'react-hook-form';
 import { Purchase, purchaseSchema, DEFAULT_PURCHASE } from '@jumble/shared';
 import Input from '@/components/Input';
 import Header from '@/components/Header';
@@ -10,6 +10,7 @@ import UploadButton from './components/UploadButton';
 import ProductTable from '@/components/ProductTable';
 import { useCreatePurchase, useImageUpload } from './apis';
 import { PATHS } from '@/router';
+import { useToast } from '@/components/toast';
 
 const TABLE_HEADERS: { label: string; width: string }[] = [
   { label: '상품명', width: '' },
@@ -25,6 +26,7 @@ const TABLE_HEADERS: { label: string; width: string }[] = [
 ];
 
 export default function PurchaseNew() {
+  const { toast } = useToast();
   const navigate = useNavigate();
 
   const {
@@ -42,24 +44,35 @@ export default function PurchaseNew() {
     name: 'products',
   });
 
-  const { mutate: handleImageUpload, isPending: isImageUploading } = useImageUpload({
+  const { mutate, isPending: isImageUploading } = useImageUpload({
     setValue,
     replace,
   });
   const { mutate: handleCreatePurchase } = useCreatePurchase();
 
-  const handleSave = handleSubmit((data) => {
-    handleCreatePurchase(data, {
-      onSuccess: () => {
-        // TODO: 추후 토스트 추가
-        navigate(PATHS.PURCHASE_LIST);
-      },
-      onError: () => {
-        // TODO: 추후 토스트로 변경
-        alert('사입내역 추가에 실패했습니다. 다시 시도해주세요.');
-      },
+  const handleImageUpload = (file: File) => {
+    mutate(file, {
+      onError: () => toast.error('영수증 분석에 실패했습니다.'),
     });
-  });
+  };
+  const handleSave = handleSubmit(
+    (data: Purchase) => {
+      handleCreatePurchase(data, {
+        onSuccess: () => {
+          toast.success('사입내역이 추가되었습니다.');
+          navigate(PATHS.PURCHASE_LIST);
+        },
+        onError: () => {
+          toast.error('사입내역 추가에 실패했습니다.');
+        },
+      });
+    },
+    (errors: FieldErrors<Purchase>) => {
+      if (Object.keys(errors).length !== 0) {
+        toast.error('입력하지 않은 항목이 있습니다.');
+      }
+    },
+  );
 
   return (
     <main>
