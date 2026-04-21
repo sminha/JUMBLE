@@ -7,7 +7,6 @@ import {
   purchaseSchema,
   productSchema,
   updateBackorderSchema,
-  CATEGORY_VALUES,
   PurchaseDetail,
   ProductDetail,
   GetPurchaseDetailResponse,
@@ -23,45 +22,8 @@ export const PurchaseController = {
   // 사입내역 추가 API
   createPurchase: async (req: Request, res: Response) => {
     try {
-      const data: Purchase = req.body;
+      const data = purchaseSchema.parse(req.body);
       const userId = req.user.id;
-
-      // 필수 필드 검증
-      if (!data.vendor || !data.purchasedAt) {
-        return res.status(400).json({
-          success: false,
-          status: 400,
-          message: 'vendor, purchasedAt은 필수 값입니다.',
-        });
-      }
-
-      // products 검증
-      if (!Array.isArray(data.products) || data.products.length === 0) {
-        return res.status(400).json({
-          success: false,
-          status: 400,
-          message: 'products는 1개 이상이어야 합니다.',
-        });
-      }
-
-      // products 내 필수 필드 및 category enum 검증
-      for (const product of data.products) {
-        if (!product.name || product.price == null || product.quantity == null) {
-          return res.status(400).json({
-            success: false,
-            status: 400,
-            message: '각 product에 name, price, quantity는 필수 값입니다.',
-          });
-        }
-
-        if (!CATEGORY_VALUES.includes(product.category)) {
-          return res.status(400).json({
-            success: false,
-            status: 400,
-            message: `category는 다음 값 중 하나여야 합니다: ${CATEGORY_VALUES.join(', ')}`,
-          });
-        }
-      }
 
       const newPurchase = await PurchaseService.createPurchase(userId, data);
 
