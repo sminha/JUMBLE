@@ -5,9 +5,9 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
 const PROMPT = `이 영수증 이미지에서 정보를 추출해 아래 JSON 형식으로만 응답해줘. 마크다운 코드블록 없이 순수 JSON만 반환해.
 
 {
-  "purchasedAt": "YYYY-MM-DD",
+  "purchasedAt": "YYYY-MM-DDTHH:MM",
   "vendor": "거래처명",
-  "items": [
+  "products": [
     {
       "name": "상품명",
       "category": "TOP | OUTER | BOTTOM | SET | BAG | SHOES | JEWELRY | ACCESSORY | ETC",

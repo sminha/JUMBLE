@@ -63,6 +63,11 @@ export default function PurchaseNew() {
 
   return (
     <main>
+      {isImageUploading && (
+        <div className="bg-overlay fixed inset-0 z-20 flex items-center justify-center">
+          <div className="border-t-primary-3 border-gray-2 h-8 w-8 animate-spin rounded-full border-3"></div>
+        </div>
+      )}
       <Header />
       <div className="flex items-center justify-between px-[7.2rem] py-[2.6rem]">
         <h1 className="title-18-m text-gray-9">사입 내역 추가</h1>

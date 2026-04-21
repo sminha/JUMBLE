@@ -3,8 +3,6 @@ import { useQueryClient, useMutation } from '@tanstack/react-query';
 import { QUERY_KEYS } from '@/constants/query-key';
 import { Purchase } from '@jumble/shared';
 import { fetchWithAuth } from '@/lib/api';
-import { useNavigate } from 'react-router';
-import { PATHS } from '@/router';
 
 const compressImage = (file: File, maxWidth = 1024): Promise<Blob> => {
   return new Promise((resolve) => {
@@ -59,7 +57,7 @@ export const useImageUpload = ({
     onSuccess: (data) => {
       if (data.purchasedAt) setValue('purchasedAt', data.purchasedAt);
       if (data.vendor) setValue('vendor', data.vendor);
-      if (data.items?.length) replace(data.items);
+      if (data.products?.length) replace(data.products);
     },
     onError: () => {
       // TODO: 추후 토스트로 변경
