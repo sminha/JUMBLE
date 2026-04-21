@@ -34,6 +34,7 @@ export default function PurchaseNew() {
     control,
     handleSubmit,
     setValue,
+    trigger,
     formState: { errors },
   } = useForm<Purchase>({
     resolver: standardSchemaResolver(purchaseSchema),
@@ -45,8 +46,11 @@ export default function PurchaseNew() {
   });
 
   const { mutate, isPending: isImageUploading } = useImageUpload({
-    setValue,
-    replace,
+    setValue: (name, value) => setValue(name, value, { shouldValidate: true }),
+    replace: (data) => {
+      replace(data);
+      trigger('products');
+    },
   });
   const { mutate: handleCreatePurchase } = useCreatePurchase();
 
