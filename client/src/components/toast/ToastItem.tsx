@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import { CheckCircle, XCircle, Info, AlertTriangle } from 'lucide-react';
 import { cn } from '@/utils/cn';
 import type { Toast } from './ToastContext';
@@ -27,13 +27,14 @@ export default function ToastItem({ toast, onRemove }: ToastItemProps) {
   const [phase, setPhase] = useState<Phase>('enter');
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  function startTimer() {
-    timerRef.current = setTimeout(() => setPhase('exit'), toast.duration);
-  }
-
-  function clearTimer() {
+  const clearTimer = useCallback(() => {
     if (timerRef.current) clearTimeout(timerRef.current);
-  }
+  }, []);
+
+  const startTimer = useCallback(() => {
+    clearTimer();
+    timerRef.current = setTimeout(() => setPhase('exit'), toast.duration);
+  }, [clearTimer, toast.duration]);
 
   useEffect(() => {
     const raf = requestAnimationFrame(() => setPhase('visible'));
@@ -44,12 +45,15 @@ export default function ToastItem({ toast, onRemove }: ToastItemProps) {
     };
   }, []);
 
-  function handleTransitionEnd() {
+  const handleTransitionEnd = () => {
     if (phase === 'exit') onRemove(toast.id);
-  }
+  };
 
   return (
     <div
+      role={toast.type === 'error' || toast.type === 'warning' ? 'alert' : 'status'}
+      aria-live={toast.type === 'error' || toast.type === 'warning' ? 'assertive' : 'polite'}
+      aria-atomic="true"
       onTransitionEnd={handleTransitionEnd}
       onMouseEnter={clearTimer}
       onMouseLeave={startTimer}
