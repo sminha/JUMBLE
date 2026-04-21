@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, useFieldArray } from 'react-hook-form';
 import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
 import { purchaseSchema } from '@jumble/shared';
 import LeaveConfirmationModal from '@/components/LeaveConfirmationModal';
@@ -43,6 +43,7 @@ export default function PurchaseModal({ purchaseId, open, onOpenChange }: Purcha
   } = useForm({
     resolver: standardSchemaResolver(purchaseSchema),
   });
+  const { fields, append, remove } = useFieldArray({ control, name: 'products' });
 
   useEffect(() => {
     if (data) {
@@ -137,6 +138,9 @@ export default function PurchaseModal({ purchaseId, open, onOpenChange }: Purcha
           register={register}
           control={control}
           errors={errors}
+          fields={fields}
+          append={append}
+          remove={remove}
         />
       </Modal>
 

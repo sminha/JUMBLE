@@ -3,7 +3,7 @@ import {
   useWatch,
   Controller,
   FieldErrors,
-  useFieldArray,
+  FieldArrayWithId,
   UseFormRegister,
 } from 'react-hook-form';
 import { type Purchase, DEFAULT_PRODUCT, CATEGORY_LABEL, CATEGORY_LABEL_NEW } from '@jumble/shared';
@@ -21,6 +21,9 @@ interface ProductTableProps {
   register: UseFormRegister<Purchase>;
   control: Control<Purchase>;
   errors: FieldErrors<Purchase>;
+  fields: FieldArrayWithId<Purchase, 'products'>[];
+  append: (value: Purchase['products'][number]) => void;
+  remove: (index: number) => void;
 }
 
 export default function ProductTable({
@@ -30,8 +33,10 @@ export default function ProductTable({
   register,
   control,
   errors,
+  fields,
+  append,
+  remove,
 }: ProductTableProps) {
-  const { fields, append, remove } = useFieldArray({ control, name: 'products' });
   const products = useWatch({ control, name: 'products' }) ?? [];
 
   const totalPrice = formatPrice(

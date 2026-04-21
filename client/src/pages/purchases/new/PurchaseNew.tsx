@@ -37,7 +37,7 @@ export default function PurchaseNew() {
     resolver: standardSchemaResolver(purchaseSchema),
     defaultValues: DEFAULT_PURCHASE,
   });
-  const { replace } = useFieldArray({
+  const { fields, append, remove, replace } = useFieldArray({
     control,
     name: 'products',
   });
@@ -103,6 +103,9 @@ export default function PurchaseNew() {
               register={register}
               control={control}
               errors={errors}
+              fields={fields}
+              append={append}
+              remove={remove}
             />
           </div>
         </section>
