@@ -257,3 +257,35 @@ export const useDeleteProduct = (purchaseId: string, productId: string) => {
     },
   });
 };
+
+const deleteProducts = async (productIds: string[]) => {
+  const res = await fetchWithAuth(`${import.meta.env.VITE_API_URL}/api/v1/purchases/products`, {
+    method: 'DELETE',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ ids: productIds }),
+  });
+
+  if (!res.ok) {
+    throw new Error('선택삭제 요청 실패');
+  }
+
+  const data = await res.json();
+
+  return data;
+};
+
+// 선택삭제 API
+export const useDeleteProducts = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ productIds }: { productIds: string[]; purchaseIds: string[] }) =>
+      deleteProducts(productIds),
+    onSuccess: (_, { purchaseIds }) => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.PURCHASES.LIST() });
+      purchaseIds.forEach((purchaseId: string) =>
+        queryClient.invalidateQueries({ queryKey: QUERY_KEYS.PURCHASES.DETAIL(purchaseId) }),
+      );
+    },
+  });
+};

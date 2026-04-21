@@ -27,7 +27,7 @@ export default function Checkbox({
         className="sr-only"
         {...props}
       />
-      <div className={cn('relative h-[1.8rem] w-[1.8rem]', className)}>
+      <div className={cn('relative h-[1.8rem] w-[1.8rem] cursor-pointer', className)}>
         <div className={cn(CHECKBOX_STYLE, !isChecked ? 'opacity-100' : 'opacity-0', className)} />
         <img
           src={checkIcon}

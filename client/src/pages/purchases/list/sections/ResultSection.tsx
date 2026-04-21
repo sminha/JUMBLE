@@ -13,6 +13,7 @@ import PurchaseRow from '../components/PurchaseRow';
 import UnstyledButton from '../components/UnstyledButton';
 import BackorderModal from '../components/BackorderModal';
 import ReceiptModal from '../components/ReceiptModal';
+import { useDeleteProducts } from '../apis';
 
 interface ResultSectionProps {
   params: Draft;
@@ -49,6 +50,7 @@ const TABLE_HEADERS: { label: string; width: string; sortBy?: SortBy }[] = [
   { label: '영수증', width: 'w-[10rem]' },
 ];
 
+// TODO: 컴포넌트 분리
 export default function ResultSection({
   params,
   setParams,
@@ -63,6 +65,7 @@ export default function ResultSection({
   );
   const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
   const [selectedProductIds, setSelectedProductIds] = useState<Set<string>>(new Set());
+  const { mutate: handleDeleteProducts } = useDeleteProducts();
 
   if (isPending) {
     return (
@@ -117,8 +120,30 @@ export default function ResultSection({
   };
   // 버튼 핸들러
   const handleDelete = () => {
-    // TODO: 선택삭제 기능 구현
-    alert('선택삭제');
+    const productIds = [...selectedProductIds];
+    const purchaseIds = [
+      ...new Set(
+        records.filter((r) => selectedProductIds.has(r.productId)).map((r) => r.purchaseId),
+      ),
+    ];
+
+    if (productIds.length === 0) {
+      toast.error('최소 1개 이상의 내역을 선택해주세요.');
+      return;
+    }
+
+    handleDeleteProducts(
+      { productIds, purchaseIds },
+      {
+        onSuccess: () => {
+          toast.success('사입내역이 삭제되었습니다.');
+          setSelectedProductIds(new Set());
+        },
+        onError: () => {
+          toast.error('사입내역 삭제에 실패했습니다.');
+        },
+      },
+    );
   };
   const handleEdit = () => {
     // TODO: 미송 일괄변경 기능 구현
