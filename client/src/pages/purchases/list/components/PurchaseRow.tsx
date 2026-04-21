@@ -8,15 +8,20 @@ import UnstyledButton from './UnstyledButton';
 import Checkbox from './Checkbox';
 interface PurchaseRowProps {
   record: PurchaseRecord;
+  isSelected: boolean;
+  onToggle: () => void;
   onBackorderModalOpenChange: (purchaseId: string, productId: string) => void;
   onReceiptModalOpenChange: (purchaseId: string | null) => void;
 }
 
-const TD_CELL_STYLE = 'py-[1.6rem] text-center align-middle';
+const TD_CELL_STYLE = (isSelected: boolean) =>
+  `py-[1.6rem] text-center align-middle transition-color duration-300 ease-in-out ${isSelected ? 'bg-selected' : 'bg-white'}`;
 const TEXT_BUTTON_STYLE = 'text-secondary-5';
 
 export default function PurchaseRow({
   record,
+  isSelected,
+  onToggle,
   onBackorderModalOpenChange,
   onReceiptModalOpenChange,
 }: PurchaseRowProps) {
@@ -36,15 +41,10 @@ export default function PurchaseRow({
 
   return (
     <tr className="text-gray-8 font-14-r">
-      <td
-        className={cn(
-          TD_CELL_STYLE,
-          'border-r-gray-1 sticky left-0 z-10 border-r-1 bg-white pr-[0.2rem] pl-[1rem]',
-        )}
-      >
-        <Checkbox isChecked={false} onChange={() => {}} />
+      <td className={cn(TD_CELL_STYLE(isSelected), 'sticky left-0 z-10 pr-[0.2rem] pl-[1rem]')}>
+        <Checkbox isChecked={isSelected} onChange={onToggle} />
       </td>
-      <td className={TD_CELL_STYLE}>
+      <td className={TD_CELL_STYLE(isSelected)}>
         <UnstyledButton
           aria-label="사입내역 상세조회"
           className={TEXT_BUTTON_STYLE}
@@ -53,7 +53,7 @@ export default function PurchaseRow({
           {record.purchaseNo}
         </UnstyledButton>
       </td>
-      <td className={TD_CELL_STYLE}>
+      <td className={TD_CELL_STYLE(isSelected)}>
         <UnstyledButton
           aria-label="상품 사입내역 상세조회"
           className={TEXT_BUTTON_STYLE}
@@ -62,17 +62,17 @@ export default function PurchaseRow({
           {record.productNo}
         </UnstyledButton>
       </td>
-      <td className={TD_CELL_STYLE}>{formatDate(record.purchasedAt)}</td>
-      <td className={TD_CELL_STYLE}>{record.vendor}</td>
-      <td className={TD_CELL_STYLE}>{record.product}</td>
-      <td className={TD_CELL_STYLE}>{CATEGORY_LABEL_NEW[record.category]}</td>
-      <td className={TD_CELL_STYLE}>{record.color || '-'}</td>
-      <td className={TD_CELL_STYLE}>{record.size || '-'}</td>
-      <td className={TD_CELL_STYLE}>{record.option || '-'}</td>
-      <td className={TD_CELL_STYLE}>{formatPrice(record.price)}</td>
-      <td className={TD_CELL_STYLE}>{record.quantity}</td>
-      <td className={TD_CELL_STYLE}>{formatPrice(record.totalPrice)}</td>
-      <td className={TD_CELL_STYLE}>
+      <td className={TD_CELL_STYLE(isSelected)}>{formatDate(record.purchasedAt)}</td>
+      <td className={TD_CELL_STYLE(isSelected)}>{record.vendor}</td>
+      <td className={TD_CELL_STYLE(isSelected)}>{record.product}</td>
+      <td className={TD_CELL_STYLE(isSelected)}>{CATEGORY_LABEL_NEW[record.category]}</td>
+      <td className={TD_CELL_STYLE(isSelected)}>{record.color || '-'}</td>
+      <td className={TD_CELL_STYLE(isSelected)}>{record.size || '-'}</td>
+      <td className={TD_CELL_STYLE(isSelected)}>{record.option || '-'}</td>
+      <td className={TD_CELL_STYLE(isSelected)}>{formatPrice(record.price)}</td>
+      <td className={TD_CELL_STYLE(isSelected)}>{record.quantity}</td>
+      <td className={TD_CELL_STYLE(isSelected)}>{formatPrice(record.totalPrice)}</td>
+      <td className={TD_CELL_STYLE(isSelected)}>
         <UnstyledButton
           aria-label="미송수량 조회"
           className={TEXT_BUTTON_STYLE}
@@ -81,7 +81,7 @@ export default function PurchaseRow({
           {record.backorderQuantity}
         </UnstyledButton>
       </td>
-      <td className={TD_CELL_STYLE}>
+      <td className={TD_CELL_STYLE(isSelected)}>
         {record.receipt && (
           <UnstyledButton
             aria-label="영수증 조회"

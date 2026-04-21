@@ -57,12 +57,12 @@ export default function ResultSection({
   isError,
 }: ResultSectionProps) {
   const { toast } = useToast();
-  const [isChecked, setIsChecked] = useState<boolean>(false);
   const [selectedReceiptPurchaseId, setSelectedReceiptPurchaseId] = useState<string | null>(null);
   const [selectedBackorderPurchaseId, setSelectedBackorderPurchaseId] = useState<string | null>(
     null,
   );
   const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
+  const [selectedProductIds, setSelectedProductIds] = useState<Set<string>>(new Set());
 
   if (isPending) {
     return (
@@ -74,6 +74,9 @@ export default function ResultSection({
 
   const { records, pagination } = data;
   const totalPages = pagination.totalPages;
+  const allProductIds = records.map((r) => r.productId);
+  const isAllSelected =
+    allProductIds.length > 0 && allProductIds.every((id) => selectedProductIds.has(id));
 
   if (isError || !data || records.length === 0) {
     if (isError || !data) {
@@ -87,9 +90,32 @@ export default function ResultSection({
     );
   }
 
+  // 체크박스 핸들러
+  const handleToggleAll = () => {
+    if (isAllSelected) {
+      setSelectedProductIds(new Set());
+      return;
+    }
+    setSelectedProductIds(new Set(allProductIds));
+  };
+  const handleToggleRow = (productId: string) => {
+    setSelectedProductIds((prev) => {
+      const next = new Set(prev);
+
+      if (next.has(productId)) {
+        next.delete(productId);
+      } else {
+        next.add(productId);
+      }
+
+      return next;
+    });
+  };
+  // 드롭다운 핸들러
   const handleChangeLimit = (newLimit: number) => {
     setParams((prev) => ({ ...prev, limit: newLimit, page: 1 }));
   };
+  // 버튼 핸들러
   const handleDelete = () => {
     // TODO: 선택삭제 기능 구현
     alert('선택삭제');
@@ -102,6 +128,7 @@ export default function ResultSection({
     // TODO: 엑셀 다운로드 기능 구현
     alert('엑셀 다운로드');
   };
+  // 정렬 핸들러
   const handleSort = (sortBy: SortBy) => {
     setParams((prev) => ({
       ...prev,
@@ -115,8 +142,12 @@ export default function ResultSection({
           : SORT_ORDER.DESC,
     }));
   };
+  // 페이지네이션 핸들러
   const handleClickPrev = () => {
-    setParams((prev) => ({ ...prev, page: prev.page !== 1 ? prev.page - 1 : 1 }));
+    setParams((prev) => ({
+      ...prev,
+      page: prev.page !== 1 ? prev.page - 1 : 1,
+    }));
   };
   const handleClickNext = () => {
     setParams((prev) => ({
@@ -180,10 +211,10 @@ export default function ResultSection({
                     key={idx}
                     className={cn(
                       'sticky top-0 z-10 bg-white py-[1.4rem] align-middle shadow-[0_1px_0_0_var(--color-gray-1)]',
-                      isFirst && 'border-r-gray-1 left-0 z-20 border-r-1 pr-[0.2rem] pl-[1rem]',
+                      isFirst && 'left-0 z-20 pr-[0.2rem] pl-[1rem]',
                     )}
                   >
-                    {isFirst && <Checkbox isChecked={isChecked} onChange={setIsChecked} />}
+                    {isFirst && <Checkbox isChecked={isAllSelected} onChange={handleToggleAll} />}
                     {header.label}
                     {header.sortBy && (
                       <UnstyledButton
@@ -203,6 +234,8 @@ export default function ResultSection({
               <PurchaseRow
                 key={record.productId}
                 record={record}
+                isSelected={selectedProductIds.has(record.productId)}
+                onToggle={() => handleToggleRow(record.productId)}
                 onBackorderModalOpenChange={(purchaseId, productId) => {
                   setSelectedBackorderPurchaseId(purchaseId);
                   setSelectedProductId(productId);
