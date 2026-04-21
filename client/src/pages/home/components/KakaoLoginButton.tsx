@@ -1,5 +1,5 @@
 import { cn } from '@/utils/cn';
-import kakao from '@/assets/kakao.png';
+import kakaoIcon from '@/assets/kakao-icon.svg';
 import { Button } from '@/components';
 
 interface KakaoLoginButtonProps {
@@ -12,14 +12,14 @@ export default function KakaoLoginButton({
   imageClassName,
 }: KakaoLoginButtonProps) {
   const handleKakaoLogin = () =>
-    (window.location.href = `${import.meta.env.VITE_API_URL}/api/v1/auth/kakao`);
+    (window.location.href = `${import.meta.env.VITE_API_URL}/api/v1/auth/kakaoIcon`);
 
   return (
     <Button
       className={cn('text-primary-5 relative rounded-[1rem] bg-[#FDDC3F]', buttonClassName)}
       onClick={handleKakaoLogin}
     >
-      <img src={kakao} className={cn('absolute', imageClassName)} />
+      <img src={kakaoIcon} className={cn('absolute', imageClassName)} />
       카카오 로그인
     </Button>
   );
