@@ -13,7 +13,7 @@ import PurchaseRow from '../components/PurchaseRow';
 import UnstyledButton from '../components/UnstyledButton';
 import BackorderModal from '../components/BackorderModal';
 import ReceiptModal from '../components/ReceiptModal';
-import { useDeleteProducts } from '../apis';
+import { useDeleteProducts, useUpdateBackorders } from '../apis';
 
 interface ResultSectionProps {
   params: Draft;
@@ -66,6 +66,7 @@ export default function ResultSection({
   const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
   const [selectedProductIds, setSelectedProductIds] = useState<Set<string>>(new Set());
   const { mutate: handleDeleteProducts } = useDeleteProducts();
+  const { mutate: handleUpdateBackorders } = useUpdateBackorders();
 
   if (isPending) {
     return (
@@ -146,8 +147,30 @@ export default function ResultSection({
     );
   };
   const handleEdit = () => {
-    // TODO: 미송 일괄변경 기능 구현
-    alert('미송 일괄변경');
+    const productIds = [...selectedProductIds];
+    const purchaseIds = [
+      ...new Set(
+        records.filter((r) => selectedProductIds.has(r.productId)).map((r) => r.purchaseId),
+      ),
+    ];
+
+    if (productIds.length === 0) {
+      toast.error('최소 1개 이상의 내역을 선택해주세요.');
+      return;
+    }
+
+    handleUpdateBackorders(
+      { productIds, purchaseIds },
+      {
+        onSuccess: () => {
+          toast.success('미송수량이 변경되었습니다.');
+          setSelectedProductIds(new Set());
+        },
+        onError: () => {
+          toast.error('미송수량 변경에 실패했습니다.');
+        },
+      },
+    );
   };
   const handleDownload = () => {
     // TODO: 엑셀 다운로드 기능 구현

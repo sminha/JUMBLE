@@ -289,3 +289,38 @@ export const useDeleteProducts = () => {
     },
   });
 };
+
+const updateBackorders = async (productIds: string[]) => {
+  const res = await fetchWithAuth(
+    `${import.meta.env.VITE_API_URL}/api/v1/purchases/items/backorder/reset`,
+    {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ids: productIds }),
+    },
+  );
+
+  if (!res.ok) {
+    throw new Error('선택삭제 요청 실패');
+  }
+
+  const data = await res.json();
+
+  return data;
+};
+
+// 미송수량 일괄 변경 API
+export const useUpdateBackorders = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ productIds }: { productIds: string[]; purchaseIds: string[] }) =>
+      updateBackorders(productIds),
+    onSuccess: (_, { purchaseIds }) => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.PURCHASES.LIST() });
+      purchaseIds.forEach((purchaseId: string) =>
+        queryClient.invalidateQueries({ queryKey: QUERY_KEYS.PURCHASES.DETAIL(purchaseId) }),
+      );
+    },
+  });
+};
