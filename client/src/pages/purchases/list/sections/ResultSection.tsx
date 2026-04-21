@@ -1,8 +1,7 @@
 import { useState } from 'react';
 import { Draft, GetPurchaseResponse, SortBy, SORT_BY, SORT_ORDER } from '@jumble/shared';
+import { Button, Dropdown, useToast } from '@/components';
 import { cn } from '@/utils/cn';
-import Button from '@/components/Button';
-import Dropdown from '@/components/Dropdown';
 import { ValueLabel } from '@/types/value-label';
 import pageLastIcon from '@/assets/page-last-icon.svg';
 import pagePrevIcon from '@/assets/page-prev-icon.svg';
@@ -57,6 +56,7 @@ export default function ResultSection({
   isPending,
   isError,
 }: ResultSectionProps) {
+  const { toast } = useToast();
   const [isChecked, setIsChecked] = useState<boolean>(false);
   const [selectedReceiptPurchaseId, setSelectedReceiptPurchaseId] = useState<string | null>(null);
   const [selectedBackorderPurchaseId, setSelectedBackorderPurchaseId] = useState<string | null>(
@@ -76,7 +76,10 @@ export default function ResultSection({
   const totalPages = pagination.totalPages;
 
   if (isError || !data || records.length === 0) {
-    // TODO: isError || !data  -> 토스트 띄우기
+    if (isError || !data) {
+      toast.error('사입내역 조회에 실패했습니다.');
+    }
+
     return (
       <section className="flex h-[28rem] items-center justify-center rounded-[1.6rem] bg-white">
         <span className="font-14-r text-gray-4">조회 결과가 없어요.</span>

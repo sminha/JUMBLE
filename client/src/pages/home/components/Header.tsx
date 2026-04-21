@@ -1,4 +1,4 @@
-import BaseHeader from '@/components/BaseHeader';
+import { BaseHeader } from '@/components';
 import KakaoLoginButton from './KakaoLoginButton';
 
 export default function Header() {

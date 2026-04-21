@@ -1,10 +1,9 @@
-import Input from '@/components/Input';
-import Button from '@/components/Button';
+import { Draft, FILTER_LABEL, DATE_LABEL, PERIOD_LABEL } from '@jumble/shared';
+import { Input, Button, useToast } from '@/components';
 import Checkbox from '../components/Checkbox';
 import AddonInput from '../components/AddonInput';
 import TogglePair from '../components/TogglePair';
 import ToggleGroup from '../components/ToggleGroup';
-import { Draft, FILTER_LABEL, DATE_LABEL, PERIOD_LABEL } from '@jumble/shared';
 
 interface FilterSectionProps {
   draft: Draft;
@@ -13,10 +12,10 @@ interface FilterSectionProps {
 }
 
 export default function FilterSection({ draft, setDraft, onSearch }: FilterSectionProps) {
+  const { toast } = useToast();
   const handleSearch = () => {
     if (draft.periodType === null && (!draft.startDate || !draft.endDate)) {
-      // TODO: 토스트로 변경
-      alert('조회 시작일과 종료일을 입력해주세요.');
+      toast.error('조회기간을 정확히 입력해주세요.');
       return;
     }
     onSearch();

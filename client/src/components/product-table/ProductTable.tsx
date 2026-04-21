@@ -3,16 +3,17 @@ import {
   useWatch,
   Controller,
   FieldErrors,
-  useFieldArray,
+  FieldArrayWithId,
   UseFormRegister,
 } from 'react-hook-form';
 import { type Purchase, DEFAULT_PRODUCT, CATEGORY_LABEL, CATEGORY_LABEL_NEW } from '@jumble/shared';
-import Input from '@/components/Input';
-import DropDown from '@/components/Dropdown';
-import DeleteButton from '@/components/DeleteButton';
+import Input from '@/components/input/Input';
+import DropDown from '@/components/input/Dropdown';
+import DeleteButton from '@/components/button/DeleteButton';
 import { STATUS } from '@/constants/status';
 import { formatPrice } from '@/utils/format';
-import Button from './Button';
+import Button from '../button/Button';
+import { useToast } from '../toast';
 
 interface ProductTableProps {
   headers: { label: string; width: string }[];
@@ -21,6 +22,9 @@ interface ProductTableProps {
   register: UseFormRegister<Purchase>;
   control: Control<Purchase>;
   errors: FieldErrors<Purchase>;
+  fields: FieldArrayWithId<Purchase, 'products'>[];
+  append: (value: Purchase['products'][number]) => void;
+  remove: (index: number) => void;
 }
 
 export default function ProductTable({
@@ -30,8 +34,10 @@ export default function ProductTable({
   register,
   control,
   errors,
+  fields,
+  append,
+  remove,
 }: ProductTableProps) {
-  const { fields, append, remove } = useFieldArray({ control, name: 'products' });
   const products = useWatch({ control, name: 'products' }) ?? [];
 
   const totalPrice = formatPrice(
@@ -125,9 +131,11 @@ function ProductRow({
   errors,
   remove,
 }: ProductRowProps) {
+  const { toast } = useToast();
+
   const handleRemove = () => {
     if (count === 1) {
-      // TODO: 토스트 띄우기
+      toast.error('최소 1개 이상의 상품을 등록해주세요.');
       return;
     }
 

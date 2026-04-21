@@ -1,6 +1,6 @@
 import { cn } from '@/utils/cn';
-import kakao from '@/assets/kakao.png';
-import Button from '@/components/Button';
+import kakaoIcon from '@/assets/kakao-icon.svg';
+import { Button } from '@/components';
 
 interface KakaoLoginButtonProps {
   buttonClassName?: string;
@@ -16,10 +16,11 @@ export default function KakaoLoginButton({
 
   return (
     <Button
-      className={cn('text-primary-5 relative rounded-[1rem] bg-[#FDDC3F]', buttonClassName)}
+      aria-label="카카오 로그인"
       onClick={handleKakaoLogin}
+      className={cn('text-primary-5 relative rounded-[1rem] bg-[#FDDC3F]', buttonClassName)}
     >
-      <img src={kakao} className={cn('absolute', imageClassName)} />
+      <img src={kakaoIcon} alt="" aria-hidden="true" className={cn('absolute', imageClassName)} />
       카카오 로그인
     </Button>
   );

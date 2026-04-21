@@ -1,13 +1,10 @@
 import { useNavigate } from 'react-router';
 import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
-import { useFieldArray, useForm } from 'react-hook-form';
+import { FieldErrors, useFieldArray, useForm } from 'react-hook-form';
 import { Purchase, purchaseSchema, DEFAULT_PURCHASE } from '@jumble/shared';
-import Input from '@/components/Input';
-import Header from '@/components/Header';
-import Button from '@/components/Button';
+import { Input, Header, Button, ProductTable, useToast } from '@/components';
 import { STATUS } from '@/constants/status';
 import UploadButton from './components/UploadButton';
-import ProductTable from '@/components/ProductTable';
 import { useCreatePurchase, useImageUpload } from './apis';
 import { PATHS } from '@/router';
 
@@ -25,6 +22,7 @@ const TABLE_HEADERS: { label: string; width: string }[] = [
 ];
 
 export default function PurchaseNew() {
+  const { toast } = useToast();
   const navigate = useNavigate();
 
   const {
@@ -32,37 +30,55 @@ export default function PurchaseNew() {
     control,
     handleSubmit,
     setValue,
+    trigger,
     formState: { errors },
   } = useForm<Purchase>({
     resolver: standardSchemaResolver(purchaseSchema),
     defaultValues: DEFAULT_PURCHASE,
   });
-  const { replace } = useFieldArray({
+  const { fields, append, remove, replace } = useFieldArray({
     control,
     name: 'products',
   });
 
-  const { mutate: handleImageUpload, isPending: isImageUploading } = useImageUpload({
-    setValue,
-    replace,
+  const { mutate, isPending: isImageUploading } = useImageUpload({
+    setValue: (name, value) => setValue(name, value, { shouldValidate: true }),
+    replace: (data) => {
+      replace(data);
+      trigger('products');
+    },
   });
   const { mutate: handleCreatePurchase } = useCreatePurchase();
 
-  const handleSave = handleSubmit((data) => {
-    handleCreatePurchase(data, {
-      onSuccess: () => {
-        // TODO: 추후 토스트 추가
-        navigate(PATHS.PURCHASE_LIST);
-      },
-      onError: () => {
-        // TODO: 추후 토스트로 변경
-        alert('사입내역 추가에 실패했습니다. 다시 시도해주세요.');
-      },
+  const handleImageUpload = (file: File) => {
+    mutate(file, {
+      onError: () => toast.error('영수증 분석에 실패했습니다.'),
     });
-  });
+  };
+  const handleSave = handleSubmit(
+    (data: Purchase) => {
+      handleCreatePurchase(data, {
+        onSuccess: () => {
+          toast.success('사입내역이 추가되었습니다.');
+          navigate(PATHS.PURCHASE_LIST);
+        },
+        onError: () => {
+          toast.error('사입내역 추가에 실패했습니다.');
+        },
+      });
+    },
+    () => {
+      toast.error('입력하지 않은 항목이 있습니다.');
+    },
+  );
 
   return (
     <main>
+      {isImageUploading && (
+        <div className="bg-overlay fixed inset-0 z-20 flex items-center justify-center">
+          <div className="border-t-primary-3 border-gray-2 h-8 w-8 animate-spin rounded-full border-3"></div>
+        </div>
+      )}
       <Header />
       <div className="flex items-center justify-between px-[7.2rem] py-[2.6rem]">
         <h1 className="title-18-m text-gray-9">사입 내역 추가</h1>
@@ -98,6 +114,9 @@ export default function PurchaseNew() {
               register={register}
               control={control}
               errors={errors}
+              fields={fields}
+              append={append}
+              remove={remove}
             />
           </div>
         </section>

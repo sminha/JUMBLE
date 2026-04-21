@@ -1,10 +1,8 @@
 import { useState, useEffect } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, useFieldArray } from 'react-hook-form';
 import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
 import { purchaseSchema } from '@jumble/shared';
-import LeaveConfirmationModal from '@/components/LeaveConfirmationModal';
-import Modal, { ModalRow } from '@/components/Modal';
-import ProductTable from '@/components/ProductTable';
+import { Modal, ModalRow, LeaveConfirmationModal, ProductTable, useToast } from '@/components';
 import { formatDate } from '@/utils/format';
 import { useUpdatePurchase, useGetPurchase, useDeletePurchase } from '../apis';
 
@@ -29,6 +27,7 @@ const TABLE_HEADERS: { label: string; width: string }[] = [
 ];
 
 export default function PurchaseModal({ purchaseId, open, onOpenChange }: PurchaseModalProps) {
+  const { toast } = useToast();
   const { data, isPending } = useGetPurchase(purchaseId, open);
   const { mutate: handleUpdatePurchase } = useUpdatePurchase(purchaseId);
   const { mutate: handleDeletePurchase } = useDeletePurchase(purchaseId);
@@ -43,6 +42,7 @@ export default function PurchaseModal({ purchaseId, open, onOpenChange }: Purcha
   } = useForm({
     resolver: standardSchemaResolver(purchaseSchema),
   });
+  const { fields, append, remove } = useFieldArray({ control, name: 'products' });
 
   useEffect(() => {
     if (data) {
@@ -71,24 +71,22 @@ export default function PurchaseModal({ purchaseId, open, onOpenChange }: Purcha
   const handleRemove = () => {
     handleDeletePurchase(undefined, {
       onSuccess: () => {
-        // TODO: 추후 토스트 추가
+        toast.success('사입내역이 삭제되었습니다.');
         onOpenChange(false);
       },
       onError: () => {
-        // TODO: 추후 토스트로 변경
-        alert('사입내역 삭제에 실패했습니다. 다시 시도해주세요.');
+        toast.error('사입내역 삭제에 실패했습니다.');
       },
     });
   };
   const handleSave = handleSubmit((data) => {
     handleUpdatePurchase(data, {
       onSuccess: () => {
-        // TODO: 추후 토스트 추가
+        toast.success('사입내역을 수정했습니다.');
         setIsEditing(false);
       },
       onError: () => {
-        // TODO: 추후 토스트로 변경
-        alert('사입내역 수정에 실패했습니다. 다시 시도해주세요.');
+        toast.error('사입내역 수정에 실패했습니다.');
       },
     });
   });
@@ -137,6 +135,9 @@ export default function PurchaseModal({ purchaseId, open, onOpenChange }: Purcha
           register={register}
           control={control}
           errors={errors}
+          fields={fields}
+          append={append}
+          remove={remove}
         />
       </Modal>
 

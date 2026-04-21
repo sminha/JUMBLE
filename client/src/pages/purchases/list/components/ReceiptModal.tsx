@@ -2,8 +2,7 @@ import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
 import { purchaseSchema } from '@jumble/shared';
-import LeaveConfirmationModal from '@/components/LeaveConfirmationModal';
-import Modal, { ModalRow } from '@/components/Modal';
+import { Modal, ModalRow, LeaveConfirmationModal } from '@/components';
 import { useGetPurchase } from '../apis';
 
 interface ReceiptModalProps {
