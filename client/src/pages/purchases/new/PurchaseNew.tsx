@@ -2,15 +2,11 @@ import { useNavigate } from 'react-router';
 import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
 import { FieldErrors, useFieldArray, useForm } from 'react-hook-form';
 import { Purchase, purchaseSchema, DEFAULT_PURCHASE } from '@jumble/shared';
-import Input from '@/components/Input';
-import Header from '@/components/Header';
-import Button from '@/components/Button';
+import { Input, Header, Button, ProductTable, useToast } from '@/components';
 import { STATUS } from '@/constants/status';
 import UploadButton from './components/UploadButton';
-import ProductTable from '@/components/ProductTable';
 import { useCreatePurchase, useImageUpload } from './apis';
 import { PATHS } from '@/router';
-import { useToast } from '@/components/toast';
 
 const TABLE_HEADERS: { label: string; width: string }[] = [
   { label: '상품명', width: '' },

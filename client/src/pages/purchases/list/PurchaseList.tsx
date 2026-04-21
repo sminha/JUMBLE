@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import Header from '@/components/Header';
+import { Header } from '@/components';
 import FilterSection from './sections/FilterSection';
 import ResultSection from './sections/ResultSection';
 import { Draft, INITIAL_DRAFT } from '@jumble/shared';

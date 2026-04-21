@@ -16,14 +16,14 @@ import {
   DialogHeader,
   DialogTitle,
   DialogFooter,
-} from '@/components/Dialog';
-import Input from '@/components/Input';
-import Dropdown from '@/components/Dropdown';
-import Button from '@/components/Button';
+} from '@/components/modal/Dialog';
+import Input from '@/components/input/Input';
+import Dropdown from '@/components/input/Dropdown';
+import Button from '@/components/button/Button';
 import { STATUS } from '@/constants/status';
 import { ValueLabel } from '@/types/value-label';
 
-export interface ModalProps {
+interface ModalProps {
   title: string;
   hideTitle?: boolean;
   open: boolean;

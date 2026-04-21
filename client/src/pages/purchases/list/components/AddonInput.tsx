@@ -1,5 +1,4 @@
-import Input from '@/components/Input';
-import DropDown from '@/components/Dropdown';
+import { Input, Dropdown } from '@/components';
 import { ValueLabel } from '@/types/value-label';
 
 interface AddonInputProps<T extends string | number> {
@@ -19,7 +18,7 @@ export default function AddonInput<T extends string | number>({
 }: AddonInputProps<T>) {
   return (
     <div className="border-gray-1 focus-within:border-primary-3 flex rounded-[0.8rem] border-1">
-      <DropDown
+      <Dropdown
         options={filters}
         value={selectedFilter}
         onChange={onChangeFilter}

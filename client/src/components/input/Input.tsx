@@ -1,7 +1,7 @@
 import { cn } from '@/utils/cn';
 import { Status, STATUS, STATUS_STYLE } from '@/constants/status';
 
-export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   numeric?: boolean;
   status?: Status;
   errorMessage?: string;

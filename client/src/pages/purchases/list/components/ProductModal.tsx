@@ -2,12 +2,10 @@ import { useState, useEffect } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
 import { productSchema, CATEGORY_LABEL, CATEGORY_LABEL_NEW, type Product } from '@jumble/shared';
-import LeaveConfirmationModal from '@/components/LeaveConfirmationModal';
+import { Modal, ModalRow, LeaveConfirmationModal, useToast } from '@/components';
 import { formatPrice, formatDate } from '@/utils/format';
-import Modal, { ModalRow } from '@/components/Modal';
 import { cn } from '@/utils/cn';
 import { useUpdateProduct, useGetProduct, useDeleteProduct } from '../apis';
-import { useToast } from '@/components/toast';
 
 interface ProductModalProps {
   purchaseId: string;

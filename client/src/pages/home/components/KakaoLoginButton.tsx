@@ -1,6 +1,6 @@
 import { cn } from '@/utils/cn';
 import kakao from '@/assets/kakao.png';
-import Button from '@/components/Button';
+import { Button } from '@/components';
 
 interface KakaoLoginButtonProps {
   buttonClassName?: string;

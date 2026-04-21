@@ -1,7 +1,7 @@
 import { BrowserRouter } from 'react-router';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { ToastProvider, ToastContainer } from '@/components/toast';
+import { ToastProvider, ToastContainer } from '@/components';
 import { AppRoutes } from '@/router';
 
 const queryClient = new QueryClient({

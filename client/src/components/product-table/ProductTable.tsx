@@ -7,13 +7,13 @@ import {
   UseFormRegister,
 } from 'react-hook-form';
 import { type Purchase, DEFAULT_PRODUCT, CATEGORY_LABEL, CATEGORY_LABEL_NEW } from '@jumble/shared';
-import Input from '@/components/Input';
-import DropDown from '@/components/Dropdown';
-import DeleteButton from '@/components/DeleteButton';
+import Input from '@/components/input/Input';
+import DropDown from '@/components/input/Dropdown';
+import DeleteButton from '@/components/button/DeleteButton';
 import { STATUS } from '@/constants/status';
 import { formatPrice } from '@/utils/format';
-import Button from './Button';
-import { useToast } from './toast';
+import Button from '../button/Button';
+import { useToast } from '../toast';
 
 interface ProductTableProps {
   headers: { label: string; width: string }[];
