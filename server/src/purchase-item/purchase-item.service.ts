@@ -148,4 +148,16 @@ export const PurchaseItemService = {
 
     return { records: serializeBigInt(formattedPurchaseItems), total };
   },
+
+  // 미송수량 일괄 변경 API
+  resetBackorderQuantities: async (userId: bigint, ids: string[]) => {
+    const { count } = await prisma.purchaseItem.updateMany({
+      where: {
+        id: { in: ids.map(BigInt) },
+        purchase: { user_id: userId },
+      },
+      data: { backorder_quantity: 0 },
+    });
+    return count;
+  },
 };
