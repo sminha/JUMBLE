@@ -31,14 +31,20 @@ export const purchaseSchema = z.object({
   receipt: z.string().optional().nullable(),
 });
 
-export type Purchase = z.infer<typeof purchaseSchema>;
-export type Product = z.infer<typeof productSchema>;
-
 export const updateBackorderSchema = z.object({
   backorderQuantity: z.number().int().min(0, '미송수량은 0 이상이어야 합니다.'),
 });
 
+export const deleteProductsSchema = z.object({
+  ids: z
+    .array(z.string().regex(/^\d+$/, 'id는 정수여야 합니다.'))
+    .min(1, '삭제할 항목을 1개 이상 선택하세요.'),
+});
+
+export type Purchase = z.infer<typeof purchaseSchema>;
+export type Product = z.infer<typeof productSchema>;
 export type UpdateBackorder = z.infer<typeof updateBackorderSchema>;
+export type DeleteProducts = z.infer<typeof deleteProductsSchema>;
 
 export const DEFAULT_PRODUCT: Product = {
   productNo: '-',

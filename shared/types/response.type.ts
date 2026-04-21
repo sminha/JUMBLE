@@ -128,3 +128,10 @@ export interface DeleteProductResponse {
   status: number;
   message: string;
 }
+
+// 선택삭제 API 응답
+export interface DeleteProductsResponse {
+  success: boolean;
+  status: number;
+  message: string;
+}
