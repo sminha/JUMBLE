@@ -36,7 +36,7 @@ export const updateBackorderSchema = z.object({
 });
 
 export const deleteProductsSchema = z.object({
-  ids: z
+  productIds: z
     .array(z.string().regex(/^\d+$/, 'id는 정수여야 합니다.'))
     .min(1, '삭제할 항목을 1개 이상 선택하세요.'),
 });

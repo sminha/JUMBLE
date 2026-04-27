@@ -432,7 +432,7 @@ export const PurchaseController = {
         });
       }
 
-      const itemIds = result.data.ids.map((id) => BigInt(id));
+      const itemIds = result.data.productIds.map((id) => BigInt(id));
       await PurchaseService.deleteProducts(userId, itemIds);
 
       return res.status(200).json({
