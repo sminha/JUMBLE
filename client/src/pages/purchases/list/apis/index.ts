@@ -262,7 +262,7 @@ const deleteProducts = async (productIds: string[]) => {
   const res = await fetchWithAuth(`${import.meta.env.VITE_API_URL}/api/v1/purchases/products`, {
     method: 'DELETE',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ ids: productIds }),
+    body: JSON.stringify({ productIds }),
   });
 
   if (!res.ok) {
@@ -296,7 +296,7 @@ const updateBackorders = async (productIds: string[]) => {
     {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ids: productIds }),
+      body: JSON.stringify({ productIds }),
     },
   );
 
@@ -323,4 +323,33 @@ export const useUpdateBackorders = () => {
       );
     },
   });
+};
+
+// 엑셀 다운로드 API
+export const exportPurchases = async (draft: Draft) => {
+  const searchParams = new URLSearchParams(
+    Object.fromEntries(
+      Object.entries(draft)
+        .filter(([, v]) => v !== '' && v !== false && v !== null)
+        .map(([k, v]) => [k, String(v)]),
+    ),
+  );
+
+  const res = await fetchWithAuth(
+    `${import.meta.env.VITE_API_URL}/api/v1/purchases/items/export?${searchParams}`,
+    { method: 'GET' },
+  );
+
+  if (!res.ok) {
+    throw new Error('엑셀 다운로드 요청 실패');
+  }
+
+  const blob = await res.blob();
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const today = new Date().toLocaleDateString('ko-KR').replace(/\. /g, '-').replace('.', '');
+  a.href = url;
+  a.download = `사입내역_${today}.xlsx`;
+  a.click();
+  URL.revokeObjectURL(url);
 };

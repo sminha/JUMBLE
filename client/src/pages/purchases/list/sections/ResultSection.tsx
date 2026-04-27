@@ -13,7 +13,7 @@ import PurchaseRow from '../components/PurchaseRow';
 import UnstyledButton from '../components/UnstyledButton';
 import BackorderModal from '../components/BackorderModal';
 import ReceiptModal from '../components/ReceiptModal';
-import { useDeleteProducts, useUpdateBackorders } from '../apis';
+import { useDeleteProducts, useUpdateBackorders, exportPurchases } from '../apis';
 
 interface ResultSectionProps {
   params: Draft;
@@ -172,9 +172,12 @@ export default function ResultSection({
       },
     );
   };
-  const handleDownload = () => {
-    // TODO: 엑셀 다운로드 기능 구현
-    alert('엑셀 다운로드');
+  const handleDownload = async () => {
+    try {
+      await exportPurchases(params);
+    } catch {
+      toast.error('엑셀 다운로드에 실패했습니다.');
+    }
   };
   // 정렬 핸들러
   const handleSort = (sortBy: SortBy) => {
