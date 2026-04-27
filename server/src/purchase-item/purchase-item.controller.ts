@@ -70,7 +70,10 @@ export const PurchaseItemController = {
           .json({ success: false, status: 400, message: result.error.issues[0].message });
       }
 
-      const count = await PurchaseItemService.resetBackorderQuantities(userId, result.data.ids);
+      const count = await PurchaseItemService.resetBackorderQuantities(
+        userId,
+        result.data.productIds,
+      );
 
       return res.status(200).json({
         success: true,
@@ -87,6 +90,39 @@ export const PurchaseItemController = {
       return res
         .status(500)
         .json({ success: false, status: 500, message: '서버 오류가 발생했습니다.' });
+    }
+  },
+
+  // 엑셀 다운로드 API
+  exportPurchaseItems: async (req: Request, res: Response) => {
+    try {
+      const userId = req.user.id;
+      const result = querySchema.safeParse(req.query);
+
+      if (!result.success) {
+        return res
+          .status(400)
+          .json({ success: false, status: 400, message: result.error.issues[0].message });
+      }
+
+      const buffer = await PurchaseItemService.exportPurchaseItems(userId, result.data);
+      const filename = encodeURIComponent('사입내역.xlsx');
+
+      res.setHeader(
+        'Content-Type',
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      );
+      res.setHeader('Content-Disposition', `attachment; filename*=UTF-8''${filename}`);
+
+      return res.send(buffer);
+    } catch (error) {
+      console.error('🚨 서버 에러 발생:', error);
+
+      return res.status(500).json({
+        success: false,
+        status: 500,
+        message: '서버 오류가 발생했습니다.',
+      });
     }
   },
 };
