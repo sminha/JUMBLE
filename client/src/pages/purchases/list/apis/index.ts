@@ -257,3 +257,102 @@ export const useDeleteProduct = (purchaseId: string, productId: string) => {
     },
   });
 };
+
+const deleteProducts = async (productIds: string[]) => {
+  const res = await fetchWithAuth(`${import.meta.env.VITE_API_URL}/api/v1/purchases/products`, {
+    method: 'DELETE',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ productIds }),
+  });
+
+  if (!res.ok) {
+    throw new Error('선택삭제 요청 실패');
+  }
+
+  const data = await res.json();
+
+  return data;
+};
+
+// 선택삭제 API
+export const useDeleteProducts = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ productIds }: { productIds: string[]; purchaseIds: string[] }) =>
+      deleteProducts(productIds),
+    onSuccess: (_, { purchaseIds }) => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.PURCHASES.LIST() });
+      purchaseIds.forEach((purchaseId: string) =>
+        queryClient.invalidateQueries({ queryKey: QUERY_KEYS.PURCHASES.DETAIL(purchaseId) }),
+      );
+    },
+  });
+};
+
+const updateBackorders = async (productIds: string[]) => {
+  const res = await fetchWithAuth(
+    `${import.meta.env.VITE_API_URL}/api/v1/purchases/items/backorder/reset`,
+    {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ productIds }),
+    },
+  );
+
+  if (!res.ok) {
+    throw new Error('미송수량 일괄 변경 요청 실패');
+  }
+
+  const data = await res.json();
+
+  return data;
+};
+
+// 미송수량 일괄 변경 API
+export const useUpdateBackorders = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ productIds }: { productIds: string[]; purchaseIds: string[] }) =>
+      updateBackorders(productIds),
+    onSuccess: (_, { purchaseIds }) => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.PURCHASES.LIST() });
+      purchaseIds.forEach((purchaseId: string) =>
+        queryClient.invalidateQueries({ queryKey: QUERY_KEYS.PURCHASES.DETAIL(purchaseId) }),
+      );
+    },
+  });
+};
+
+// 엑셀 다운로드 API
+export const exportPurchases = async (draft: Draft) => {
+  const searchParams = new URLSearchParams(
+    Object.fromEntries(
+      Object.entries(draft)
+        .filter(([, v]) => v !== '' && v !== false && v !== null)
+        .map(([k, v]) => [k, String(v)]),
+    ),
+  );
+
+  const res = await fetchWithAuth(
+    `${import.meta.env.VITE_API_URL}/api/v1/purchases/items/export?${searchParams}`,
+    { method: 'GET' },
+  );
+
+  if (!res.ok) {
+    throw new Error('엑셀 다운로드 요청 실패');
+  }
+
+  const blob = await res.blob();
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const now = new Date();
+  const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+  a.href = url;
+  a.download = `사입내역_${today}.xlsx`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+};

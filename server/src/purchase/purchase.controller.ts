@@ -7,6 +7,7 @@ import {
   purchaseSchema,
   productSchema,
   updateBackorderSchema,
+  productIdsSchema,
   PurchaseDetail,
   ProductDetail,
   GetPurchaseDetailResponse,
@@ -16,6 +17,7 @@ import {
   UpdateBackorderResponse,
   DeletePurchaseResponse,
   DeleteProductResponse,
+  DeleteProductsResponse,
 } from '@jumble/shared';
 
 export const PurchaseController = {
@@ -397,6 +399,48 @@ export const PurchaseController = {
         status: 200,
         message: '사입내역 삭제에 성공했습니다.',
       } satisfies DeletePurchaseResponse);
+    } catch (error) {
+      console.error('🚨 서버 에러 발생:', error);
+
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        return res.status(400).json({
+          success: false,
+          status: 400,
+          message: '잘못된 요청입니다.',
+        });
+      }
+
+      return res.status(500).json({
+        success: false,
+        status: 500,
+        message: '서버 오류가 발생했습니다.',
+      });
+    }
+  },
+
+  // 선택삭제 API
+  deleteProducts: async (req: Request, res: Response) => {
+    try {
+      const userId = req.user.id;
+
+      const result = productIdsSchema.safeParse(req.body);
+
+      if (!result.success) {
+        return res.status(400).json({
+          success: false,
+          status: 400,
+          message: result.error.issues[0].message,
+        });
+      }
+
+      const productIds = result.data.productIds.map((id) => BigInt(id));
+      await PurchaseService.deleteProducts(userId, productIds);
+
+      return res.status(200).json({
+        success: true,
+        status: 200,
+        message: '상품 사입내역 삭제에 성공했습니다.',
+      } satisfies DeleteProductsResponse);
     } catch (error) {
       console.error('🚨 서버 에러 발생:', error);
 

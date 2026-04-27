@@ -13,6 +13,8 @@ import PurchaseRow from '../components/PurchaseRow';
 import UnstyledButton from '../components/UnstyledButton';
 import BackorderModal from '../components/BackorderModal';
 import ReceiptModal from '../components/ReceiptModal';
+import { useDeleteProducts, useUpdateBackorders, exportPurchases } from '../apis';
+import { useSelection, usePagination } from '../hooks';
 
 interface ResultSectionProps {
   params: Draft;
@@ -57,12 +59,29 @@ export default function ResultSection({
   isError,
 }: ResultSectionProps) {
   const { toast } = useToast();
-  const [isChecked, setIsChecked] = useState<boolean>(false);
+  const [prevParams, setPrevParams] = useState(params);
   const [selectedReceiptPurchaseId, setSelectedReceiptPurchaseId] = useState<string | null>(null);
   const [selectedBackorderPurchaseId, setSelectedBackorderPurchaseId] = useState<string | null>(
     null,
   );
   const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
+  const [selectedProductIds, setSelectedProductIds] = useState<Set<string>>(new Set());
+
+  const { mutate: handleDeleteProducts } = useDeleteProducts();
+  const { mutate: handleUpdateBackorders } = useUpdateBackorders();
+
+  const { isAllSelected, handleToggleAll, handleToggleRow } = useSelection({
+    records: data?.records ?? [],
+    selectedProductIds,
+    setSelectedProductIds,
+  });
+  const {
+    handleClickPrev,
+    handleClickNext,
+    handleClickFirst,
+    handleClickLast,
+    handleClickPagination,
+  } = usePagination({ setParams, totalPages: data?.pagination?.totalPages });
 
   if (isPending) {
     return (
@@ -73,7 +92,6 @@ export default function ResultSection({
   }
 
   const { records, pagination } = data;
-  const totalPages = pagination.totalPages;
 
   if (isError || !data || records.length === 0) {
     if (isError || !data) {
@@ -87,21 +105,79 @@ export default function ResultSection({
     );
   }
 
+  if (prevParams !== params) {
+    setPrevParams(params);
+    setSelectedProductIds(new Set());
+  }
+
+  // 드롭다운 핸들러
   const handleChangeLimit = (newLimit: number) => {
     setParams((prev) => ({ ...prev, limit: newLimit, page: 1 }));
   };
+
+  const getSelectedIds = () => {
+    return {
+      productIds: [...selectedProductIds],
+      purchaseIds: [
+        ...new Set(
+          records.filter((r) => selectedProductIds.has(r.productId)).map((r) => r.purchaseId),
+        ),
+      ],
+    };
+  };
+  // 선택삭제 핸들러
   const handleDelete = () => {
-    // TODO: 선택삭제 기능 구현
-    alert('선택삭제');
+    const { productIds, purchaseIds } = getSelectedIds();
+
+    if (productIds.length === 0) {
+      toast.error('최소 1개 이상의 내역을 선택해주세요.');
+      return;
+    }
+
+    handleDeleteProducts(
+      { productIds, purchaseIds },
+      {
+        onSuccess: () => {
+          toast.success('사입내역이 삭제되었습니다.');
+          setSelectedProductIds(new Set());
+        },
+        onError: () => {
+          toast.error('사입내역 삭제에 실패했습니다.');
+        },
+      },
+    );
   };
+  // 미송 일괄변경 핸들러
   const handleEdit = () => {
-    // TODO: 미송 일괄변경 기능 구현
-    alert('미송 일괄변경');
+    const { productIds, purchaseIds } = getSelectedIds();
+
+    if (productIds.length === 0) {
+      toast.error('최소 1개 이상의 내역을 선택해주세요.');
+      return;
+    }
+
+    handleUpdateBackorders(
+      { productIds, purchaseIds },
+      {
+        onSuccess: () => {
+          toast.success('미송수량이 변경되었습니다.');
+          setSelectedProductIds(new Set());
+        },
+        onError: () => {
+          toast.error('미송수량 변경에 실패했습니다.');
+        },
+      },
+    );
   };
-  const handleDownload = () => {
-    // TODO: 엑셀 다운로드 기능 구현
-    alert('엑셀 다운로드');
+  // 엑셀 다운로드 핸들러
+  const handleDownload = async () => {
+    try {
+      await exportPurchases(params);
+    } catch {
+      toast.error('엑셀 다운로드에 실패했습니다.');
+    }
   };
+  // 정렬 핸들러
   const handleSort = (sortBy: SortBy) => {
     setParams((prev) => ({
       ...prev,
@@ -114,24 +190,6 @@ export default function ResultSection({
             : SORT_ORDER.DESC
           : SORT_ORDER.DESC,
     }));
-  };
-  const handleClickPrev = () => {
-    setParams((prev) => ({ ...prev, page: prev.page !== 1 ? prev.page - 1 : 1 }));
-  };
-  const handleClickNext = () => {
-    setParams((prev) => ({
-      ...prev,
-      page: prev.page !== totalPages ? prev.page + 1 : totalPages,
-    }));
-  };
-  const handleClickFirst = () => {
-    setParams((prev) => ({ ...prev, page: 1 }));
-  };
-  const handleClickLast = () => {
-    setParams((prev) => ({ ...prev, page: totalPages }));
-  };
-  const handleClickPagination = (page: number) => {
-    setParams((prev) => ({ ...prev, page: page }));
   };
 
   return (
@@ -180,10 +238,10 @@ export default function ResultSection({
                     key={idx}
                     className={cn(
                       'sticky top-0 z-10 bg-white py-[1.4rem] align-middle shadow-[0_1px_0_0_var(--color-gray-1)]',
-                      isFirst && 'border-r-gray-1 left-0 z-20 border-r-1 pr-[0.2rem] pl-[1rem]',
+                      isFirst && 'left-0 z-20 pr-[0.2rem] pl-[1rem]',
                     )}
                   >
-                    {isFirst && <Checkbox isChecked={isChecked} onChange={setIsChecked} />}
+                    {isFirst && <Checkbox isChecked={isAllSelected} onChange={handleToggleAll} />}
                     {header.label}
                     {header.sortBy && (
                       <UnstyledButton
@@ -203,6 +261,8 @@ export default function ResultSection({
               <PurchaseRow
                 key={record.productId}
                 record={record}
+                isSelected={selectedProductIds.has(record.productId)}
+                onToggle={() => handleToggleRow(record.productId)}
                 onBackorderModalOpenChange={(purchaseId, productId) => {
                   setSelectedBackorderPurchaseId(purchaseId);
                   setSelectedProductId(productId);
@@ -222,7 +282,7 @@ export default function ResultSection({
         <UnstyledButton aria-label="앞 페이지로 이동" onClick={handleClickPrev}>
           <img src={pagePrevIcon} alt="" aria-hidden="true" />
         </UnstyledButton>
-        {Array.from({ length: totalPages }).map((_, idx) => (
+        {Array.from({ length: pagination.totalPages }).map((_, idx) => (
           <button
             key={idx}
             onClick={() => handleClickPagination(idx + 1)}

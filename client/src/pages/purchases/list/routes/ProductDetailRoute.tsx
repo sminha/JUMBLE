@@ -1,7 +1,7 @@
 import { useParams } from 'react-router';
 import { PATHS } from '@/router';
 import ProductModal from '../components/ProductModal';
-import { useModalClose } from '../hooks/useModalClose';
+import { useModalClose } from '../hooks';
 
 export default function ProductDetailRoute() {
   const { purchaseId, productId } = useParams();

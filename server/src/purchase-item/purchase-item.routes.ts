@@ -4,6 +4,8 @@ import { PurchaseItemController } from './purchase-item.controller';
 
 const router: Router = express.Router();
 
+router.get('/export', authMiddleware, PurchaseItemController.exportPurchaseItems);
 router.get('/', authMiddleware, PurchaseItemController.getPurchaseItems);
+router.patch('/backorder/reset', authMiddleware, PurchaseItemController.resetBackorderQuantities);
 
 export default router;
