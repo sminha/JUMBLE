@@ -14,6 +14,7 @@ import UnstyledButton from '../components/UnstyledButton';
 import BackorderModal from '../components/BackorderModal';
 import ReceiptModal from '../components/ReceiptModal';
 import { useDeleteProducts, useUpdateBackorders, exportPurchases } from '../apis';
+import { useSelection, usePagination } from '../hooks';
 
 interface ResultSectionProps {
   params: Draft;
@@ -50,7 +51,6 @@ const TABLE_HEADERS: { label: string; width: string; sortBy?: SortBy }[] = [
   { label: '영수증', width: 'w-[10rem]' },
 ];
 
-// TODO: 컴포넌트 분리
 export default function ResultSection({
   params,
   setParams,
@@ -65,8 +65,22 @@ export default function ResultSection({
   );
   const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
   const [selectedProductIds, setSelectedProductIds] = useState<Set<string>>(new Set());
+
   const { mutate: handleDeleteProducts } = useDeleteProducts();
   const { mutate: handleUpdateBackorders } = useUpdateBackorders();
+
+  const { isAllSelected, handleToggleAll, handleToggleRow } = useSelection({
+    records: data?.records,
+    selectedProductIds,
+    setSelectedProductIds,
+  });
+  const {
+    handleClickPrev,
+    handleClickNext,
+    handleClickFirst,
+    handleClickLast,
+    handleClickPagination,
+  } = usePagination({ setParams, totalPages: data?.pagination?.totalPages });
 
   if (isPending) {
     return (
@@ -77,10 +91,6 @@ export default function ResultSection({
   }
 
   const { records, pagination } = data;
-  const totalPages = pagination.totalPages;
-  const allProductIds = records.map((r) => r.productId);
-  const isAllSelected =
-    allProductIds.length > 0 && allProductIds.every((id) => selectedProductIds.has(id));
 
   if (isError || !data || records.length === 0) {
     if (isError || !data) {
@@ -94,39 +104,24 @@ export default function ResultSection({
     );
   }
 
-  // 체크박스 핸들러
-  const handleToggleAll = () => {
-    if (isAllSelected) {
-      setSelectedProductIds(new Set());
-      return;
-    }
-    setSelectedProductIds(new Set(allProductIds));
-  };
-  const handleToggleRow = (productId: string) => {
-    setSelectedProductIds((prev) => {
-      const next = new Set(prev);
-
-      if (next.has(productId)) {
-        next.delete(productId);
-      } else {
-        next.add(productId);
-      }
-
-      return next;
-    });
-  };
   // 드롭다운 핸들러
   const handleChangeLimit = (newLimit: number) => {
     setParams((prev) => ({ ...prev, limit: newLimit, page: 1 }));
   };
-  // 버튼 핸들러
+
+  const getSelectedIds = () => {
+    return {
+      productIds: [...selectedProductIds],
+      purchaseIds: [
+        ...new Set(
+          records.filter((r) => selectedProductIds.has(r.productId)).map((r) => r.purchaseId),
+        ),
+      ],
+    };
+  };
+  // 선택삭제 핸들러
   const handleDelete = () => {
-    const productIds = [...selectedProductIds];
-    const purchaseIds = [
-      ...new Set(
-        records.filter((r) => selectedProductIds.has(r.productId)).map((r) => r.purchaseId),
-      ),
-    ];
+    const { productIds, purchaseIds } = getSelectedIds();
 
     if (productIds.length === 0) {
       toast.error('최소 1개 이상의 내역을 선택해주세요.');
@@ -146,13 +141,9 @@ export default function ResultSection({
       },
     );
   };
+  // 미송 일괄변경 핸들러
   const handleEdit = () => {
-    const productIds = [...selectedProductIds];
-    const purchaseIds = [
-      ...new Set(
-        records.filter((r) => selectedProductIds.has(r.productId)).map((r) => r.purchaseId),
-      ),
-    ];
+    const { productIds, purchaseIds } = getSelectedIds();
 
     if (productIds.length === 0) {
       toast.error('최소 1개 이상의 내역을 선택해주세요.');
@@ -172,6 +163,7 @@ export default function ResultSection({
       },
     );
   };
+  // 엑셀 다운로드 핸들러
   const handleDownload = async () => {
     try {
       await exportPurchases(params);
@@ -192,28 +184,6 @@ export default function ResultSection({
             : SORT_ORDER.DESC
           : SORT_ORDER.DESC,
     }));
-  };
-  // 페이지네이션 핸들러
-  const handleClickPrev = () => {
-    setParams((prev) => ({
-      ...prev,
-      page: prev.page !== 1 ? prev.page - 1 : 1,
-    }));
-  };
-  const handleClickNext = () => {
-    setParams((prev) => ({
-      ...prev,
-      page: prev.page !== totalPages ? prev.page + 1 : totalPages,
-    }));
-  };
-  const handleClickFirst = () => {
-    setParams((prev) => ({ ...prev, page: 1 }));
-  };
-  const handleClickLast = () => {
-    setParams((prev) => ({ ...prev, page: totalPages }));
-  };
-  const handleClickPagination = (page: number) => {
-    setParams((prev) => ({ ...prev, page: page }));
   };
 
   return (
@@ -306,7 +276,7 @@ export default function ResultSection({
         <UnstyledButton aria-label="앞 페이지로 이동" onClick={handleClickPrev}>
           <img src={pagePrevIcon} alt="" aria-hidden="true" />
         </UnstyledButton>
-        {Array.from({ length: totalPages }).map((_, idx) => (
+        {Array.from({ length: pagination.totalPages }).map((_, idx) => (
           <button
             key={idx}
             onClick={() => handleClickPagination(idx + 1)}
