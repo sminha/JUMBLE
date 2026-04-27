@@ -13,12 +13,12 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 4000;
 
-app.use(
-  cors({
-    origin: ['http://localhost:5173', 'http://localhost:4000', 'https://jumble-client.vercel.app'],
-  }),
-);
-app.options('*', cors());
+const corsOptions = {
+  origin: ['http://localhost:5173', 'http://localhost:4000', 'https://jumble-client.vercel.app'],
+};
+
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
 app.use(morgan('dev'));
 app.use(express.json());
 app.use('/api/v1/auth', authRouter);
