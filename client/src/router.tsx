@@ -1,4 +1,4 @@
-import { Outlet, Navigate, Routes, Route, useLocation, useNavigate } from 'react-router';
+import { Outlet, Navigate, Routes, Route, useLocation } from 'react-router';
 import Home from '@/pages/home/Home';
 import KakaoCallback from '@/pages/home/KakaoCallback';
 import PurchaseNew from '@/pages/purchases/new/PurchaseNew';
