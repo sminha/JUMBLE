@@ -7,7 +7,7 @@ import {
   purchaseSchema,
   productSchema,
   updateBackorderSchema,
-  deleteProductsSchema,
+  productIdsSchema,
   PurchaseDetail,
   ProductDetail,
   GetPurchaseDetailResponse,
@@ -423,7 +423,8 @@ export const PurchaseController = {
     try {
       const userId = req.user.id;
 
-      const result = deleteProductsSchema.safeParse(req.body);
+      const result = productIdsSchema.safeParse(req.body);
+
       if (!result.success) {
         return res.status(400).json({
           success: false,
@@ -432,8 +433,8 @@ export const PurchaseController = {
         });
       }
 
-      const itemIds = result.data.productIds.map((id) => BigInt(id));
-      await PurchaseService.deleteProducts(userId, itemIds);
+      const productIds = result.data.productIds.map((id) => BigInt(id));
+      await PurchaseService.deleteProducts(userId, productIds);
 
       return res.status(200).json({
         success: true,

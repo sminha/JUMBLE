@@ -301,7 +301,7 @@ const updateBackorders = async (productIds: string[]) => {
   );
 
   if (!res.ok) {
-    throw new Error('선택삭제 요청 실패');
+    throw new Error('미송수량 일괄 변경 요청 실패');
   }
 
   const data = await res.json();
@@ -347,9 +347,12 @@ export const exportPurchases = async (draft: Draft) => {
   const blob = await res.blob();
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
-  const today = new Date().toLocaleDateString('ko-KR').replace(/\. /g, '-').replace('.', '');
+  const now = new Date();
+  const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
   a.href = url;
   a.download = `사입내역_${today}.xlsx`;
+  document.body.appendChild(a);
   a.click();
+  a.remove();
   URL.revokeObjectURL(url);
 };

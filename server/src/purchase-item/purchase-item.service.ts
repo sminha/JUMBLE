@@ -22,72 +22,83 @@ const getPeriodStartDate = (periodType: Exclude<Period, 'ALL'>): string => {
   return kst.toISOString().split('T')[0];
 };
 
+const buildPurchaseItemQuery = (
+  userId: bigint,
+  params: Omit<Draft, 'page' | 'limit'>,
+): {
+  where: Prisma.PurchaseItemWhereInput;
+  orderBy: Prisma.PurchaseItemOrderByWithRelationInput;
+} => {
+  const {
+    dateType,
+    periodType,
+    startDate,
+    endDate,
+    filterType,
+    keyword,
+    isBackorderOnly,
+    sortBy,
+    sortOrder,
+  } = params;
+
+  const resolvedStartDate =
+    startDate || (periodType && periodType !== PERIOD.ALL ? getPeriodStartDate(periodType) : '');
+  const resolvedEndDate = endDate || (periodType && periodType !== PERIOD.ALL ? getTodayKST() : '');
+
+  const purchaseWhere: Prisma.PurchaseWhereInput = {
+    user_id: userId,
+    ...(filterType === FILTER.VENDOR && { vendor: { name: { contains: keyword } } }),
+    ...(resolvedStartDate &&
+      resolvedEndDate &&
+      dateType === DATE.PURCHASED_AT && {
+        purchased_at: {
+          gte: new Date(`${resolvedStartDate}T00:00:00.000+09:00`),
+          lte: new Date(`${resolvedEndDate}T23:59:59.999+09:00`),
+        },
+      }),
+    ...(resolvedStartDate &&
+      resolvedEndDate &&
+      dateType === DATE.CREATED_AT && {
+        created_at: {
+          gte: new Date(`${resolvedStartDate}T00:00:00.000+09:00`),
+          lte: new Date(`${resolvedEndDate}T23:59:59.999+09:00`),
+        },
+      }),
+  };
+
+  const where: Prisma.PurchaseItemWhereInput = {
+    purchase: purchaseWhere,
+    ...(filterType === FILTER.PRODUCT && { item_name: { contains: keyword } }),
+    ...(isBackorderOnly && { backorder_quantity: { gt: 0 } }),
+  };
+
+  const orderBy = ((): Prisma.PurchaseItemOrderByWithRelationInput => {
+    switch (sortBy) {
+      case SORT_BY.PURCHASED_AT:
+        return { purchase: { purchased_at: sortOrder } };
+      case SORT_BY.PRICE:
+        return { unit_price: sortOrder };
+      case SORT_BY.QUANTITY:
+        return { quantity: sortOrder };
+      case SORT_BY.BACKORDER_QUANTITY:
+        return { backorder_quantity: sortOrder };
+      case SORT_BY.TOTAL_PRICE:
+        return { total_price: sortOrder };
+      default:
+        return { purchase: { purchased_at: 'desc' } };
+    }
+  })();
+
+  return { where, orderBy };
+};
+
 export const PurchaseItemService = {
   // 사입내역 조회 API
   getPurchaseItems: async (userId: bigint, params: Draft) => {
-    const {
-      page,
-      limit,
-      dateType,
-      periodType,
-      startDate,
-      endDate,
-      filterType,
-      keyword,
-      isBackorderOnly,
-      sortBy,
-      sortOrder,
-    } = params;
+    const { page, limit } = params;
     const skip = (page - 1) * limit;
 
-    const resolvedStartDate =
-      startDate || (periodType && periodType !== PERIOD.ALL ? getPeriodStartDate(periodType) : '');
-    const resolvedEndDate =
-      endDate || (periodType && periodType !== PERIOD.ALL ? getTodayKST() : '');
-
-    const purchaseWhere: Prisma.PurchaseWhereInput = {
-      user_id: userId,
-      ...(filterType === FILTER.VENDOR && { vendor: { name: { contains: keyword } } }),
-      ...(resolvedStartDate &&
-        resolvedEndDate &&
-        dateType === DATE.PURCHASED_AT && {
-          purchased_at: {
-            gte: new Date(`${resolvedStartDate}T00:00:00.000+09:00`),
-            lte: new Date(`${resolvedEndDate}T23:59:59.999+09:00`),
-          },
-        }),
-      ...(resolvedStartDate &&
-        resolvedEndDate &&
-        dateType === DATE.CREATED_AT && {
-          created_at: {
-            gte: new Date(`${resolvedStartDate}T00:00:00.000+09:00`),
-            lte: new Date(`${resolvedEndDate}T23:59:59.999+09:00`),
-          },
-        }),
-    };
-
-    const where: Prisma.PurchaseItemWhereInput = {
-      purchase: purchaseWhere,
-      ...(filterType === FILTER.PRODUCT && { item_name: { contains: keyword } }),
-      ...(isBackorderOnly && { backorder_quantity: { gt: 0 } }),
-    };
-
-    const orderBy = ((): Prisma.PurchaseItemOrderByWithRelationInput => {
-      switch (sortBy) {
-        case SORT_BY.PURCHASED_AT:
-          return { purchase: { purchased_at: sortOrder } };
-        case SORT_BY.PRICE:
-          return { unit_price: sortOrder };
-        case SORT_BY.QUANTITY:
-          return { quantity: sortOrder };
-        case SORT_BY.BACKORDER_QUANTITY:
-          return { backorder_quantity: sortOrder };
-        case SORT_BY.TOTAL_PRICE:
-          return { total_price: sortOrder };
-        default:
-          return { purchase: { purchased_at: 'desc' } };
-      }
-    })();
+    const { where, orderBy } = buildPurchaseItemQuery(userId, params);
 
     const [records, total] = await prisma.$transaction([
       prisma.purchaseItem.findMany({
@@ -164,66 +175,7 @@ export const PurchaseItemService = {
 
   // 엑셀 다운로드 API
   exportPurchaseItems: async (userId: bigint, params: Omit<Draft, 'page' | 'limit'>) => {
-    const {
-      dateType,
-      periodType,
-      startDate,
-      endDate,
-      filterType,
-      keyword,
-      isBackorderOnly,
-      sortBy,
-      sortOrder,
-    } = params;
-
-    const resolvedStartDate =
-      startDate || (periodType && periodType !== PERIOD.ALL ? getPeriodStartDate(periodType) : '');
-    const resolvedEndDate =
-      endDate || (periodType && periodType !== PERIOD.ALL ? getTodayKST() : '');
-
-    const purchaseWhere: Prisma.PurchaseWhereInput = {
-      user_id: userId,
-      ...(filterType === FILTER.VENDOR && { vendor: { name: { contains: keyword } } }),
-      ...(resolvedStartDate &&
-        resolvedEndDate &&
-        dateType === DATE.PURCHASED_AT && {
-          purchased_at: {
-            gte: new Date(`${resolvedStartDate}T00:00:00.000+09:00`),
-            lte: new Date(`${resolvedEndDate}T23:59:59.999+09:00`),
-          },
-        }),
-      ...(resolvedStartDate &&
-        resolvedEndDate &&
-        dateType === DATE.CREATED_AT && {
-          created_at: {
-            gte: new Date(`${resolvedStartDate}T00:00:00.000+09:00`),
-            lte: new Date(`${resolvedEndDate}T23:59:59.999+09:00`),
-          },
-        }),
-    };
-
-    const where: Prisma.PurchaseItemWhereInput = {
-      purchase: purchaseWhere,
-      ...(filterType === FILTER.PRODUCT && { item_name: { contains: keyword } }),
-      ...(isBackorderOnly && { backorder_quantity: { gt: 0 } }),
-    };
-
-    const orderBy = ((): Prisma.PurchaseItemOrderByWithRelationInput => {
-      switch (sortBy) {
-        case SORT_BY.PURCHASED_AT:
-          return { purchase: { purchased_at: sortOrder } };
-        case SORT_BY.PRICE:
-          return { unit_price: sortOrder };
-        case SORT_BY.QUANTITY:
-          return { quantity: sortOrder };
-        case SORT_BY.BACKORDER_QUANTITY:
-          return { backorder_quantity: sortOrder };
-        case SORT_BY.TOTAL_PRICE:
-          return { total_price: sortOrder };
-        default:
-          return { purchase: { purchased_at: 'desc' } };
-      }
-    })();
+    const { where, orderBy } = buildPurchaseItemQuery(userId, params);
 
     const records = await prisma.purchaseItem.findMany({
       where,

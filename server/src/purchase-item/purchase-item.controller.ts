@@ -1,8 +1,8 @@
 import { Request, Response } from 'express';
 import { Prisma } from '@prisma/client';
+import { productIdsSchema } from '@jumble/shared';
 import { PurchaseItemService } from './purchase-item.service';
 import { querySchema } from './query.schema';
-import { deleteProductsSchema } from '@jumble/shared';
 
 export const PurchaseItemController = {
   // 사입내역 조회 API
@@ -62,7 +62,7 @@ export const PurchaseItemController = {
   resetBackorderQuantities: async (req: Request, res: Response) => {
     try {
       const userId = req.user.id;
-      const result = deleteProductsSchema.safeParse(req.body);
+      const result = productIdsSchema.safeParse(req.body);
 
       if (!result.success) {
         return res
@@ -84,12 +84,26 @@ export const PurchaseItemController = {
       console.error('🚨 서버 에러 발생:', error);
 
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
-        return res.status(400).json({ success: false, status: 400, message: '잘못된 요청입니다.' });
+        return res.status(400).json({
+          success: false,
+          status: 400,
+          message: '잘못된 요청입니다.',
+        });
       }
 
-      return res
-        .status(500)
-        .json({ success: false, status: 500, message: '서버 오류가 발생했습니다.' });
+      if (error instanceof Prisma.PrismaClientValidationError) {
+        return res.status(400).json({
+          success: false,
+          status: 400,
+          message: '요청 데이터 형식이 올바르지 않습니다.',
+        });
+      }
+
+      return res.status(500).json({
+        success: false,
+        status: 500,
+        message: '서버 오류가 발생했습니다.',
+      });
     }
   },
 
@@ -117,6 +131,22 @@ export const PurchaseItemController = {
       return res.send(buffer);
     } catch (error) {
       console.error('🚨 서버 에러 발생:', error);
+
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        return res.status(400).json({
+          success: false,
+          status: 400,
+          message: '잘못된 요청입니다.',
+        });
+      }
+
+      if (error instanceof Prisma.PrismaClientValidationError) {
+        return res.status(400).json({
+          success: false,
+          status: 400,
+          message: '요청 데이터 형식이 올바르지 않습니다.',
+        });
+      }
 
       return res.status(500).json({
         success: false,

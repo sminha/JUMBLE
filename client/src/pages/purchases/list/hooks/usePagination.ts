@@ -10,14 +10,14 @@ export const usePagination = ({ setParams, totalPages }: UsePaginationArgs) => {
   const handleClickPrev = () => {
     setParams((prev) => ({
       ...prev,
-      page: prev.page !== 1 ? prev.page - 1 : 1,
+      page: Math.max(1, prev.page - 1),
     }));
   };
 
   const handleClickNext = () => {
     setParams((prev) => ({
       ...prev,
-      page: prev.page !== totalPages ? prev.page + 1 : totalPages,
+      page: Math.min(Math.max(1, totalPages), prev.page + 1),
     }));
   };
 
@@ -26,7 +26,7 @@ export const usePagination = ({ setParams, totalPages }: UsePaginationArgs) => {
   };
 
   const handleClickLast = () => {
-    setParams((prev) => ({ ...prev, page: totalPages }));
+    setParams((prev) => ({ ...prev, page: Math.max(1, totalPages) }));
   };
 
   const handleClickPagination = (page: number) => {

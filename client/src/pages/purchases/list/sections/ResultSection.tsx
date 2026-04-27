@@ -59,6 +59,7 @@ export default function ResultSection({
   isError,
 }: ResultSectionProps) {
   const { toast } = useToast();
+  const [prevParams, setPrevParams] = useState(params);
   const [selectedReceiptPurchaseId, setSelectedReceiptPurchaseId] = useState<string | null>(null);
   const [selectedBackorderPurchaseId, setSelectedBackorderPurchaseId] = useState<string | null>(
     null,
@@ -70,7 +71,7 @@ export default function ResultSection({
   const { mutate: handleUpdateBackorders } = useUpdateBackorders();
 
   const { isAllSelected, handleToggleAll, handleToggleRow } = useSelection({
-    records: data?.records,
+    records: data?.records ?? [],
     selectedProductIds,
     setSelectedProductIds,
   });
@@ -102,6 +103,11 @@ export default function ResultSection({
         <span className="font-14-r text-gray-4">조회 결과가 없어요.</span>
       </section>
     );
+  }
+
+  if (prevParams !== params) {
+    setPrevParams(params);
+    setSelectedProductIds(new Set());
   }
 
   // 드롭다운 핸들러
