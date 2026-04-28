@@ -11,13 +11,8 @@ export default function KakaoLoginButton({
   buttonClassName,
   imageClassName,
 }: KakaoLoginButtonProps) {
-  const handleKakaoLogin = async () => {
-    const res = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/auth/kakao`, {
-      headers: { 'ngrok-skip-browser-warning': 'true' },
-    });
-    const { redirectUrl } = await res.json();
-    window.location.href = redirectUrl;
-  };
+  const handleKakaoLogin = () =>
+    (window.location.href = `${import.meta.env.VITE_API_URL}/api/v1/auth/kakao`);
 
   return (
     <Button
