@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Draft, GetPurchaseResponse, SortBy, SORT_BY, SORT_ORDER } from '@jumble/shared';
 import { Button, Dropdown, useToast } from '@/components';
 import { cn } from '@/utils/cn';
@@ -83,6 +83,10 @@ export default function ResultSection({
     handleClickPagination,
   } = usePagination({ setParams, totalPages: data?.pagination?.totalPages });
 
+  useEffect(() => {
+    if (isError) toast.error('사입내역 조회에 실패했습니다.');
+  }, [isError]);
+
   if (isPending) {
     return (
       <section className="flex h-[28rem] items-center justify-center rounded-[1.6rem] bg-white">
@@ -91,19 +95,15 @@ export default function ResultSection({
     );
   }
 
-  const { records, pagination } = data;
-
-  if (isError || !data || records.length === 0) {
-    if (isError || !data) {
-      toast.error('사입내역 조회에 실패했습니다.');
-    }
-
+  if (isError || !data || data.records.length === 0) {
     return (
       <section className="flex h-[28rem] items-center justify-center rounded-[1.6rem] bg-white">
         <span className="font-14-r text-gray-4">조회 결과가 없어요.</span>
       </section>
     );
   }
+
+  const { records, pagination } = data;
 
   if (prevParams !== params) {
     setPrevParams(params);

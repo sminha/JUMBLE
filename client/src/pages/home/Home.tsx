@@ -1,6 +1,6 @@
 import { Navigate } from 'react-router';
 import { PATHS } from '@/router';
-import { Header } from '@/components';
+import Header from './components/Header';
 import MainSection from './sections/MainSection';
 import DescriptionSection from './sections/DescriptionSection';
 import { STORAGE_KEYS } from '@/constants/storage';
