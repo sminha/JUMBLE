@@ -14,7 +14,7 @@ const app = express();
 const PORT = process.env.PORT || 4000;
 
 const corsOptions = {
-  origin: ['http://localhost:5173', 'https://jumble-client.vercel.app'],
+  origin: ['http://localhost:5173', 'http://localhost:4000', 'https://jumble-client.vercel.app'],
 };
 
 app.use(cors(corsOptions));
