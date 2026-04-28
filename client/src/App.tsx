@@ -16,7 +16,6 @@ const queryClient = new QueryClient({
   },
 });
 
-// 임시 변경사항
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
