@@ -16,7 +16,6 @@ const queryClient = new QueryClient({
   },
 });
 
-// 테스트용 변경사항
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
