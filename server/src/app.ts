@@ -18,7 +18,7 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-app.options('*', cors(corsOptions));
+app.options('/{*path}', cors(corsOptions));
 app.use(morgan('dev'));
 app.use(express.json());
 app.use('/api/v1/auth', authRouter);
