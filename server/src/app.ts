@@ -12,10 +12,8 @@ dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 4000;
-
-const corsOptions = {
-  origin: ['http://localhost:5173', 'https://jumble-client.vercel.app'],
-};
+const allowedOrigins = (process.env.CORS_ORIGINS ?? '').split(',').filter(Boolean);
+const corsOptions = { origin: allowedOrigins };
 
 app.use(cors(corsOptions));
 app.options('/{*path}', cors(corsOptions));

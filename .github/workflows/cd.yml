@@ -8,6 +8,9 @@ concurrency:
   group: cd-${{ github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+
 jobs:
   verify:
     name: Verify Build
@@ -44,8 +47,10 @@ jobs:
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
+            set -euo pipefail
             cd ${{ secrets.EC2_DEPLOY_PATH }}
-            git pull origin main
+            git fetch origin main --prune
+            git reset --hard origin/main
             pnpm install --frozen-lockfile
             pnpm --filter server exec prisma generate
             pnpm --filter server exec prisma migrate deploy
@@ -61,7 +66,7 @@ jobs:
           EC2_HOST: ${{ secrets.EC2_HOST }}
         run: |
           for i in {1..10}; do
-            status=$(curl -s -o /dev/null -w "%{http_code}" http://$EC2_HOST/health)
+            status=$(curl -s -o /dev/null -w "%{http_code}" --connect-timeout 5 --max-time 10 http://$EC2_HOST/health)
             if [ "$status" = "200" ]; then
               echo "Server is healthy"
               exit 0
