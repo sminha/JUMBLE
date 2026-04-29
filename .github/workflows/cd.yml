@@ -1,0 +1,73 @@
+name: CD
+
+on:
+  push:
+    branches: [main]
+
+concurrency:
+  group: cd-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: Verify Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm lint
+      - run: pnpm --filter client type-check
+      - run: pnpm --filter client build
+      - run: pnpm --filter server exec prisma generate
+      - run: pnpm --filter server exec prisma validate
+      - run: pnpm --filter server type-check
+
+  deploy:
+    name: Deploy to EC2
+    needs: verify
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            cd ${{ secrets.EC2_DEPLOY_PATH }}
+            git pull origin main
+            pnpm install --frozen-lockfile
+            pnpm --filter server exec prisma generate
+            pnpm --filter server exec prisma migrate deploy
+            pm2 restart jumble-server || pm2 start "pnpm --filter server start" --name jumble-server
+
+  health-check:
+    name: Health Check
+    needs: deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wait for server to be ready
+        env:
+          EC2_HOST: ${{ secrets.EC2_HOST }}
+        run: |
+          for i in {1..10}; do
+            status=$(curl -s -o /dev/null -w "%{http_code}" http://$EC2_HOST/health)
+            if [ "$status" = "200" ]; then
+              echo "Server is healthy"
+              exit 0
+            fi
+            echo "Attempt $i failed (status: $status), retrying in 5s..."
+            sleep 5
+          done
+          echo "Health check failed after 10 attempts"
+          exit 1

@@ -31,6 +31,10 @@ app.get('/', (_, res) => {
   res.send('서버가 정상적으로 작동 중입니다! 🚀');
 });
 
+app.get('/health', (_, res) => {
+  res.status(200).json({ status: 'ok' });
+});
+
 app.listen(PORT, () => {
   console.log(`✅ Server is running on http://localhost:${PORT}`);
 });
