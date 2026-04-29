@@ -12,10 +12,8 @@ dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 4000;
-
-const corsOptions = {
-  origin: ['http://localhost:5173', 'http://localhost:4000', 'https://jumble-client.vercel.app'],
-};
+const allowedOrigins = (process.env.CORS_ORIGINS ?? '').split(',').filter(Boolean);
+const corsOptions = { origin: allowedOrigins };
 
 app.use(cors(corsOptions));
 app.options('/{*path}', cors(corsOptions));
@@ -29,6 +27,10 @@ app.use('/api/v1/ocr', ocrRouter);
 
 app.get('/', (_, res) => {
   res.send('서버가 정상적으로 작동 중입니다! 🚀');
+});
+
+app.get('/health', (_, res) => {
+  res.status(200).json({ status: 'ok' });
 });
 
 app.listen(PORT, () => {
