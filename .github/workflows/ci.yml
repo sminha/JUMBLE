@@ -1,4 +1,4 @@
-name: CI
+name: CI (Parallel)
 
 on:
   push:
@@ -6,35 +6,62 @@ on:
   pull_request:
     branches: [main, develop]
 
+permissions:
+  contents: read
+
 jobs:
-  build-and-test:
+  lint:
+    name: Lint
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v3
+      - uses: pnpm/action-setup@v3
         with:
           version: 10
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: 'pnpm'
 
-      - name: Install dependencies
-        run: pnpm install
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm lint
 
-      - name: Client Lint Check
-        run: pnpm --filter client lint
+  client:
+    name: Client Type Check & Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
 
-      - name: Client Build
-        run: pnpm --filter client build
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 10
 
-      - name: Generate Prisma Client
-        run: pnpm --filter server exec prisma generate
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
 
-      - name: Server Type Check
-        run: pnpm --filter server exec tsc --noEmit
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter client type-check
+      - run: pnpm --filter client build
+
+  server:
+    name: Server Type Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter server exec prisma generate
+      - run: pnpm --filter server type-check
