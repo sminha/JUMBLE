@@ -10,6 +10,12 @@ export default function PurchaseList() {
   const [params, setParams] = useState<Draft>(INITIAL_DRAFT);
   const { data, isPending, isError } = useGetPurchases(params);
 
+  const handleSearch = () => setParams(draft);
+  const handleInstantSearch = (partial: Partial<Draft>) => {
+    setDraft((prev) => ({ ...prev, ...partial }));
+    setParams((prev) => ({ ...prev, ...partial }));
+  };
+
   return (
     <main>
       <Header />
@@ -17,7 +23,12 @@ export default function PurchaseList() {
         사입 내역 조회
       </h1>
       <div className="flex flex-col gap-[2rem] px-[2rem] px-[clamp(2rem,calc(11vw-5.4rem),6.4rem)] pt-[2rem] pb-[3.2rem] sm:pt-0">
-        <FilterSection draft={draft} setDraft={setDraft} onSearch={() => setParams(draft)} />
+        <FilterSection
+          draft={draft}
+          setDraft={setDraft}
+          onSearch={handleSearch}
+          onInstantSearch={handleInstantSearch}
+        />
         <ResultSection
           params={params}
           setParams={setParams}
