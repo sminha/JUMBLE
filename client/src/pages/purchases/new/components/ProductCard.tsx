@@ -72,7 +72,9 @@ export default function ProductCard({
           <Input
             numeric
             placeholder="0"
-            {...register(`products.${index}.price`, { valueAsNumber: true })}
+            {...register(`products.${index}.price`, {
+              setValueAs: (value: string) => Number(value),
+            })}
             status={errors.products?.[index]?.price ? STATUS.ERROR : STATUS.DEFAULT}
             className="text-right"
           />
@@ -81,7 +83,9 @@ export default function ProductCard({
           <Input
             numeric
             placeholder="0"
-            {...register(`products.${index}.quantity`, { valueAsNumber: true })}
+            {...register(`products.${index}.quantity`, {
+              setValueAs: (value: string) => Number(value),
+            })}
             status={errors.products?.[index]?.quantity ? STATUS.ERROR : STATUS.DEFAULT}
             className="text-right"
           />
@@ -93,7 +97,9 @@ export default function ProductCard({
           <Input
             numeric
             placeholder="0"
-            {...register(`products.${index}.backorderQuantity`, { valueAsNumber: true })}
+            {...register(`products.${index}.backorderQuantity`, {
+              setValueAs: (value: string) => Number(value),
+            })}
             status={errors.products?.[index]?.backorderQuantity ? STATUS.ERROR : STATUS.DEFAULT}
             className="text-right"
           />
