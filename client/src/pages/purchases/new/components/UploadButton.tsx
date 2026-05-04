@@ -12,12 +12,13 @@ export default function UploadButton({
   isLoading,
   children,
   className,
+  id = 'file-upload',
   ...props
 }: UploadButtonProps) {
   return (
     <>
       <input
-        id="file-upload"
+        id={id}
         type="file"
         accept="image/*"
         className="hidden"
@@ -29,7 +30,7 @@ export default function UploadButton({
         {...props}
       />
       <label
-        htmlFor="file-upload"
+        htmlFor={id}
         className={cn(
           'bg-primary-3 font-14-r min-w-[15.2rem] cursor-pointer rounded-[1rem] px-[2rem] py-[1rem] text-center text-white',
           isLoading && 'bg-gray-2 text-gray-4 cursor-not-allowed',
