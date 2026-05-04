@@ -1,7 +1,8 @@
 import { Input, Dropdown } from '@/components';
 import { ValueLabel } from '@/types/value-label';
+import { SearchProps } from '@/pages/purchases/list/types/search';
 
-interface AddonInputProps<T extends string | number> {
+interface BaseAddonInputProps<T extends string | number> {
   filters: ValueLabel<T>[];
   selectedFilter: T;
   keyword: string;
@@ -9,15 +10,18 @@ interface AddonInputProps<T extends string | number> {
   onChangeKeyword: (keyword: string) => void;
 }
 
+type AddonInputProps<T extends string | number> = BaseAddonInputProps<T> & SearchProps;
+
 export default function AddonInput<T extends string | number>({
   filters,
   selectedFilter,
   keyword,
   onChangeFilter,
   onChangeKeyword,
+  ...searchProps
 }: AddonInputProps<T>) {
   return (
-    <div className="border-gray-1 focus-within:border-primary-3 flex rounded-[0.8rem] border-1">
+    <div className="border-gray-1 focus-within:border-primary-3 flex w-full rounded-[0.8rem] border-1">
       <Dropdown
         options={filters}
         value={selectedFilter}
@@ -28,7 +32,8 @@ export default function AddonInput<T extends string | number>({
         placeholder="입력하세요"
         value={keyword}
         onChange={(e) => onChangeKeyword(e.target.value)}
-        className="min-w-[30rem] border-none"
+        className="border-none"
+        {...searchProps}
       />
     </div>
   );
